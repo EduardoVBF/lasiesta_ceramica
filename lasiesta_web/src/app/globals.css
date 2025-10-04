@@ -1,0 +1,120 @@
+/* ================================
+   IMPORTAÇÃO DE FONTES GOOGLE
+================================ */
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Playwrite+AU+QLD:wght@100;200;300;400&family=Playwrite+HR:wght@100;200;300;400&display=swap");
+
+@import "tailwindcss";
+
+/* ================================
+   VARIÁVEIS GLOBAIS
+================================ */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  --font-primary: "Poppins", sans-serif;
+  --font-secondary: "Caveat", cursive;
+  --font-geist-mono: "Roboto Mono", monospace;
+  --font-playwrite: "Playwrite AU QLD", "Playwrite HR", serif;
+}
+
+/* ================================
+   CONFIGURAÇÃO DE TEMA
+================================ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-primary);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ================================
+   MODO ESCURO
+================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #edccb0;
+    --foreground: #ededed;
+    --verde-escuro: #a1a692;
+    --cinza-claro: #d6d9cc;
+    --bege-claro: #f2e0d0;
+    --marrom-claro: #d6b8a5;
+    --marrom-avermelhado: #a35c42;
+    --rosa-queimado: #bf7b6b;
+  }
+}
+
+/* ================================
+   ESTILIZAÇÃO BASE
+================================ */
+body {
+  background: var(--bege-claro);
+  color: var(--marrom-avermelhado);
+  font-family: var(--font-primary);
+}
+
+h1 {
+  font-family: var(--font-playwrite);
+}
+
+/* ================================
+   CLASSES DE FONTES
+================================ */
+.font-primary {
+  font-family: var(--font-primary);
+}
+
+.font-secondary {
+  font-family: var(--font-secondary);
+}
+
+.font-geist-mono {
+  font-family: var(--font-geist-mono);
+}
+
+.font-playwrite {
+  font-family: var(--font-playwrite);
+}
+
+/* ================================
+   CLASSES DE CORES
+================================ */
+.text-verde-escuro {
+  color: var(--verde-escuro);
+}
+.text-cinza-claro {
+  color: var(--cinza-claro);
+}
+.text-bege-claro {
+  color: var(--bege-claro);
+}
+.text-marrom-avermelhado {
+  color: var(--marrom-avermelhado);
+}
+.text-rosa-queimado {
+  color: var(--rosa-queimado);
+}
+.text-marrom-claro {
+  color: var(--marrom-claro);
+}
+
+.bg-verde-escuro {
+  background-color: var(--verde-escuro);
+}
+.bg-cinza-claro {
+  background-color: var(--cinza-claro);
+}
+.bg-bege-claro {
+  background-color: var(--bege-claro);
+}
+.bg-marrom-avermelhado {
+  background-color: var(--marrom-avermelhado);
+}
+.bg-rosa-queimado {
+  background-color: var(--rosa-queimado);
+}
+.bg-marrom-claro {
+  background-color: var(--marrom-claro);
+}
