@@ -24,7 +24,7 @@ export default function PlansCard({
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      className="bg-gradient-to-br from-bege-claro via-bege-escuro to-marrom-avermelhado/10 rounded-xl shadow-lg flex flex-row w-full"
+      className="rounded-xl shadow-xl flex flex-row w-full"
     >
       <Image
         src={plan.image}
@@ -33,7 +33,7 @@ export default function PlansCard({
         height={300}
         className="object-cover w-[300px] h-auto rounded-l-xl"
       />
-      <div className="p-6 flex flex-col justify-between w-full">
+      <div className="p-6 flex flex-col justify-between w-full bg-white/10 rounded-r-lg">
         <h2 className="text-2xl font-semibold text-marrom-avermelhado mb-4">
           {plan.title}
         </h2>

@@ -16,7 +16,7 @@ export default function Studio() {
         textColor="text-white"
       />
 
-      <section className="w-full max-w-[90%] px-6 pb-10 space-y-8">
+      <section className="w-full max-w-[90%] px-6 pb-10 space-y-8 mt-5">
         {/* BLOCO 1 — História (imagens próximas e texto ao lado) */}
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <motion.div

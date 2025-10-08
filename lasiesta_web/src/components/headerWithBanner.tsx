@@ -18,7 +18,7 @@ export default function HeaderWithBanner({
   textColor: string;
 }) {
   return (
-    <div className="relative w-full flex flex-col items-center mb-20">
+    <div className="relative w-full flex flex-col items-center">
       <div className="absolute top-0 z-20 w-full">
         <Header />
       </div>

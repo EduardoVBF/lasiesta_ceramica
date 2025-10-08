@@ -52,7 +52,7 @@ export default function Classes() {
       />
 
       {/* Planos de assinatura */}
-      <section className="max-w-6xl flex flex-col gap-10 mb-20 z-50">
+      <section className="max-w-6xl flex flex-col gap-10 mb-20 z-50 mt-5">
         {plans.map((plan) => (
           <PlansCard key={plan.id} plan={plan} />
         ))}

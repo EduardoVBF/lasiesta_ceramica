@@ -343,19 +343,21 @@ export default function Products() {
       />
 
       {/* Tabs Navigation */}
-      <div className="border-b-2 border-[#a35c42] w-[90%] mb-8">
-        <div className="flex overflow-x-auto">
+      <div className="w-[90%] mb-8">
+        <div className="flex overflow-x-auto justify-start gap-x-1 px-1">
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              className={`flex items-center space-x-2 px-4 border-b-2 transition-colors duration-200 cursor-pointer whitespace-nowrap hover:bg-[#a35c42]/20 relative ${
-                activeCategory === category.id
-                  ? "text-verde-escuro border-b-4 border-verde-escuro z-10"
-                  : "text-marrom-avermelhados border-transparent z-0"
+              className={`pt-4 rounded-b-lg px-6 py-1 text-sm font-bold transition-all duration-300 whitespace-nowrap cursor-pointer hover:bg-gray-500/20 hover:text-marrom-avermelhado/90 focus:outline-none ${
+                {
+                  active: activeCategory === category.id,
+                }["active"]
+                  ? "border-b-4 border-[#a35c42] text-marrom-avermelhado bg-white/60"
+                  : "text-white bg-[#a35c42]/20"
               }`}
             >
-              <span>{category.label}</span>
+              {category.label}
             </button>
           ))}
         </div>
