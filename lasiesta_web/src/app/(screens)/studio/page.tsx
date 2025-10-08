@@ -103,9 +103,9 @@ export default function Studio() {
               <Image
                 src="/image/IMG_0349.JPG"
                 alt="Processo criativo 1"
-                width={300}
-                height={300}
-                className="rounded-lg object-cover w-[300px] h-[300px] shadow-md"
+                width={350}
+                height={350}
+                className="rounded-lg object-cover w-[350px] h-[350px] shadow-md"
               />
             </motion.div>
             <motion.div
@@ -116,9 +116,9 @@ export default function Studio() {
               <Image
                 src="/image/IMG_0128.JPG"
                 alt="Processo criativo 2"
-                width={300}
-                height={300}
-                className="rounded-lg object-cover w-[300px] h-[300px] shadow-md"
+                width={350}
+                height={350}
+                className="rounded-lg object-cover w-[350px] h-[350px] shadow-md"
               />
             </motion.div>
             <motion.div
@@ -129,9 +129,9 @@ export default function Studio() {
               <Image
                 src="/image/IMG_0216.JPG"
                 alt="Processo criativo 3"
-                width={300}
-                height={300}
-                className="rounded-lg object-cover w-[300px] h-[300px] shadow-md"
+                width={350}
+                height={350}
+                className="rounded-lg object-cover w-[350px] h-[350px] shadow-md"
               />
             </motion.div>
             <motion.div
@@ -142,9 +142,9 @@ export default function Studio() {
               <Image
                 src="/image/IMG_0285.JPG"
                 alt="Processo criativo 4"
-                width={300}
-                height={300}
-                className="rounded-lg object-cover w-[300px] h-[300px] shadow-md"
+                width={350}
+                height={350}
+                className="rounded-lg object-cover w-[350px] h-[350px] shadow-md"
               />
             </motion.div>
           </div>
@@ -197,7 +197,7 @@ export default function Studio() {
             initial={{ opacity: 0, x: 80 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
-            className="flex gap-4"
+            className="flex gap-4 justify-between"
           >
             <Image
               src="/image/IMG_0129.JPG"

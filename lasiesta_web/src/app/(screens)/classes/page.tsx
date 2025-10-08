@@ -13,7 +13,7 @@ const plans = [
     price: "R$50",
     priceDetail: "/ aula",
     buttonText: "Agendar Aula",
-    image: "/image/pexels-1.jpg",
+    image: "/image/IMG_0094.JPG",
     alt: "Plano Experimental",
   },
   {
@@ -24,7 +24,7 @@ const plans = [
     price: "R$200",
     priceDetail: "/ workshop",
     buttonText: "Participar",
-    image: "/image/pexels-5.jpg",
+    image: "/image/IMG_0065.JPG",
     alt: "Workshop Intensivo",
   },
   {
@@ -35,7 +35,7 @@ const plans = [
     price: "R$400",
     priceDetail: "/ mês",
     buttonText: "Assinar",
-    image: "/image/pexels-4.jpg",
+    image: "/image/IMG_0128.JPG",
     alt: "Plano Mensal",
   },
 ];
@@ -52,9 +52,9 @@ export default function Classes() {
       />
 
       {/* Planos de assinatura */}
-      <section className="max-w-6xl flex flex-col gap-10 mb-20 z-50 mt-5">
+      <section className="w-full flex flex-col gap-10 mb-20 z-50 mt-5">
         {plans.map((plan) => (
-          <PlansCard key={plan.id} plan={plan} />
+          <PlansCard key={plan.id} plan={plan} reverse={plan.id % 2 === 0} />
         ))}
       </section>
 

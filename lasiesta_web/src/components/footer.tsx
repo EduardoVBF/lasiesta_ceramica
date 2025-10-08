@@ -22,7 +22,7 @@ export default function Footer() {
           {/* Localização */}
           <div className="w-fit px-4">
             <h3 className="text-lg font-semibold mb-3">Localização</h3>
-            <div className="flex items-start space-x-2">nom
+            <div className="flex items-start space-x-2">
               <MapPin className="w-5 h-5 mt-1" />
               <p className="text-sm leading-relaxed">
                 Rua Santos Pereira, 557 - Cidade Nova, Franca - SP <br />

@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
 
-export default function PlansCard({
+function PlanSection({
   plan,
+  reverse = false,
 }: {
   plan: {
     id: number;
@@ -16,45 +17,89 @@ export default function PlansCard({
     image: string;
     alt: string;
   };
+  reverse?: boolean;
 }) {
   return (
-    <motion.div
+    <motion.section
       key={plan.id}
-      initial={{ opacity: 0, x: -50 }}
+      initial={{ opacity: 0, x: reverse ? 80 : -80 }}
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      className="rounded-xl shadow-xl flex flex-row w-full"
+      className={`relative flex flex-col md:flex-row items-center gap-10 md:gap-16 py-6 px-6 rounded-3xl max-w-[85%] mx-auto shadow-lg ${
+        reverse ? "md:flex-row-reverse" : ""
+      }`}
     >
-      <Image
-        src={plan.image}
-        alt={plan.alt}
-        width={300}
-        height={300}
-        className="object-cover w-[300px] h-auto rounded-l-xl"
-      />
-      <div className="p-6 flex flex-col justify-between w-full bg-white/10 rounded-r-lg">
-        <h2 className="text-2xl font-semibold text-marrom-avermelhado mb-4">
+      {/* Imagem */}
+      <motion.div
+        whileHover={{ scale: 1.03 }}
+        transition={{ type: "spring", stiffness: 150 }}
+        className="relative w-[300px] h-[400px] flex-shrink-0 rounded-2xl overflow-hidden shadow-lg"
+      >
+        <Image
+          src={plan.image}
+          alt={plan.alt}
+          fill
+          className="object-cover"
+        />
+      </motion.div>
+
+      {/* Conteúdo */}
+      <div className="flex flex-col justify-center max-w-md text-marrom-avermelhado">
+        <h1 className="text-xl font-semibold mb-2 tracking-tight text-marrom-avermelhado/90">
           {plan.title}
-        </h2>
-        <p className="text-marrom-avermelhado mb-6">{plan.description}</p>
-        <div className="mb-6">
-          <span className="text-3xl font-bold text-marrom-avermelhado">
+        </h1>
+
+        <p className="text-[11px] md:text-[12px] text-marrom-avermelhado/80 mb-4 leading-relaxed">
+          {plan.description}
+        </p>
+
+        <ul className="space-y-1.5 mb-6 text-[11px] text-marrom-avermelhado/75">
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-marrom-avermelhado rounded-full"></span>
+            Acesso completo aos recursos premium.
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-marrom-avermelhado rounded-full"></span>
+            Suporte personalizado via WhatsApp.
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-marrom-avermelhado rounded-full"></span>
+            Atualizações e melhorias constantes.
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-marrom-avermelhado rounded-full"></span>
+            Cancelamento fácil e sem burocracia.
+          </li>
+        </ul>
+
+        {/* Preço */}
+        <div className="flex items-baseline gap-2 mb-4">
+          <span className="text-lg md:text-xl font-bold text-marrom-avermelhado">
             {plan.price}
           </span>
-          <span className="text-gray-500"> {plan.priceDetail}</span>
+          <span className="text-gray-500 text-[11px]">{plan.priceDetail}</span>
         </div>
-        <a
+
+        {/* Botão */}
+        <motion.a
           href={`https://wa.me/5516991401921?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(
             plan.title
           )}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-marrom-avermelhado text-white px-4 py-2 rounded hover:bg-marrom-avermelhado/90 transition text-center"
+          whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(163,92,66,0.3)" }}
+          whileTap={{ scale: 0.97 }}
+          className="inline-block bg-marrom-avermelhado text-white text-[11px] md:text-xs font-medium px-6 py-2.5 rounded-full transition-all duration-300 ease-out text-center"
         >
           {plan.buttonText}
-        </a>
+        </motion.a>
       </div>
-    </motion.div>
+
+      {/* Fundo decorativo */}
+      <div className="absolute inset-0 -z-10 rounded-3xl bg-[#818b7e7c] pointer-events-none"></div>
+    </motion.section>
   );
 }
+
+export default PlanSection;
