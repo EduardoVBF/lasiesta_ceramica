@@ -26,7 +26,7 @@ function PlanSection({
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      className={`relative flex flex-col md:flex-row items-center gap-10 md:gap-16 py-6 px-6 rounded-3xl max-w-[85%] mx-auto shadow-lg ${
+      className={`relative flex flex-col md:flex-row items-center gap-10 md:gap-16 py-6 px-6 rounded-3xl max-w-[85%] mx-auto shadow-lg bg-[#818b7e7c] ${
         reverse ? "md:flex-row-reverse" : ""
       }`}
     >
@@ -95,9 +95,6 @@ function PlanSection({
           {plan.buttonText}
         </motion.a>
       </div>
-
-      {/* Fundo decorativo */}
-      <div className="absolute inset-0 -z-10 rounded-3xl bg-[#818b7e7c] pointer-events-none"></div>
     </motion.section>
   );
 }

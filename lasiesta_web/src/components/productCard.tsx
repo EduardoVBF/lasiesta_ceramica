@@ -68,7 +68,7 @@ export default function ProductCard({
       </div>
 
       {/* CONTENT */}
-      <div className="p-5 bg-[#bf7a6b5d] text-[#f8f5f1] flex flex-col gap-4">
+      <div className="p-5 bg-[#bf7a6b8b] text-[#f8f5f1] flex flex-col gap-4">
         <div>
           <div>
             <h3

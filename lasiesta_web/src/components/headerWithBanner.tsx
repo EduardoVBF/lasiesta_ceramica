@@ -15,42 +15,46 @@ export default function HeaderWithBanner({
   alt: string;
   title: string;
   description: string;
-  textColor: string;
+  textColor?: string;
 }) {
   return (
     <div className="relative w-full flex flex-col items-center">
+      {/* Header fixo no topo */}
       <div className="absolute top-0 z-20 w-full">
         <Header />
       </div>
-      <div className="bg-radial from-transparent to-black/20 absolute top-0 z-10 w-full h-[400px]"></div>
-      <Image
-        src={src}
-        alt={alt}
-        width={1920}
-        height={1080}
-        className="object-cover absolute top-0 z-0 w-full h-[400px] opacity-80"
-      />
 
-      <div className="relative z-10 flex flex-col items-center justify-center h-[400px] w-full bg-black/30">
-        {/* Ajuste de cor e contraste para visibilidade */}
+      {/* Imagem e overlay */}
+      <div className="relative w-full h-[400px] overflow-hidden">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover opacity-80"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60 md:from-black/20 md:to-black/40" />
+      </div>
+
+      {/* Conteúdo do banner */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-8">
         <motion.h1
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className={`text-4xl md:text-5xl font-bold text-center ${textColor} my-10 z-10`}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className={`text-2xl sm:text-3xl md:text-5xl font-extrabold ${textColor} drop-shadow-lg`}
         >
           {title}
         </motion.h1>
-        <motion.section
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="max-w-4xl px-6 text-center mb-16 z-10"
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          className={`mt-3 sm:mt-5 text-sm sm:text-base md:text-lg max-w-[90%] sm:max-w-3xl ${textColor} leading-relaxed drop-shadow-md`}
         >
-          <p className={`leading-relaxed text-lg ${textColor}`}>
-            {description}
-          </p>
-        </motion.section>
+          {description}
+        </motion.p>
       </div>
     </div>
   );

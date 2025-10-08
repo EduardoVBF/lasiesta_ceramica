@@ -44,7 +44,7 @@ const plans = [
 
 export default function HomePage() {
   return (
-    <main className="flex flex-col min-h-screen bg-bege-claro text-marrom-avermelhado">
+    <main className="flex flex-col min-h-screen bg-bege-claro text-marrom-avermelhado overflow-hidden">
       {/* Header com Banner */}
       <HeaderWithBanner
         src="/image/aula2pb.jpg"
@@ -56,7 +56,7 @@ export default function HomePage() {
 
       {/* Manifesto */}
       <section className="relative py-10 bg-gradient-to-b from-[#f8f4ef] to-bege-claro overflow-hidden">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6 overflow-hidden">
           {/* Texto */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -104,8 +104,7 @@ export default function HomePage() {
       </section>
 
       {/* Coleções */}
-      <section className="py-10 max-w-6xl mx-auto px-6 text-center">
-        <h1 className="text-4xl font-semibold mb-12">Coleções</h1>
+      <section className="py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
         <div className="grid md:grid-cols-4 gap-8 my-4">
           {categories.map((cat, index) => (
             <motion.div
@@ -134,7 +133,7 @@ export default function HomePage() {
       </section>
 
       {/* Seção de Cursos */}
-      <section className="bg-[#f8f4ef] py-10 w-full">
+      <section className="bg-[#f8f4ef] py-10 w-full overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <h1 className="text-4xl font-semibold text-center mb-12">
             Cursos e Experiências
@@ -175,7 +174,7 @@ export default function HomePage() {
       </section>
 
       {/* O Ateliê */}
-      <section className="bg-[#f3eee7] py-10">
+      <section className="bg-[#f3eee7] py-10 overflow-hidden">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6">
           <motion.div
             initial={{ opacity: 0, x: -50 }}

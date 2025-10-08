@@ -480,7 +480,7 @@ export default function Products() {
         );
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-bege-claro">
+    <main className="flex min-h-screen flex-col items-center bg-bege-claro overflow-hidden">
       <HeaderWithBanner
         src="/image/IMG_0036.JPG"
         alt="Produtos em Cerâmica"
@@ -490,7 +490,7 @@ export default function Products() {
       />
 
       {/* Tabs Navigation */}
-      <div className="w-[90%] mb-8">
+      <div className="w-full max-w-[90%] mb-8 overflow-hidden">
         <div className="flex overflow-x-auto justify-start gap-x-1 px-1">
           {categories.map((category) => (
             <button
@@ -511,7 +511,7 @@ export default function Products() {
       </div>
 
       {/* Grid de Produtos */}
-      <section className="w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-20 mx-15">
+      <section className="w-full max-w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-20">
         {filteredProducts.map((product, index) => (
           <ProductCard key={product.id} product={product} index={index} />
         ))}
