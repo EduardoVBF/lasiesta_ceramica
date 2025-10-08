@@ -1,311 +1,458 @@
 "use client";
 import HeaderWithBanner from "@/components/headerWithBanner";
-import Header from "@/components/header";
+import ProductCard from "@/components/productCard";
 import Footer from "@/components/footer";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
+
+const handleMockImage = (categoria: string) => {
+  switch (categoria.toLowerCase()) {
+    case "copos":
+      return "/image/IMG_0190.JPG";
+    case "pratos":
+      return "/image/IMG_0036.JPG";
+    case "bowls":
+      return "/image/IMG_0070.JPG";
+    case "tigelas":
+      return "/image/IMG_0229.JPG";
+    case "vasos":
+      return "/image/IMG_0152.JPG";
+    case "canecas":
+      return "/image/IMG_0094.JPG";
+    case "saboneteiras":
+      return "/image/IMG_0094.JPG";
+    case "manteigueiras":
+      return "/image/IMG_0129.JPG";
+    case "bandejas":
+      return "/image/IMG_0023.JPG";
+    default:
+      return "/image/IMG_0065.JPG";
+  }
+};
 
 const products = [
   {
     id: 1,
     nome: "Copo de Cerâmica Rústico",
     preco: 35.0,
-    cores: ["Bege", "Marrom", "Verde Musgo"],
+    cores: [
+      { name: "Bege" },
+      { name: "Marrom" },
+      { name: "Verde Musgo" },
+    ],
     categoria: "Copos",
     dimensoes: "8x10cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/copo1.jpg",
+    image: handleMockImage("Copos"),
+    destaque: true, // Added to match the ProductCard structure
   },
   {
     id: 2,
     nome: "Prato Raso Mediterrâneo",
     preco: 48.0,
-    cores: ["Branco", "Azul"],
+    cores: [
+      { name: "Branco" },
+      { name: "Azul" },
+    ],
     categoria: "Pratos",
     dimensoes: "27cm de diâmetro",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/prato1.jpg",
+    image: handleMockImage("Pratos"),
+    destaque: false,
   },
   {
     id: 3,
     nome: "Prato Fundo Minimalista",
     preco: 52.0,
-    cores: ["Cinza", "Branco Gelo"],
+    cores: [
+      { name: "Cinza" },
+      { name: "Branco Gelo" },
+    ],
     categoria: "Pratos",
     dimensoes: "22cm de diâmetro",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/prato2.jpg",
+    image: handleMockImage("Pratos"),
+    destaque: false,
   },
   {
     id: 4,
     nome: "Bowl Orgânico Pequeno",
     preco: 40.0,
-    cores: ["Terracota", "Areia"],
+    cores: [
+      { name: "Terracota" },
+      { name: "Areia" },
+    ],
     categoria: "Bowls",
     dimensoes: "15x7cm",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/bowl1.jpg",
+    image: handleMockImage("Bowls"),
+    destaque: false,
   },
   {
     id: 5,
     nome: "Tigela Tradicional Japonesa",
     preco: 60.0,
-    cores: ["Preto Fosco", "Vermelho"],
+    cores: [
+      { name: "Preto Fosco" },
+      { name: "Vermelho" },
+    ],
     categoria: "Tigelas",
     dimensoes: "18x9cm",
     material: "Cerâmica de alta temperatura",
-    image: "/image/produtos/tigela1.jpg",
+    image: handleMockImage("Tigelas"),
+    destaque: false,
   },
   {
     id: 6,
     nome: "Vaso Decorativo Ondas",
     preco: 120.0,
-    cores: ["Branco", "Azul Turquesa"],
+    cores: [
+      { name: "Branco" },
+      { name: "Azul Turquesa" },
+    ],
     categoria: "Vasos",
     dimensoes: "25x15cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/vaso1.jpg",
+    image: handleMockImage("Vasos"),
+    destaque: false,
   },
   {
     id: 7,
     nome: "Caneca com Alça Orgânica",
     preco: 42.0,
-    cores: ["Bege", "Cinza"],
+    cores: [
+      { name: "Bege" },
+      { name: "Cinza" },
+    ],
     categoria: "Canecas",
     dimensoes: "9x12cm",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/caneca1.jpg",
+    image: handleMockImage("Canecas"),
+    destaque: false,
   },
   {
     id: 8,
     nome: "Saboneteira Texturizada",
     preco: 28.0,
-    cores: ["Branco", "Azul Claro"],
+    cores: [
+      { name: "Branco" },
+      { name: "Azul Claro" },
+    ],
     categoria: "Saboneteiras",
     dimensoes: "12x9cm",
     material: "Cerâmica com relevo",
-    image: "/image/produtos/saboneteira1.jpg",
+    image: handleMockImage("Saboneteiras"),
+    destaque: false,
   },
   {
     id: 9,
     nome: "Manteigueira Clássica",
     preco: 55.0,
-    cores: ["Branco", "Amarelo Suave"],
+    cores: [
+      { name: "Branco" },
+      { name: "Amarelo Suave" },
+    ],
     categoria: "Manteigueiras",
     dimensoes: "16x10cm",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/manteigueira1.jpg",
+    image: handleMockImage("Manteigueiras"),
+    destaque: false,
   },
   {
     id: 10,
     nome: "Bandeja Oval Minimal",
     preco: 75.0,
-    cores: ["Cinza", "Preto"],
+    cores: [
+      { name: "Cinza" },
+      { name: "Preto" },
+    ],
     categoria: "Bandejas",
     dimensoes: "30x18cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/bandeja1.jpg",
+    image: handleMockImage("Bandejas"),
+    destaque: false,
   },
   {
     id: 11,
     nome: "Copo Esmaltado Azul",
     preco: 32.0,
-    cores: ["Azul Claro", "Branco"],
+    cores: [
+      { name: "Azul Claro" },
+      { name: "Branco" },
+    ],
     categoria: "Copos",
     dimensoes: "8x9cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/copo2.jpg",
+    image: handleMockImage("Copos"),
+    destaque: false,
   },
   {
     id: 12,
     nome: "Prato Rústico de Pedra",
     preco: 50.0,
-    cores: ["Cinza", "Marrom"],
+    cores: [
+      { name: "Cinza" },
+      { name: "Marrom" },
+    ],
     categoria: "Pratos",
     dimensoes: "26cm de diâmetro",
     material: "Cerâmica de alta temperatura",
-    image: "/image/produtos/prato3.jpg",
+    image: handleMockImage("Pratos"),
+    destaque: false,
   },
   {
     id: 13,
     nome: "Prato de Sobremesa Floral",
     preco: 38.0,
-    cores: ["Branco", "Verde", "Amarelo"],
+    cores: [
+      { name: "Branco" },
+      { name: "Verde" },
+      { name: "Amarelo" },
+    ],
     categoria: "Pratos",
     dimensoes: "20cm de diâmetro",
     material: "Cerâmica pintada à mão",
-    image: "/image/produtos/prato4.jpg",
+    image: handleMockImage("Pratos"),
+    destaque: false,
   },
   {
     id: 14,
     nome: "Bowl Minimalista Branco",
     preco: 35.0,
-    cores: ["Branco", "Cinza"],
+    cores: [
+      { name: "Branco" },
+      { name: "Cinza" },
+    ],
     categoria: "Bowls",
     dimensoes: "14x6cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/bowl2.jpg",
+    image: handleMockImage("Bowls"),
+    destaque: false,
   },
   {
     id: 15,
     nome: "Tigela Grande Oriental",
     preco: 70.0,
-    cores: ["Preto", "Azul"],
+    cores: [
+      { name: "Preto" },
+      { name: "Azul" },
+    ],
     categoria: "Tigelas",
     dimensoes: "22x10cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/tigela2.jpg",
+    image: handleMockImage("Tigelas"),
+    destaque: false,
   },
   {
     id: 16,
     nome: "Vaso Alto Texturizado",
     preco: 150.0,
-    cores: ["Cinza", "Bege"],
+    cores: [
+      { name: "Cinza" },
+      { name: "Bege" },
+    ],
     categoria: "Vasos",
     dimensoes: "40x18cm",
     material: "Cerâmica com relevo",
-    image: "/image/produtos/vaso2.jpg",
+    image: handleMockImage("Vasos"),
+    destaque: false,
   },
   {
     id: 17,
     nome: "Caneca de Chá Minimal",
     preco: 38.0,
-    cores: ["Verde", "Branco"],
+    cores: [
+      { name: "Verde" },
+      { name: "Branco" },
+    ],
     categoria: "Canecas",
     dimensoes: "8x11cm",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/caneca2.jpg",
+    image: handleMockImage("Canecas"),
+    destaque: false,
   },
   {
     id: 18,
     nome: "Saboneteira Minimal",
     preco: 26.0,
-    cores: ["Cinza", "Branco"],
+    cores: [
+      { name: "Cinza" },
+      { name: "Branco" },
+    ],
     categoria: "Saboneteiras",
     dimensoes: "11x8cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/saboneteira2.jpg",
+    image: handleMockImage("Saboneteiras"),
+    destaque: false,
   },
   {
     id: 19,
     nome: "Manteigueira Modernista",
     preco: 60.0,
-    cores: ["Cinza", "Azul"],
+    cores: [
+      { name: "Cinza" },
+      { name: "Azul" },
+    ],
     categoria: "Manteigueiras",
     dimensoes: "18x11cm",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/manteigueira2.jpg",
+    image: handleMockImage("Manteigueiras"),
+    destaque: false,
   },
   {
     id: 20,
     nome: "Bandeja Retangular",
     preco: 80.0,
-    cores: ["Branco", "Preto"],
+    cores: [
+      { name: "Branco" },
+      { name: "Preto" },
+    ],
     categoria: "Bandejas",
     dimensoes: "35x20cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/bandeja2.jpg",
+    image: handleMockImage("Bandejas"),
+    destaque: false,
   },
   {
     id: 21,
     nome: "Copo Rústico Terracota",
     preco: 34.0,
-    cores: ["Terracota", "Areia"],
+    cores: [
+      { name: "Terracota" },
+      { name: "Areia" },
+    ],
     categoria: "Copos",
     dimensoes: "7x10cm",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/copo3.jpg",
+    image: handleMockImage("Copos"),
+    destaque: false,
   },
   {
     id: 22,
     nome: "Prato de Jantar Clássico",
     preco: 55.0,
-    cores: ["Branco", "Dourado"],
+    cores: [
+      { name: "Branco" },
+      { name: "Dourado" },
+    ],
     categoria: "Pratos",
     dimensoes: "28cm de diâmetro",
     material: "Cerâmica pintada à mão",
-    image: "/image/produtos/prato5.jpg",
+    image: handleMockImage("Pratos"),
+    destaque: false,
   },
   {
     id: 23,
     nome: "Bowl Colorido Esmaltado",
     preco: 45.0,
-    cores: ["Vermelho", "Azul", "Branco"],
+    cores: [
+      { name: "Vermelho" },
+      { name: "Azul" },
+      { name: "Branco" },
+    ],
     categoria: "Bowls",
     dimensoes: "16x8cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/bowl3.jpg",
+    image: handleMockImage("Bowls"),
+    destaque: false,
   },
   {
     id: 24,
     nome: "Tigela Pequena de Chá",
     preco: 35.0,
-    cores: ["Verde Musgo", "Branco"],
+    cores: [
+      { name: "Verde Musgo" },
+      { name: "Branco" },
+    ],
     categoria: "Tigelas",
     dimensoes: "12x7cm",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/tigela3.jpg",
+    image: handleMockImage("Tigelas"),
+    destaque: false,
   },
   {
     id: 25,
     nome: "Vaso Baixo Decorativo",
     preco: 110.0,
-    cores: ["Azul", "Cinza"],
+    cores: [
+      { name: "Azul" },
+      { name: "Cinza" },
+    ],
     categoria: "Vasos",
     dimensoes: "20x12cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/vaso3.jpg",
+    image: handleMockImage("Vasos"),
+    destaque: false,
   },
   {
     id: 26,
     nome: "Caneca Esmaltada Colorida",
     preco: 45.0,
-    cores: ["Amarelo", "Azul", "Branco"],
+    cores: [
+      { name: "Amarelo" },
+      { name: "Azul" },
+      { name: "Branco" },
+    ],
     categoria: "Canecas",
     dimensoes: "9x12cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/caneca3.jpg",
+    image: handleMockImage("Canecas"),
+    destaque: false,
   },
   {
     id: 27,
     nome: "Saboneteira Folhagem",
     preco: 30.0,
-    cores: ["Verde", "Bege"],
+    cores: [
+      { name: "Verde" },
+      { name: "Bege" },
+    ],
     categoria: "Saboneteiras",
     dimensoes: "13x9cm",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/saboneteira3.jpg",
+    image: handleMockImage("Saboneteiras"),
+    destaque: false,
   },
   {
     id: 28,
     nome: "Manteigueira Vintage",
     preco: 65.0,
-    cores: ["Branco", "Verde"],
+    cores: [
+      { name: "Branco" },
+      { name: "Verde" },
+    ],
     categoria: "Manteigueiras",
     dimensoes: "17x10cm",
     material: "Cerâmica pintada à mão",
-    image: "/image/produtos/manteigueira3.jpg",
+    image: handleMockImage("Manteigueiras"),
+    destaque: false,
   },
   {
     id: 29,
     nome: "Bandeja Redonda Decorativa",
     preco: 95.0,
-    cores: ["Marrom", "Preto"],
+    cores: [
+      { name: "Marrom" },
+      { name: "Preto" },
+    ],
     categoria: "Bandejas",
     dimensoes: "32cm de diâmetro",
     material: "Cerâmica artesanal",
-    image: "/image/produtos/bandeja3.jpg",
+    image: handleMockImage("Bandejas"),
+    destaque: false,
   },
   {
     id: 30,
     nome: "Copo Minimalista Preto",
     preco: 36.0,
-    cores: ["Preto Fosco", "Cinza"],
+    cores: [
+      { name: "Preto Fosco" },
+      { name: "Cinza" },
+    ],
     categoria: "Copos",
     dimensoes: "8x9cm",
     material: "Cerâmica esmaltada",
-    image: "/image/produtos/copo4.jpg",
+    image: handleMockImage("Copos"),
+    destaque: false,
   },
 ];
 
@@ -366,49 +513,7 @@ export default function Products() {
       {/* Grid de Produtos */}
       <section className="w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-20 mx-15">
         {filteredProducts.map((product, index) => (
-          <motion.div
-            key={product.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.6,
-              delay: index * 0.1,
-              ease: "easeInOut",
-            }}
-            viewport={{ once: true }}
-            className="bg-gradient-to-br from-bege-claro via-bege-escuro to-marrom-avermelhado/10 rounded-2xl shadow-lg overflow-hidden flex flex-col w-80"
-          >
-            <Image
-              src="/image/pexels-2.jpg"
-              alt={product.nome}
-              width={400}
-              height={300}
-              className="object-cover h-80 w-80"
-            />
-            <div className="p-6 flex flex-col justify-between flex-grow bg-verde-escuro">
-              <div>
-                <h2 className="text-xl font-semibold text-marrom-avermelhado mb-2">
-                  {product.nome}
-                </h2>
-                <p className="text-marrom-avermelhado/80">{product.material}</p>
-              </div>
-              <div className="flex items-center justify-between mt-auto">
-                <span className="text-2xl font-bold text-marrom-avermelhado">
-                  R${product.preco}
-                </span>
-                <a
-                  href={`https://wa.me/5516991401921?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(
-                    product.nome
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-marrom-avermelhado text-white px-4 py-2 rounded-xl hover:bg-marrom-avermelhado/90 transition"
-                >
-                  Detalhes
-                </a>
-              </div>
-            </div>
-          </motion.div>
+          <ProductCard key={product.id} product={product} index={index} />
         ))}
       </section>
 
