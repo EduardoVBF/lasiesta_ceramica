@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import CarouselComponent from "@/components/carousel";
 
 const categories = [
   { id: "copos", label: "Copos", image: "/image/IMG_0190.JPG" },
@@ -45,14 +46,8 @@ const plans = [
 export default function HomePage() {
   return (
     <main className="flex flex-col min-h-screen bg-bege-claro text-marrom-avermelhado overflow-hidden">
-      {/* Header com Banner */}
-      <HeaderWithBanner
-        src="/image/aula2pb.jpg"
-        alt="Lasiesta Cerâmica"
-        title="Lasiesta Cerâmica"
-        description="Explore a arte da cerâmica manual e descubra um mundo de criatividade, relaxamento e expressão artística."
-        textColor="text-white"
-      />
+      {/* Carrossel */}
+      <CarouselComponent />
 
       <div className="relative w-full">
         {/* Imagem de fundo */}
