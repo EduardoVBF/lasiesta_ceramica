@@ -152,7 +152,7 @@ export default function ProductCard({
             className="w-full"
             aria-label="Detalhes do produto"
           >
-            <Link href={`/produtos/${product.id}`} className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#a1a692] text-white font-semibold shadow hover:bg-[#5e6254] transition cursor-pointer">
+            <Link href={`/products/${product.id}`} className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#a1a692] text-white font-semibold shadow hover:bg-[#5e6254] transition cursor-pointer">
               Detalhes
             </Link>
           </motion.button>

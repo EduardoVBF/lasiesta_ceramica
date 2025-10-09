@@ -19,7 +19,7 @@ export default function HeaderButton({
   return (
     <Link
       href={pathHref}
-      className={`h-full flex items-end px-4 rounded-b-lg ${
+      className={`h-fit pt-3 flex items-end px-4 rounded-b-lg ${
         isActive(pathHref)
           ? "border-b-4 border-cinza-claro bg-bege-escuro bg-white/80 text-marrom avermelhado"
           : "text-cinza-claro bg-red-300/20"

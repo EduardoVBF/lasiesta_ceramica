@@ -1,4 +1,5 @@
 "use client";
+import BrownButton from "@/components/brownButtom";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
@@ -26,7 +27,7 @@ function PlanSection({
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      className={`relative flex flex-col md:flex-row items-center gap-10 md:gap-16 py-6 px-6 rounded-3xl max-w-[85%] mx-auto shadow-lg bg-[#818b7e7c] ${
+      className={`relative flex flex-col md:flex-row items-center gap-10 md:gap-16 py-6 px-6 rounded-3xl max-w-[85%] mx-auto shadow-lg bg-[#878b85b0] ${
         reverse ? "md:flex-row-reverse" : ""
       }`}
     >
@@ -36,12 +37,7 @@ function PlanSection({
         transition={{ type: "spring", stiffness: 150 }}
         className="relative w-[300px] h-[400px] flex-shrink-0 rounded-2xl overflow-hidden shadow-lg"
       >
-        <Image
-          src={plan.image}
-          alt={plan.alt}
-          fill
-          className="object-cover"
-        />
+        <Image src={plan.image} alt={plan.alt} fill className="object-cover" />
       </motion.div>
 
       {/* Conteúdo */}
@@ -82,18 +78,17 @@ function PlanSection({
         </div>
 
         {/* Botão */}
-        <motion.a
-          href={`https://wa.me/5516991401921?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(
-            plan.title
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(163,92,66,0.3)" }}
-          whileTap={{ scale: 0.97 }}
-          className="inline-block bg-marrom-avermelhado text-white text-[11px] md:text-xs font-medium px-6 py-2.5 rounded-full transition-all duration-300 ease-out text-center"
-        >
-          {plan.buttonText}
-        </motion.a>
+        <BrownButton
+          text={plan.buttonText}
+          onClick={() => {
+            window.open(
+              `https://wa.me/5516991401921?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(
+                plan.title
+              )}`,
+              "_blank"
+            );
+          }}
+        />
       </div>
     </motion.section>
   );

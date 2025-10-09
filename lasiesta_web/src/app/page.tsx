@@ -54,83 +54,100 @@ export default function HomePage() {
         textColor="text-white"
       />
 
-      {/* Manifesto */}
-      <section className="relative py-10 bg-gradient-to-b from-[#f8f4ef] to-bege-claro overflow-hidden">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6 overflow-hidden">
-          {/* Texto */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            className="space-y-6"
-          >
-            <h1 className="text-4xl font-semibold text-marrom-avermelhado">
-              Um convite à pausa
-            </h1>
-            <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
-              Entre o silêncio e o toque do barro, nasce o{" "}
-              <strong>Lasiesta</strong> — um ateliê dedicado à arte da cerâmica
-              manual e à serenidade do processo.
-            </h1>
-            <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
-              Aqui, o tempo desacelera. Cada gesto é um diálogo com a matéria,
-              cada peça, uma memória moldada entre respirações. Criar é voltar à
-              presença.
-            </h1>
-            <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
-              O nome <strong>LaSiesta</strong> vem do espanhol e significa “o
-              descanso depois do almoço” — um lembrete de que o descanso também
-              é parte da criação.
-            </h1>
-          </motion.div>
-
-          {/* Imagem */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            className="relative"
-          >
-            <div className="absolute -inset-4 bg-[#d6c8b9]/30 blur-3xl rounded-full" />
-            <Image
-              src="/image/IMG_0032.JPG"
-              alt="Cerâmica artesanal"
-              width={600}
-              height={400}
-              className="rounded-2xl shadow-lg object-cover relative z-10"
-            />
-          </motion.div>
+      <div className="relative w-full">
+        {/* Imagem de fundo */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <Image
+            src="/image/organic3.jpg"
+            alt="Textura de fundo do ateliê"
+            fill
+            className="object-cover opacity-10 mix-blend-overlay"
+            priority
+          />
         </div>
-      </section>
 
-      {/* Coleções */}
-      <section className="py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
-        <div className="grid md:grid-cols-4 gap-8 my-4">
-          {categories.map((cat, index) => (
+        {/* Manifesto */}
+        <section className="relative z-10 py-10 overflow-hidden">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6">
+            {/* Texto */}
             <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-              className="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1 }}
+              className="space-y-6"
             >
-              <Image
-                src={cat.image}
-                alt={cat.label}
-                width={400}
-                height={400}
-                className="object-cover w-full h-64 transition-transform duration-500 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 flex items-center justify-center text-transparent hover:text-white hover:bg-black/20 transition">
-                <p className="text-2xl font-semibold">{cat.label}</p>
-              </div>
+              <h1 className="text-4xl font-semibold text-marrom-avermelhado">
+                Um convite à pausa
+              </h1>
+              <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
+                Entre o silêncio e o toque do barro, nasce o{" "}
+                <strong>Lasiesta</strong> — um ateliê dedicado à arte da
+                cerâmica manual e à serenidade do processo.
+              </h1>
+              <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
+                Aqui, o tempo desacelera. Cada gesto é um diálogo com a matéria,
+                cada peça, uma memória moldada entre respirações. Criar é voltar
+                à presença.
+              </h1>
+              <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
+                O nome <strong>LaSiesta</strong> vem do espanhol e significa “o
+                descanso depois do almoço” — um lembrete de que o descanso
+                também é parte da criação.
+              </h1>
             </motion.div>
-          ))}
-        </div>
-        <Link href="/products">
-          <BrownButton text="Ver Todos as Peças" onClick={() => {}} />
-        </Link>
-      </section>
+
+            {/* Imagem */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1 }}
+              className="relative"
+            >
+              <div className="absolute -inset-4 bg-[#d6c8b9]/30 blur-3xl rounded-full" />
+              <Image
+                src="/image/IMG_0032.JPG"
+                alt="Cerâmica artesanal"
+                width={600}
+                height={400}
+                className="rounded-2xl shadow-lg object-cover relative z-10"
+              />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Coleções */}
+        <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
+          <div className="grid md:grid-cols-4 gap-8 my-4">
+            {categories.map((cat, index) => (
+              <motion.div
+                key={cat.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2 }}
+                className="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer"
+              >
+                <Image
+                  src={cat.image}
+                  alt={cat.label}
+                  width={400}
+                  height={400}
+                  className="object-cover w-full h-64 transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 flex items-center justify-center text-transparent hover:text-white hover:bg-black/20 transition">
+                  <p className="text-2xl font-semibold">{cat.label}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Botão corrigido */}
+          <div className="mt-8 relative z-20">
+            <Link href="/products">
+              <BrownButton text="Ver Todas as Peças" />
+            </Link>
+          </div>
+        </section>
+      </div>
 
       {/* Seção de Cursos */}
       <section className="bg-marrom-claro py-10 w-full overflow-hidden">
@@ -171,8 +188,20 @@ export default function HomePage() {
       </section>
 
       {/* O Ateliê */}
-      <section className="bg-[#f3eee7] py-10 overflow-hidden">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6">
+      <section className="relative overflow-hidden">
+        {/* Imagem de fundo */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/image/organic1.jpg"
+            alt="Textura de fundo do ateliê"
+            fill
+            className="object-cover opacity-15 mix-blend-overlay"
+            priority
+          />
+        </div>
+
+        {/* Conteúdo */}
+        <div className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6 py-16">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}

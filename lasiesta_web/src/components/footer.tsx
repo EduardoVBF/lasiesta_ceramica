@@ -6,9 +6,9 @@ import { SiWhatsapp } from "react-icons/si";
 export default function Footer() {
   return (
     <footer className="w-full bg-marrom-avermelhado text-bege-claro mt-auto">
-      <div className="mx-auto px-8 py-4 flex gap-10 justify-between w-full">
+      <div className="mx-auto px-8 py-4 flex flex-col md:flex-row gap-10 justify-between w-full">
         {/* Identidade */}
-        <div className="w-fit px-4">
+        <div className="w-full md:w-fit px-4 text-center md:text-left">
           <h2 className="text-2xl font-bold font-playwrite">Lasiesta Cerâmica</h2>
           <p className="mt-2 text-sm text-marrom-avermelhado/80">
             Arte em cerâmica manual
@@ -18,12 +18,12 @@ export default function Footer() {
           </p>
         </div>
 
-        <div className="flex gap-10">
+        <div className="flex flex-col md:flex-row gap-10 w-full md:w-auto">
           {/* Localização */}
-          <div className="w-fit px-4">
+          <div className="w-full md:w-fit px-4 text-center md:text-left">
             <h3 className="text-lg font-semibold mb-3">Localização</h3>
-            <div className="flex items-start space-x-2">
-              <MapPin className="w-5 h-5 mt-1" />
+            <div className="flex flex-col md:flex-row items-center md:items-start space-y-2 md:space-y-0 md:space-x-2">
+              <MapPin className="w-5 h-5" />
               <p className="text-sm leading-relaxed">
                 Rua Santos Pereira, 557 - Cidade Nova, Franca - SP <br />
                 CEP: 14401-130 <br />
@@ -39,15 +39,15 @@ export default function Footer() {
             </div>
           </div>
           {/* Contato */}
-          <div className="w-fit px-4">
+          <div className="w-full md:w-fit px-4 text-center md:text-left">
             <h3 className="text-lg font-semibold mb-3">Contato</h3>
             {/* Telefone */}
-            <div className="flex items-center space-x-2 mb-2">
+            <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
               <Phone className="w-5 h-5" />
               <p className="text-sm">(16) 99140-1921</p>
             </div>
             {/* Instagram */}
-            <div className="flex items-center space-x-2 mb-2">
+            <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
               <Instagram className="w-5 h-5" />
               <a
                 href="https://instagram.com/lasiestaceramica"
@@ -59,7 +59,7 @@ export default function Footer() {
               </a>
             </div>
             {/* Whatsapp */}
-            <div className="flex items-center space-x-2 mb-2">
+            <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
               <SiWhatsapp className="w-5 h-5" />
               <a
                 href="https://wa.me/5516991401921?text=Olá!%20Gostaria%20de%20mais%20informações"
