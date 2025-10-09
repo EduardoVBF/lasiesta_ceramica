@@ -1,6 +1,7 @@
 "use client";
 
 import NotFoundCard from "@/components/notFoundCard";
+import mockProducts from "@/app/utils/mockProducts";
 import React, { useState, useEffect } from "react";
 import BrownButton from "@/components/brownButtom";
 import { useParams } from "next/navigation";
@@ -10,71 +11,32 @@ import Footer from "@/components/footer";
 import Image from "next/image";
 import Link from "next/link";
 
-const handleMockImage = (categoria: string) => {
-  switch (categoria.toLowerCase()) {
-    case "copos":
-      return "/image/IMG_0190.JPG";
-    case "pratos":
-      return "/image/IMG_0036.JPG";
-    case "bowls":
-      return "/image/IMG_0070.JPG";
-    case "tigelas":
-      return "/image/IMG_0229.JPG";
-    case "vasos":
-      return "/image/IMG_0152.JPG";
-    case "canecas":
-      return "/image/IMG_0094.JPG";
-    case "saboneteiras":
-      return "/image/IMG_0094.JPG";
-    case "manteigueiras":
-      return "/image/IMG_0129.JPG";
-    case "bandejas":
-      return "/image/IMG_0023.JPG";
-    default:
-      return "/image/IMG_0065.JPG";
-  }
-};
-
-const products = [
-  {
-    id: 1,
-    nome: "Copo de Cerâmica Rústico",
-    preco: 35.0,
-    cores: [
-      { name: "Bege", hex: "#F5F5DC" },
-      { name: "Marrom", hex: "#964B00" },
-      { name: "Verde Musgo", hex: "#556B2F" },
-    ],
-    categoria: "Copos",
-    dimensoes: "8x10cm",
-    material: "Cerâmica esmaltada",
-    image: handleMockImage("Copos"),
-    destaque: true,
-  },
-];
-
 export default function ProductDetail() {
   const params = useParams();
   const id = params?.id;
 
-  const product = products.find((p) => p.id === Number(id));
+  const product = mockProducts().find((p) => p.id === Number(id));
 
-  const [selectedImage, setSelectedImage] = useState("/image/IMG_0065.JPG");
+  // Estado da imagem selecionada
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  // Atualiza imagem principal quando o produto é carregado
   useEffect(() => {
-    if (product) {
+    if (id && product) {
       setSelectedImage(product.image);
     }
-  }, [product]);
+  }, [id]);
 
+  // Galeria de imagens adicionais
   const additionalImages = [
-    product ? product.image : null,
-    handleMockImage("pratos"),
-    handleMockImage("bowls"),
-    handleMockImage("tigelas"),
-    handleMockImage("vasos"),
-  ];
+    product?.image,
+    "/image/IMG_0036.JPG",
+    "/image/IMG_0070.JPG",
+    "/image/IMG_0229.JPG",
+    "/image/IMG_0152.JPG",
+  ].filter(Boolean); // remove null/undefined
 
+  // Caso produto não exista
   if (!product) {
     return (
       <>
@@ -94,14 +56,16 @@ export default function ProductDetail() {
 
   return (
     <>
-      {/* <HeaderWithBanner
-        src={product.image}
-        alt={product.nome}
-        title={product.nome}
-        description={product.material ?? "Detalhes do produto"}
-      /> */}
       <Header bgColor="bg-[#a35c42]" />
-      <main className="px-6 md:px-12 py-5 flex flex-col items-center bg-marrom-claro relative min-h-screen">
+      <main className="px-6 md:px-12 flex flex-col items-center bg-marrom-claro relative min-h-screen">
+        <Link
+          href="/products"
+          className="bg-white/40 hover:bg-white/50 px-2 w-fit rounded-b-lg flex pb-1 items-center gap-1 self-start pt-3 cursor-pointer z-10"
+        >
+          <ArrowBigLeft size={18} className="text-marrom-avermelhado" />
+          <p className="text-sm font-semibold">Produtos</p>
+        </Link>
+
         {/* Imagem de fundo */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -112,30 +76,29 @@ export default function ProductDetail() {
             priority
           />
         </div>
-        <Link
-          href="/products"
-          className="flex items-center gap-1 w-full my-3 cursor-pointer hover:mr-3 transition z-10"
-        >
-          <ArrowBigLeft size={22} className="text-marrom-avermelhado" />
-          <p>Produtos</p>
-        </Link>
-        <div className="w-[90%] bg-[#def3de60] shadow-lg rounded-2xl overflow-hidden flex flex-col md:flex-row md:gap-10 p-4 z-10">
+
+        {/* Card principal */}
+        <div className="w-[90%] bg-[#def3de60] shadow-lg rounded-2xl overflow-hidden flex flex-col md:flex-row md:gap-10 p-4 z-10 my-5">
           {/* --- Galeria de imagens --- */}
           <div className="w-full flex flex-col md:flex-row gap-4 md:gap-6">
             {/* Imagem principal */}
             <div className="flex-1 relative">
-              <Image
-                src={selectedImage}
-                alt={product.nome}
-                className="w-full h-full object-cover aspect-square rounded-xl shadow-md"
-                width={500}
-                height={500}
-              />
+              {selectedImage ? (
+                <Image
+                  src={selectedImage}
+                  alt={product.nome}
+                  className="w-full h-full object-cover aspect-square rounded-xl shadow-md"
+                  width={500}
+                  height={500}
+                />
+              ) : (
+                <div className="w-full h-full aspect-square bg-gray-100 rounded-xl animate-pulse" />
+              )}
             </div>
 
             {/* Miniaturas */}
             <div className="flex md:flex-col w-full md:w-fit p-2 overflow-x-auto gap-3 justify-center mt-4 md:mt-0">
-              {additionalImages.map((img: string | null, index) => (
+              {additionalImages.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(img)}
@@ -160,41 +123,47 @@ export default function ProductDetail() {
 
           {/* --- Detalhes do produto --- */}
           <div className="w-full flex flex-col justify-between py-4 text-gray-800">
-            <h1 className="text-3xl font-bold mb-4 text-marrom-avermelhado line-clamp-2 leading-relaxed">
-              {product.nome}
-            </h1>
-
-            <p className="text-3xl text-marrom-avermelhado font-semibold mb-6">
-              R$ {product.preco.toFixed(2)}
-            </p>
-
-            <div className="space-y-2 text-base md:text-lg">
-              <p>
-                <strong>Categoria:</strong> {product.categoria}
-              </p>
-              <p>
-                <strong>Dimensões:</strong> {product.dimensoes}
-              </p>
-              <p>
-                <strong>Material:</strong> {product.material}
-              </p>
-            </div>
-
-            <div className="mt-6">
-              <strong className="block mb-2">Cores disponíveis:</strong>
-              <div className="flex items-center gap-2">
-                {product.cores.map((cor) => (
-                  <div
-                    key={cor.hex}
-                    className="w-8 h-8 rounded-full border border-white shadow-sm"
-                    style={{ backgroundColor: cor.hex }}
-                    title={cor.name}
-                  />
-                ))}
+            <div>
+              <h1 className="text-xl lg:text-3xl font-bold mb-4 text-marrom-avermelhado lg:line-clamp-2 leading-relaxed">
+                {product.nome}
+              </h1>
+              <div className="flex space-x-2 text-sm">
+                <p className="text-xs bg-marrom-avermelhado px-2 py-1 rounded-md w-fit text-white">
+                  {product.categoria}
+                </p>
+                <p className="text-xs bg-verde-escuro px-2 py-1 rounded-md w-fit text-white">
+                  {product.material}
+                </p>
               </div>
             </div>
 
-            <BrownButton text="Quero comprar!" />
+            <p className="text-xs lg:text-base text-justify mr-2 my-4">{product.description}</p>
+
+            <div className="flex flex-col gap-2 mb-4">
+              <p className="text-sm">
+                <strong>Dimensões:</strong> {product.dimensoes}
+              </p>
+              <div className="">
+                <strong className="text-sm block mb-1">Cores disponíveis:</strong>
+                <div className="flex items-center gap-2">
+                  {product.cores.map((cor) => (
+                    <div
+                      key={cor.hex}
+                      className="w-8 h-8 rounded-full border border-white shadow-sm"
+                      style={{ backgroundColor: cor.hex }}
+                      title={cor.name}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 mt-4">
+              <p className="text-3xl text-marrom-avermelhado font-semibold">
+                R$ {product.preco.toFixed(2)}
+              </p>
+              <BrownButton text="Quero comprar!" />
+            </div>
           </div>
         </div>
       </main>

@@ -29,7 +29,7 @@ export default function Header({ bgColor }: HeaderProps) {
 
       {/* Botão de menu para mobile */}
       <button
-        className="md:hidden z-20"
+        className="md:hidden z-20 text-verde-escuro"
         onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
       >
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
