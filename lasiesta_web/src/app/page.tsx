@@ -133,7 +133,7 @@ export default function HomePage() {
       </section>
 
       {/* Seção de Cursos */}
-      <section className="bg-[#f8f4ef] py-10 w-full overflow-hidden">
+      <section className="bg-marrom-claro py-10 w-full overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <h1 className="text-4xl font-semibold text-center mb-12">
             Cursos e Experiências
@@ -145,7 +145,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2 }}
-                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all"
+                className="bg-[#818b7e7c] rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all"
               >
                 <Image
                   src={plan.image}
@@ -162,9 +162,6 @@ export default function HomePage() {
                   <p className="font-semibold text-marrom-avermelhado mt-3">
                     {plan.price}
                   </p>
-                  {/* <button className="mt-4 px-6 py-2 bg-marrom-avermelhado text-white rounded-full hover:bg-marrom-avermelhado/90 transition cursor-pointer">
-                    Saiba Mais
-                  </button> */}
                   <BrownButton text="Saiba Mais" onClick={() => {}} />
                 </div>
               </motion.div>
