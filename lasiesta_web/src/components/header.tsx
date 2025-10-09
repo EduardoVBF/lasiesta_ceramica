@@ -1,7 +1,6 @@
 "use client";
 import { House, Amphora, LibraryBig } from "lucide-react";
 import HeaderMenuMobile from "./headerMenuMobile";
-import { usePathname } from "next/navigation";
 import { GiFireBowl } from "react-icons/gi";
 import HeaderButton from "./headerButton";
 import React, { useState } from "react";
@@ -9,10 +8,8 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
 export default function Header() {
-  const pathname = usePathname();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isActive = (path: string) => pathname === path;
 
   return (
     <header className="w-full flex justify-between bg-transparent px-6 ">
