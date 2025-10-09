@@ -72,7 +72,7 @@ export default function Studio() {
         </div>
 
         {/* BLOCO 2 — Faixa panorâmica com texto central */}
-        <div className="relative h-[350px] lg:h-[550px] overflow-hidden rounded-3xl shadow-xl mx-10">
+        <div className="relative h-[350px] lg:h-[550px] overflow-hidden shadow-xl mx-0">
           <Image
             src="/image/IMG_0011.JPG"
             alt="Ateliê panorâmico"
@@ -163,7 +163,7 @@ export default function Studio() {
         </div>
 
         {/* BLOCO 4 — Propósito (imagem imersiva + texto sobreposto) */}
-        <div className="relative h-[600px] overflow-hidden rounded-3xl shadow-2xl mx-10">
+        <div className="relative h-[350px] lg:h-[550px] overflow-hidden shadow-2xl mx-0">
           <Image
             src="/image/IMG_0032.JPG"
             alt="Detalhes da cerâmica"
@@ -177,10 +177,10 @@ export default function Studio() {
             transition={{ duration: 1 }}
             className="absolute inset-0 flex flex-col justify-center items-center text-center text-white space-y-6 px-6"
           >
-            <h2 className="text-4xl font-semibold">
+            <h1 className="text-2xl lg:text-4xl font-semibold">
               Mais do que peças, memórias
-            </h2>
-            <p className="max-w-3xl leading-relaxed text-lg">
+            </h1>
+            <p className="max-w-3xl leading-relaxed text-sm lg:text-lg">
               Cada criação carrega instantes, silêncios e gestos. O barro
               transcende a matéria e se torna uma presença — um fragmento de
               tempo que pode ser sentido.
@@ -218,7 +218,7 @@ export default function Studio() {
               alt="Ceramista no ateliê"
               width={300}
               height={400}
-              className="rounded-3xl object-cover aspect-[3/4] shadow-2xl"
+              className="hidden lg:block rounded-3xl object-cover aspect-[3/4] shadow-2xl"
             />
             <Image
               src="/image/IMG_0188.JPG"

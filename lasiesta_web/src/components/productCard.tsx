@@ -85,7 +85,7 @@ export default function ProductCard({
           </span>
 
           {/* Categoria + estoque */}
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-3 flex items-center gap-1">
             {product.categoria && (
               <span className="text-xs bg-marrom-avermelhado px-2 py-1 rounded-md">
                 {product.categoria}
