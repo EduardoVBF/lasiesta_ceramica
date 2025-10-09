@@ -1,10 +1,14 @@
 "use client";
-import HeaderWithBanner from "@/components/headerWithBanner";
+
+import NotFoundCard from "@/components/notFoundCard";
+import React, { useState, useEffect } from "react";
 import BrownButton from "@/components/brownButtom";
 import { useParams } from "next/navigation";
+import { ArrowBigLeft } from "lucide-react";
+import Header from "@/components/header";
 import Footer from "@/components/footer";
-import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const handleMockImage = (categoria: string) => {
   switch (categoria.toLowerCase()) {
@@ -50,36 +54,74 @@ const products = [
 ];
 
 export default function ProductDetail() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id;
+
   const product = products.find((p) => p.id === Number(id));
 
-  const [selectedImage, setSelectedImage] = useState(
-    product?.image ?? "/image/IMG_0065.JPG"
-  );
+  const [selectedImage, setSelectedImage] = useState("/image/IMG_0065.JPG");
 
-  if (!product) return <p>Produto não encontrado.</p>;
+  useEffect(() => {
+    if (product) {
+      setSelectedImage(product.image);
+    }
+  }, [product]);
 
   const additionalImages = [
-    product.image,
-    "/image/IMG_0036.JPG",
-    "/image/IMG_0070.JPG",
-    "/image/IMG_0229.JPG",
-    "/image/IMG_0152.JPG",
+    product ? product.image : null,
+    handleMockImage("pratos"),
+    handleMockImage("bowls"),
+    handleMockImage("tigelas"),
+    handleMockImage("vasos"),
   ];
+
+  if (!product) {
+    return (
+      <>
+        <Header bgColor="bg-[#a35c42]" />
+        <div className="min-h-[500px] flex items-center justify-center">
+          <NotFoundCard
+            message="Produto não encontrado."
+            hasButton={true}
+            buttonText="Voltar"
+            buttonSrc="/products"
+          />
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
-      <HeaderWithBanner
+      {/* <HeaderWithBanner
         src={product.image}
         alt={product.nome}
         title={product.nome}
         description={product.material ?? "Detalhes do produto"}
-      />
-
-      <main className="px-6 md:px-12 py-10 flex flex-col items-center bg-marrom-claro">
-        <div className="max-w-6xl w-full bg-[#def3de82] shadow-lg rounded-2xl overflow-hidden flex flex-col md:flex-row md:gap-10 p-4">
+      /> */}
+      <Header bgColor="bg-[#a35c42]" />
+      <main className="px-6 md:px-12 py-5 flex flex-col items-center bg-marrom-claro relative min-h-screen">
+        {/* Imagem de fundo */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/image/organic2.jpg"
+            alt="Textura de fundo do ateliê"
+            fill
+            className="object-cover opacity-10 mix-blend-overlay"
+            priority
+          />
+        </div>
+        <Link
+          href="/products"
+          className="flex items-center gap-1 w-full my-3 cursor-pointer hover:mr-3 transition z-10"
+        >
+          <ArrowBigLeft size={22} className="text-marrom-avermelhado" />
+          <p>Produtos</p>
+        </Link>
+        <div className="w-[90%] bg-[#def3de60] shadow-lg rounded-2xl overflow-hidden flex flex-col md:flex-row md:gap-10 p-4 z-10">
           {/* --- Galeria de imagens --- */}
-          <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+          <div className="w-full flex flex-col md:flex-row gap-4 md:gap-6">
             {/* Imagem principal */}
             <div className="flex-1 relative">
               <Image
@@ -93,7 +135,7 @@ export default function ProductDetail() {
 
             {/* Miniaturas */}
             <div className="flex md:flex-col w-full md:w-fit p-2 overflow-x-auto gap-3 justify-center mt-4 md:mt-0">
-              {additionalImages.map((img, index) => (
+              {additionalImages.map((img: string | null, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(img)}
@@ -117,7 +159,7 @@ export default function ProductDetail() {
           </div>
 
           {/* --- Detalhes do produto --- */}
-          <div className="flex-1 md:w-1/2 flex flex-col justify-between py-4 text-gray-800">
+          <div className="w-full flex flex-col justify-between py-4 text-gray-800">
             <h1 className="text-3xl font-bold mb-4 text-marrom-avermelhado line-clamp-2 leading-relaxed">
               {product.nome}
             </h1>
@@ -156,7 +198,6 @@ export default function ProductDetail() {
           </div>
         </div>
       </main>
-
       <Footer />
     </>
   );

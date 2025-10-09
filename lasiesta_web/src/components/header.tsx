@@ -7,12 +7,16 @@ import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
-export default function Header() {
+type HeaderProps = {
+  bgColor?: string;
+};
+
+export default function Header({ bgColor }: HeaderProps) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 
   return (
-    <header className="w-full flex justify-between bg-transparent px-6 ">
+    <header className={`w-full flex justify-between ${bgColor} px-6`}>
       <Image src="/image/lasiesta_icon.png" alt="Logo" width={60} height={60} />
 
       {/* Menu para dispositivos maiores */}

@@ -21,7 +21,7 @@ export default function HeaderWithBanner({
     <div className="relative w-full flex flex-col items-center">
       {/* Header fixo no topo */}
       <div className="absolute top-0 z-20 w-full">
-        <Header />
+        <Header bgColor="bg-transparent"/>
       </div>
 
       {/* Imagem e overlay */}
