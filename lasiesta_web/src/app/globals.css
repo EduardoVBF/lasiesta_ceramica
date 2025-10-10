@@ -18,12 +18,19 @@
   --font-secondary: "Caveat", cursive;
   --font-geist-mono: "Roboto Mono", monospace;
   --font-playwrite: "Playwrite AU QLD", "Playwrite HR", serif;
+
+  --verde-escuro: #a1a692;
+  --cinza-claro: #d6d9cc;
+  --bege-claro: #f2e0d0;
+  --marrom-claro: #d6b8a5;
+  --marrom-avermelhado: #a35c42;
+  --rosa-queimado: #bf7b6b;
 }
 
 /* ================================
    CONFIGURAÇÃO DE TEMA
 ================================ */
-@theme inline {
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-primary);
