@@ -34,7 +34,7 @@ export default function ProductDetail() {
     "/image/IMG_0070.JPG",
     "/image/IMG_0229.JPG",
     "/image/IMG_0152.JPG",
-  ].filter(Boolean); // remove null/undefined
+  ].filter(Boolean) as string[]; // remove null/undefined
 
   // Caso produto não exista
   if (!product) {
