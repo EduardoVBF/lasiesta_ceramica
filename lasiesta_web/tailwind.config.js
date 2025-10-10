@@ -14,6 +14,12 @@ module.exports = {
         'marrom-avermelhado': '#a35c42',
         'rosa-queimado': '#bf7b6b',
       },
+      fontFamily: {
+        primary: ["Poppins", "sans-serif"],
+        secondary: ["Caveat", "cursive"],
+        mono: ["Roboto Mono", "monospace"],
+        playwrite: ["Playwrite AU QLD", "Playwrite HR", "serif"],
+      },
     },
   },
   plugins: [],
