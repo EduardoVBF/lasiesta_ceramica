@@ -13,11 +13,13 @@
 @font-face {
   font-family: "Playwrite AU QLD";
   src: url("/fonts/Playwrite-AU-QLD.ttf") format("truetype");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Playwrite HR";
   src: url("/fonts/Playwrite-HR.ttf") format("truetype");
+  font-display: swap;
 }
 
 /* ================================
