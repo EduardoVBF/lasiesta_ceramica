@@ -101,7 +101,7 @@ export default function ProductDetail() {
               {additionalImages.map((img, index) => (
                 <button
                   key={index}
-                  onClick={() => setSelectedImage(img)}
+                  onClick={() => img && setSelectedImage(img)}
                   className={`rounded-xl overflow-hidden transition-all duration-200 min-w-[90px] min-h-[90px] ${
                     selectedImage === img
                       ? "ring-2 ring-[#a35c42] ring-offset-2 ring-offset-[#dad6c2]"
