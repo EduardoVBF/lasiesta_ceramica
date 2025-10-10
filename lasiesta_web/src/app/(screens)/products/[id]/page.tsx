@@ -137,14 +137,18 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <p className="text-xs lg:text-base text-justify mr-2 my-4">{product.description}</p>
+            <p className="text-xs lg:text-base text-justify mr-2 my-4">
+              {product.description}
+            </p>
 
             <div className="flex flex-col gap-2 mb-4">
               <p className="text-sm">
                 <strong>Dimensões:</strong> {product.dimensoes}
               </p>
               <div className="">
-                <strong className="text-sm block mb-1">Cores disponíveis:</strong>
+                <strong className="text-sm block mb-1">
+                  Cores disponíveis:
+                </strong>
                 <div className="flex items-center gap-2">
                   {product.cores.map((cor) => (
                     <div
@@ -162,7 +166,17 @@ export default function ProductDetail() {
               <p className="text-3xl text-marrom-avermelhado font-semibold">
                 R$ {product.preco.toFixed(2)}
               </p>
-              <BrownButton text="Quero comprar!" />
+              <BrownButton
+                text="Quero comprar!"
+                onClick={() => {
+                  window.open(
+                    `https://wa.me/5516991401921?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(
+                      product.nome
+                    )}`,
+                    "_blank"
+                  );
+                }}
+              />
             </div>
           </div>
         </div>

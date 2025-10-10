@@ -174,7 +174,9 @@ export default function HomePage() {
                   <p className="font-semibold text-marrom-avermelhado mt-3">
                     {plan.price}
                   </p>
-                  <BrownButton text="Saiba Mais" onClick={() => {}} />
+                  <Link href="/classes">
+                    <BrownButton text="Saiba Mais" />
+                  </Link>
                 </div>
               </motion.div>
             ))}
