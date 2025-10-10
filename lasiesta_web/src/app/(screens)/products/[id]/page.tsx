@@ -29,7 +29,7 @@ export default function ProductDetail() {
 
   // Galeria de imagens adicionais
   const additionalImages = [
-    product?.image,
+    product?.image || "/image/IMG_0036.JPG",
     "/image/IMG_0036.JPG",
     "/image/IMG_0070.JPG",
     "/image/IMG_0229.JPG",
