@@ -1,5 +1,6 @@
 import { authMiddleware } from "../../shared/middlewares/auth";
 import { adminOnly } from "../../shared/middlewares/adminOnly";
+import { registerController } from "./auth.controller";
 import { loginController } from "./auth.controller";
 import { FastifyInstance } from "fastify";
 // import { loginSchema } from "./auth.schemas";
@@ -14,14 +15,13 @@ import { FastifyInstance } from "fastify";
 // }
 
 export async function authRoutes(app: FastifyInstance) {
-  app.post('/auth/login', loginController);
+  app.post("/auth/login", loginController);
 
-  app.get('/auth/admin-test',
+  app.post(
+    "/auth/register",
     {
       preHandler: [authMiddleware, adminOnly],
     },
-    async () => {
-      return { message: 'Acesso concedido: você é um administrador!' };
-    }
-  )
+    registerController
+  );
 }
