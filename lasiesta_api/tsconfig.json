@@ -3,13 +3,15 @@
     "target": "ES2020",
     // "module": "Node16",
     // "moduleResolution": "node16",
+
+    // USANDO CommonJS PORQUE TEM PROBLEMAS COM O NODE16 EM AMBIENTE DE PRODUÇÃO
     "module": "CommonJS",
     "moduleResolution": "node10",
     "rootDir": "src",
     "outDir": "dist",
 
     "strict": true,
-    "ignoreDeprecations": "6.0",
+    // "ignoreDeprecations": "6.0",
     
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

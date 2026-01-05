@@ -1,12 +1,17 @@
+
+
+// Criar o cliente do Prisma com o provedor JavaScript
 generator client {
   provider = "prisma-client-js"
 }
 
+// Configurar a fonte de dados para PostgreSQL
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+// MODELS PARA MIGRAÇÕES E INTERAÇÕES COM O BANCO DE DADOS
 model User {
   id            String   @id @default(uuid())
   firstName     String
