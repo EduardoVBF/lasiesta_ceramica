@@ -30,7 +30,7 @@ export class CategoriesService {
       where: { id },
     });
 
-    if (!category || !category.isActive) {
+    if (!category) {
       throw new Error("Categoria não encontrada.");
     }
     return category;
@@ -42,7 +42,7 @@ export class CategoriesService {
       where: { id },
     });
 
-    if (!category || !category.isActive) {
+    if (!category) {
       throw new Error("Categoria não encontrada.");
     }
 
