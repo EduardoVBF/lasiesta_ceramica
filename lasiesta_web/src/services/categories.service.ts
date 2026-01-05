@@ -9,6 +9,6 @@ export type Category = {
 };
 
 export async function getAdminCategories() {
-  const response = await api.get('/admin/categories');
+  const response = await api.get('/categories');
   return response.data;
 }
