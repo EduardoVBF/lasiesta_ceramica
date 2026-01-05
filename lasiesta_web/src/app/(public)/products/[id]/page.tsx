@@ -1,13 +1,13 @@
 "use client";
 
-import NotFoundCard from "@/components/notFoundCard";
+import NotFoundCard from "@/components/ui/notFoundCard";
 import mockProducts from "@/app/utils/mockProducts";
 import React, { useState, useEffect } from "react";
-import BrownButton from "@/components/brownButtom";
+import BrownButton from "@/components/ui/brownButtom";
 import { useParams } from "next/navigation";
 import { ArrowBigLeft } from "lucide-react";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 import Image from "next/image";
 import Link from "next/link";
 

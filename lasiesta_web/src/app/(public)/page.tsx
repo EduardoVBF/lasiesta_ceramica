@@ -1,13 +1,13 @@
 "use client";
 
-import HeaderWithBanner from "@/components/headerWithBanner";
-import BrownButton from "@/components/brownButtom";
-import Footer from "@/components/footer";
+import HeaderWithBanner from "@/components/layout/headerWithBanner";
+import BrownButton from "@/components/ui/brownButtom";
+import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import CarouselComponent from "@/components/carousel";
+import CarouselComponent from "@/components/layout/carousel";
 
 const categories = [
   { id: "copos", label: "Copos", image: "/image/IMG_0190.JPG" },

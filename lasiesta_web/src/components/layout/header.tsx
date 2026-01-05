@@ -2,7 +2,7 @@
 import { House, Amphora, LibraryBig } from "lucide-react";
 import HeaderMenuMobile from "./headerMenuMobile";
 import { GiFireBowl } from "react-icons/gi";
-import HeaderButton from "./headerButton";
+import HeaderButton from "../ui/headerButton";
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";

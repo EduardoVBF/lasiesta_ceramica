@@ -1,7 +1,7 @@
 "use client";
-import HeaderWithBanner from "@/components/headerWithBanner";
-import PlansCard from "@/components/plansCard";
-import Footer from "@/components/footer";
+import HeaderWithBanner from "@/components/layout/headerWithBanner";
+import PlansCard from "@/components/cards/plansCard";
+import Footer from "@/components/layout/footer";
 import Image from "next/image";
 import React from "react";
 

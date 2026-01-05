@@ -1,6 +1,6 @@
 "use client";
-import HeaderWithBanner from "@/components/headerWithBanner";
-import Footer from "@/components/footer";
+import HeaderWithBanner from "@/components/layout/headerWithBanner";
+import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";

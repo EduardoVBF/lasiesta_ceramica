@@ -1,8 +1,8 @@
 "use client";
-import HeaderWithBanner from "@/components/headerWithBanner";
+import HeaderWithBanner from "@/components/layout/headerWithBanner";
 import mockProducts from "@/app/utils/mockProducts";
-import ProductCard from "@/components/productCard";
-import Footer from "@/components/footer";
+import ProductCard from "@/components/cards/productCard";
+import Footer from "@/components/layout/footer";
 import React, { useState } from "react";
 
 const products = mockProducts();

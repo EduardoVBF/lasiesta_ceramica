@@ -1,5 +1,5 @@
 "use client";
-import BrownButton from "@/components/brownButtom";
+import BrownButton from "@/components/ui/brownButtom";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
