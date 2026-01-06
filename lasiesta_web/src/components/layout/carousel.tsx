@@ -46,7 +46,7 @@ export default function CarouselComponent() {
 
   return (
     <div className="relative">
-      {/* Header fixo no topo */}
+      {/* Header fixo no topo - TRANSPARENTE */}
       <div className="absolute top-0 z-20 w-full">
         <Header bgColor="bg-transparent" />
       </div>

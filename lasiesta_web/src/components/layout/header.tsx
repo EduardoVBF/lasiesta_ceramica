@@ -1,15 +1,15 @@
 "use client";
 import { House, Amphora, LibraryBig } from "lucide-react";
 import HeaderMenuMobile from "./headerMenuMobile";
-import { GiFireBowl } from "react-icons/gi";
 import HeaderButton from "../ui/headerButton";
+import { GiFireBowl } from "react-icons/gi";
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
-type HeaderProps = {
-  bgColor?: string;
-};
+interface HeaderProps {
+  bgColor: string;
+}
 
 export default function Header({ bgColor }: HeaderProps) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);

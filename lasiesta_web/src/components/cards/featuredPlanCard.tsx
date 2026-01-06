@@ -25,27 +25,29 @@ export default function FeaturedPlanCard({
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.2 }}
-      className="bg-[#818b7e7c] rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all"
+      className="bg-[#818b7e7c] rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all flex flex-col justify-between"
     >
-      <Image
-        src={plan.image}
-        alt={plan.title}
-        width={500}
-        height={300}
-        className="w-full h-56 object-cover"
-      />
-      <div className="p-6 space-y-3">
-        <h3 className="text-2xl font-semibold">{plan.title}</h3>
-        <p className="text-marrom-avermelhado/80 leading-relaxed">
-          {plan.description}
-        </p>
-        <p className="font-semibold text-marrom-avermelhado mt-3">
-          {plan.price}
-        </p>
-        <Link href="/classes">
-          <BrownButton text="Saiba Mais" />
-        </Link>
+      <div className="flex flex-col">
+        <Image
+          src={plan.image}
+          alt={plan.title}
+          width={500}
+          height={300}
+          className="w-full h-56 object-cover"
+        />
+        <div className="p-6 space-y-3">
+          <h3 className="text-2xl font-semibold">{plan.title}</h3>
+          <p className="text-marrom-avermelhado/80 leading-relaxed">
+            {plan.description}
+          </p>
+          <p className="font-semibold text-marrom-avermelhado mt-3">
+            {plan.price}
+          </p>
+        </div>
       </div>
+      <Link href="/classes" className="block mx-6 mb-6">
+        <BrownButton text="Saiba Mais" />
+      </Link>
     </motion.div>
   );
 }

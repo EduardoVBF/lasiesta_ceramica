@@ -4,24 +4,26 @@ import Image from "next/image";
 import Header from "./header";
 import React from "react";
 
+interface HeaderWithBannerProps {
+  src: string;
+  alt: string;
+  title: string;
+  description: string;
+  textColor?: string;
+}
+
 export default function HeaderWithBanner({
   src,
   alt,
   title,
   description,
   textColor = "text-white",
-}: {
-  src: string;
-  alt: string;
-  title: string;
-  description: string;
-  textColor?: string;
-}) {
+}: HeaderWithBannerProps) {
   return (
     <div className="relative w-full flex flex-col items-center">
-      {/* Header fixo no topo */}
+      {/* Header fixo no topo - TRANSPARENTE */}
       <div className="absolute top-0 z-20 w-full">
-        <Header bgColor="bg-transparent"/>
+        <Header bgColor="bg-transparent" />
       </div>
 
       {/* Imagem e overlay */}

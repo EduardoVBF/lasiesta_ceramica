@@ -1,5 +1,6 @@
 "use client";
 import HeaderWithBanner from "@/components/layout/headerWithBanner";
+import BackgroundImage from "@/components/layout/backgroundImage";
 import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -17,17 +18,12 @@ export default function Studio() {
       />
 
       <section className="w-full pb-10 space-y-8 pt-5 relative">
-        {/* Imagem de fundo */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/image/organic2.jpg"
-            alt="Textura de fundo do ateliê"
-            fill
-            className="object-cover opacity-15 mix-blend-overlay"
-            priority
-          />
-        </div>
-        
+        <BackgroundImage
+          src="/image/organic2.jpg"
+          alt="Textura de fundo do ateliê"
+          opacity={15}
+        />
+
         {/* BLOCO 1 — História (imagens próximas e texto ao lado) */}
         <div className="grid md:grid-cols-2 gap-8 items-center mx-10">
           <motion.div

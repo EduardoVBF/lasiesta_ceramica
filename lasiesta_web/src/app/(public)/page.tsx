@@ -1,15 +1,14 @@
 "use client";
-
-import HeaderWithBanner from "@/components/layout/headerWithBanner";
+import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
+import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
+import BackgroundImage from "@/components/layout/backgroundImage";
+import CarouselComponent from "@/components/layout/carousel";
 import BrownButton from "@/components/ui/brownButtom";
 import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import CarouselComponent from "@/components/layout/carousel";
-import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
-import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
 
 const categories = [
   { id: "copos", label: "Copos", image: "/image/IMG_0190.JPG" },
@@ -52,16 +51,11 @@ export default function HomePage() {
       <CarouselComponent />
 
       <div className="relative w-full">
-        {/* Imagem de fundo */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <Image
-            src="/image/organic3.jpg"
-            alt="Textura de fundo do ateliê"
-            fill
-            className="object-cover opacity-10 mix-blend-overlay"
-            priority
-          />
-        </div>
+        <BackgroundImage
+          src="/image/organic3.jpg"
+          alt="Textura de fundo do ateliê"
+          opacity={10}
+        />
 
         {/* Manifesto */}
         <section className="relative z-10 py-10 overflow-hidden">
@@ -122,7 +116,7 @@ export default function HomePage() {
 
           <div className="mt-8 relative z-20">
             <Link href="/products">
-              <BrownButton text="Ver Todas as Peças" />
+              <BrownButton text="Ver Todas as Peças" maxWidth="max-w-fit" />
             </Link>
           </div>
         </section>
@@ -144,16 +138,11 @@ export default function HomePage() {
 
       {/* O Ateliê */}
       <section className="relative overflow-hidden">
-        {/* Imagem de fundo */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/image/organic1.jpg"
-            alt="Textura de fundo do ateliê"
-            fill
-            className="object-cover opacity-15 mix-blend-overlay"
-            priority
-          />
-        </div>
+        <BackgroundImage
+          src="/image/organic1.jpg"
+          alt="Textura de fundo do ateliê"
+          opacity={15}
+        />
 
         {/* Conteúdo */}
         <div className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6 py-16">
@@ -174,7 +163,7 @@ export default function HomePage() {
               instante, de uma pausa, de um toque que se torna arte.
             </h1>
             <Link href="/studio">
-              <BrownButton text="Conheça o Ateliê" onClick={() => {}} />
+              <BrownButton text="Conheça o Ateliê" maxWidth="max-w-fit" />
             </Link>
           </motion.div>
 

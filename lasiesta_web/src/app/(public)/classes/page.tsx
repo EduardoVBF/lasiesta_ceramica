@@ -1,8 +1,8 @@
 "use client";
 import HeaderWithBanner from "@/components/layout/headerWithBanner";
+import BackgroundImage from "@/components/layout/backgroundImage";
 import PlansCard from "@/components/cards/plansCard";
 import Footer from "@/components/layout/footer";
-import Image from "next/image";
 import React from "react";
 
 const plans = [
@@ -54,16 +54,11 @@ export default function Classes() {
 
       {/* Planos de assinatura */}
       <section className="relative w-full flex flex-col gap-10 pb-20 pt-5">
-        {/* Imagem de fundo */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/image/organic3.jpg"
-            alt="Textura de fundo do ateliê"
-            fill
-            className="object-cover opacity-20 mix-blend-overlay"
-            priority
-          />
-        </div>
+        <BackgroundImage
+          src="/image/organic3.jpg"
+          alt="Textura de fundo do ateliê"
+          opacity={20}
+        />
 
         {plans.map((plan) => (
           <PlansCard key={plan.id} plan={plan} reverse={plan.id % 2 === 0} />

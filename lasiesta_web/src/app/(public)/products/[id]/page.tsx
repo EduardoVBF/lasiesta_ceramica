@@ -1,13 +1,13 @@
 "use client";
-
+import BackgroundImage from "@/components/layout/backgroundImage";
 import NotFoundCard from "@/components/ui/notFoundCard";
+import BrownButton from "@/components/ui/brownButtom";
 import mockProducts from "@/app/utils/mockProducts";
 import React, { useState, useEffect } from "react";
-import BrownButton from "@/components/ui/brownButtom";
-import { useParams } from "next/navigation";
-import { ArrowBigLeft } from "lucide-react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { useParams } from "next/navigation";
+import { ArrowBigLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -15,10 +15,8 @@ export default function ProductDetail() {
   const params = useParams();
   const id = params?.id;
 
-  const product = mockProducts().find((p) => p.id === Number(id));
-
-  // Estado da imagem selecionada
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const product = mockProducts().find((p) => p.id === Number(id));
 
   // Atualiza imagem principal quando o produto é carregado
   useEffect(() => {
@@ -34,7 +32,7 @@ export default function ProductDetail() {
     "/image/IMG_0070.JPG",
     "/image/IMG_0229.JPG",
     "/image/IMG_0152.JPG",
-  ].filter(Boolean) as string[]; // remove null/undefined
+  ].filter(Boolean) as string[];
 
   // Caso produto não exista
   if (!product) {
@@ -66,16 +64,11 @@ export default function ProductDetail() {
           <p className="text-sm font-semibold">Produtos</p>
         </Link>
 
-        {/* Imagem de fundo */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/image/organic2.jpg"
-            alt="Textura de fundo do ateliê"
-            fill
-            className="object-cover opacity-10 mix-blend-overlay"
-            priority
-          />
-        </div>
+        <BackgroundImage
+          src="/image/organic2.jpg"
+          alt="Textura de fundo do ateliê"
+          opacity={10}
+        />
 
         {/* Card principal */}
         <div className="w-[90%] bg-[#def3de60] shadow-lg rounded-2xl overflow-hidden flex flex-col md:flex-row md:gap-10 p-4 z-10 my-5">

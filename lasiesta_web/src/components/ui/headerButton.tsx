@@ -3,17 +3,18 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import React from "react";
 
+interface HeaderButtonProps {
+  pathHref: string;
+  label: string;
+  Icon: React.ElementType;
+}
+
 export default function HeaderButton({
   pathHref,
   label,
   Icon,
-}: {
-  pathHref: string;
-  label: string;
-  Icon: React.ElementType;
-}) {
+}: HeaderButtonProps) {
   const pathname = usePathname();
-
   const isActive = (path: string) => pathname === path;
 
   return (
