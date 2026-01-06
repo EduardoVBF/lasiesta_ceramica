@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import CarouselComponent from "@/components/layout/carousel";
+import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
+import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
 
 const categories = [
   { id: "copos", label: "Copos", image: "/image/IMG_0190.JPG" },
@@ -18,7 +20,7 @@ const categories = [
 
 const plans = [
   {
-    id: 1,
+    id: "1",
     title: "Aula Experimental",
     description:
       "Um primeiro contato com o barro, leve e intuitivo. Você aprenderá o básico da modelagem e levará sua primeira peça feita à mão.",
@@ -26,7 +28,7 @@ const plans = [
     image: "/image/pexels-1.jpg",
   },
   {
-    id: 2,
+    id: "2",
     title: "Workshop Intensivo",
     description:
       "Três encontros imersivos para explorar técnicas, cores e texturas. Um mergulho criativo e transformador no universo cerâmico.",
@@ -34,7 +36,7 @@ const plans = [
     image: "/image/pexels-5.jpg",
   },
   {
-    id: 3,
+    id: "3",
     title: "Plano Mensal",
     description:
       "Aulas semanais, acompanhamento contínuo e muita experimentação. Ideal para quem quer tornar a cerâmica parte da rotina.",
@@ -114,28 +116,10 @@ export default function HomePage() {
         <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
           <div className="grid md:grid-cols-4 gap-8 my-4">
             {categories.map((cat, index) => (
-              <motion.div
-                key={cat.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
-                className="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer"
-              >
-                <Image
-                  src={cat.image}
-                  alt={cat.label}
-                  width={400}
-                  height={400}
-                  className="object-cover w-full h-64 transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 flex items-center justify-center text-transparent hover:text-white hover:bg-black/20 transition">
-                  <p className="text-2xl font-semibold">{cat.label}</p>
-                </div>
-              </motion.div>
+              <FeaturedCategoryCard cat={cat} index={index} key={index} />
             ))}
           </div>
 
-          {/* Botão corrigido */}
           <div className="mt-8 relative z-20">
             <Link href="/products">
               <BrownButton text="Ver Todas as Peças" />
@@ -152,33 +136,7 @@ export default function HomePage() {
           </h1>
           <div className="grid md:grid-cols-3 gap-12">
             {plans.map((plan, index) => (
-              <motion.div
-                key={plan.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
-                className="bg-[#818b7e7c] rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all"
-              >
-                <Image
-                  src={plan.image}
-                  alt={plan.title}
-                  width={500}
-                  height={300}
-                  className="w-full h-56 object-cover"
-                />
-                <div className="p-6 space-y-3">
-                  <h3 className="text-2xl font-semibold">{plan.title}</h3>
-                  <p className="text-marrom-avermelhado/80 leading-relaxed">
-                    {plan.description}
-                  </p>
-                  <p className="font-semibold text-marrom-avermelhado mt-3">
-                    {plan.price}
-                  </p>
-                  <Link href="/classes">
-                    <BrownButton text="Saiba Mais" />
-                  </Link>
-                </div>
-              </motion.div>
+              <FeaturedPlanCard plan={plan} index={index} key={index} />
             ))}
           </div>
         </div>

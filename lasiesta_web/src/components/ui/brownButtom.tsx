@@ -6,15 +6,15 @@ interface BrownButtonProps {
   onClick?: () => void;
 }
 
-const BrownButton: React.FC<BrownButtonProps> = ({ text, onClick }) => {
+export default function BrownButton({ text, onClick }: BrownButtonProps) {
   return (
     <button
-      className="px-6 py-2 bg-[#a35c42] text-white rounded-full hover:bg-[#bb6d5b] transition cursor-pointer text-sm hover:shadow-lg hover:transform hover:scale-[1.01] z-20"
       onClick={onClick}
+      className="px-6 py-2 bg-[#a35c42] text-white rounded-full rounded-full
+                 hover:bg-[#bb6d5b] transition cursor-pointer text-sm
+                 hover:shadow-lg hover:scale-[1.01] z-20"
     >
       {text}
     </button>
   );
-};
-
-export default BrownButton;
+}
