@@ -38,6 +38,8 @@ const handler = NextAuth({
       if (user) {
         token.accessToken = (user as any).accessToken;
         token.role = (user as any).role;
+        token.firstName = (user as any).firstName;
+        token.lastName = (user as any).lastName;
       }
       return token;
     },
@@ -45,6 +47,8 @@ const handler = NextAuth({
     async session({ session, token }) {
         session.accessToken = token.accessToken;
         session.user.role = token.role as string;
+        session.user.firstName = token.firstName as string;
+        session.user.lastName = token.lastName as string;
       return session;
     },
   },

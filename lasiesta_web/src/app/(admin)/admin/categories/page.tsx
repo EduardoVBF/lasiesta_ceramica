@@ -23,12 +23,14 @@ export default function AdminCategoriesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Categorias</h1>
+        <h1 className="text-3xl font-bold">Categorias</h1>
 
         <button className="bg-[#a35c42] text-white px-4 py-2 rounded hover:bg-[#8f4f38]">
           Nova categoria
         </button>
       </div>
+
+      <p className='mb-6'>Nesta seção, você pode gerenciar as categorias dos produtos do ateliê.</p>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         <table className="w-full text-sm">
