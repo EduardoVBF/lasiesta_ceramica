@@ -1,6 +1,6 @@
 'use client';
 
-type Product = {
+interface Product {
   id: number;
   nome: string;
   preco: number;
@@ -10,7 +10,7 @@ type Product = {
   material: string;
   image: string;
   destaque: boolean;
-  description: string; // Added description field
+  description: string;
 };
 
 export default function mockProducts(): Product[] {

@@ -38,8 +38,8 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <>
-        <Header bgColor="bg-[#a35c42]" />
-        <div className="min-h-[500px] flex items-center justify-center">
+        <Header bgColor="bg-[#a35c42c7]" />
+        <div className="min-h-[500px] flex items-center justify-center bg-[#e2b19f8e]">
           <NotFoundCard
             message="Produto não encontrado."
             hasButton={true}
@@ -54,8 +54,9 @@ export default function ProductDetail() {
 
   return (
     <>
-      <Header bgColor="bg-[#a35c42]" />
+      <Header bgColor="bg-[#a35c42c7]" />
       <main className="px-6 md:px-12 flex flex-col items-center bg-marrom-claro relative min-h-screen">
+        {/* Link de volta para produtos */}
         <Link
           href="/products"
           className="bg-white/40 hover:bg-white/50 px-2 w-fit rounded-b-lg flex pb-1 items-center gap-1 self-start pt-3 cursor-pointer z-10"

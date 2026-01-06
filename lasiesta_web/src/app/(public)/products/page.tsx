@@ -1,7 +1,8 @@
 "use client";
+import ProductsCategoriesNav from "@/components/layout/productsCategoriesNav";
 import HeaderWithBanner from "@/components/layout/headerWithBanner";
-import mockProducts from "@/app/utils/mockProducts";
 import ProductCard from "@/components/cards/productCard";
+import mockProducts from "@/app/utils/mockProducts";
 import Footer from "@/components/layout/footer";
 import React, { useState } from "react";
 
@@ -41,25 +42,11 @@ export default function Products() {
       />
 
       {/* Tabs Navigation */}
-      <div className="w-full max-w-[90%] mb-8 overflow-hidden">
-        <div className="flex overflow-x-auto justify-start gap-x-1 px-1">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`pt-4 rounded-b-lg px-6 py-1 text-sm font-bold transition-all duration-300 whitespace-nowrap cursor-pointer hover:bg-gray-500/20 hover:text-marrom-avermelhado/90 focus:outline-none ${
-                {
-                  active: activeCategory === category.id,
-                }["active"]
-                  ? "border-b-4 border-[#a35c42] text-marrom-avermelhado bg-white/60"
-                  : "text-white bg-[#a35c42]/20"
-              }`}
-            >
-              {category.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ProductsCategoriesNav
+        categories={categories}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+      />
 
       {/* Grid de Produtos */}
       <section className="w-full max-w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-20">

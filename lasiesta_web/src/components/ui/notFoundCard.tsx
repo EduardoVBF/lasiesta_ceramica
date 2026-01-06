@@ -1,14 +1,14 @@
 "use client";
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
-type NotFoundCardProps = {
+interface NotFoundCardProps {
   message: string;
   hasButton?: boolean;
-  buttonText?: string; // Texto opcional do botão
-  buttonSrc?: string; // Link opcional do botão
-};
+  buttonText?: string;
+  buttonSrc?: string;
+}
 
 export default function NotFoundCard({
   message,

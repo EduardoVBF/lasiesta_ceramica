@@ -4,10 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
 
-function PlanSection({
-  plan,
-  reverse = false,
-}: {
+interface PlanSectionProps {
   plan: {
     id: number;
     title: string;
@@ -19,7 +16,9 @@ function PlanSection({
     alt: string;
   };
   reverse?: boolean;
-}) {
+}
+
+function PlanSection({ plan, reverse = false }: PlanSectionProps) {
   return (
     <motion.section
       key={plan.id}
