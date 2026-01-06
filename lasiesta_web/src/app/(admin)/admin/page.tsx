@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function AdminPage() {
   const { data: session } = useSession();
@@ -15,17 +15,19 @@ export default function AdminPage() {
     <div className="flex flex-col gap-12">
       {/* HERO / BOAS-VINDAS */}
       <section className="bg-white rounded-2xl p-10 shadow-sm border border-gray-100">
-        <h1 className="text-4xl font-semibold text-gray-800 leading-tight">
-          Olá{fullName ? ',' : ''}{' '}
-          <span className="text-[#a35c42]">
-            {fullName}
-          </span>
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-4xl text-[#a35c42] font-semibold leading-tight">
+            Lasiesta Cerâmica - Admin
+          </h1>
+          <h1 className="text-xl font-semibold text-gray-800 leading-tight">
+            Olá{fullName ? "," : ""}{" "}
+            <span>{fullName}</span>
+          </h1>
+        </div>
 
-        <p className="text-gray-600 mt-4 max-w-2xl text-lg">
-          Esta é a área administrativa da LaSiesta.  
-          Aqui você pode organizar produtos, categorias e planos de aula
-          com calma e controle.
+        <p className="text-gray-600 mt-4 max-w-full text-lg">
+          Esta é a área administrativa da LaSiesta. Aqui você pode organizar
+          produtos, categorias e planos de aula com calma e controle.
         </p>
       </section>
 
@@ -71,9 +73,7 @@ function ActionCard({
         {title}
       </h2>
 
-      <p className="text-gray-600 text-base leading-relaxed">
-        {description}
-      </p>
+      <p className="text-gray-600 text-base leading-relaxed">{description}</p>
 
       <div className="mt-8 flex items-center gap-2 text-[#a35c42] font-medium">
         <span>Acessar</span>
