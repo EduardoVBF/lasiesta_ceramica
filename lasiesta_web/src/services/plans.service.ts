@@ -20,6 +20,9 @@ export type PlanFormData = {
   price: number | null;
   durationLabel: string | null;
   isActive: boolean;
+  shortDescription?: string | null;
+  longDescription?: string | null;
+  isFeatured?: boolean;
 };
 
 export async function getAdminPlans() {

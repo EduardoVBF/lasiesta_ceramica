@@ -13,6 +13,7 @@ import BrownButton from "@/components/ui/brownButtom";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BsToggleOn } from "react-icons/bs";
+import DOMPurify from "dompurify";
 
 export default function AdminPlansPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -130,6 +131,9 @@ export default function AdminPlansPage() {
                   price: editingPlan.price,
                   durationLabel: editingPlan.durationLabel,
                   isActive: editingPlan.isActive,
+                  shortDescription: editingPlan.shortDescription ?? null,
+                  longDescription: editingPlan.longDescription ?? null,
+                  isFeatured: editingPlan.isFeatured ?? false,
                 }
               : null
           }
@@ -234,9 +238,12 @@ function PlanCard({
 
         {/* SHORT DESCRIPTION */}
         {plan.shortDescription && (
-          <p className="text-gray-600 leading-relaxed max-w-2xl">
-            {plan.shortDescription}
-          </p>
+          <div
+            className="prose prose-sm max-w-none text-gray-600"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(plan.shortDescription),
+            }}
+          />
         )}
 
         {/* EXPAND */}
@@ -265,11 +272,18 @@ function PlanCard({
                 <span className="font-normal text-gray-600">{plan.slug}</span>
               </h4>
             </div>
-
             {expanded && plan.longDescription && (
-              <div className="mt-2 text-gray-600 text-sm leading-relaxed animate-fadeIn">
-                <p className="text-gray-800">Descrição longa:</p>
-                {plan.longDescription}
+              <div className="mt-2 text-sm leading-relaxed animate-fadeIn">
+                <p className="text-gray-800 font-medium mb-1">
+                  Descrição longa:
+                </p>
+
+                <div
+                  className="prose prose-sm max-w-none text-gray-600"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(plan.longDescription),
+                  }}
+                />
               </div>
             )}
           </div>
