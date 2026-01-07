@@ -45,17 +45,17 @@ export default function AdminPage() {
       {/* AÇÕES */}
       <section className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8">
         <ActionCard
-          title="Categorias"
-          description="Organize os tipos de produtos do ateliê."
-          href="/admin/categories"
-          icon="🏷️"
-        />
-
-        <ActionCard
           title="Planos & Aulas"
           description="Gerencie workshops, aulas e planos mensais."
           href="/admin/plans"
           icon="🪔"
+        />
+
+        <ActionCard
+          title="Categorias"
+          description="Organize os tipos de produtos do ateliê."
+          href="/admin/categories"
+          icon="🏷️"
         />
 
         <ActionCard
