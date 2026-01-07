@@ -8,16 +8,20 @@ import {
   Category,
 } from "../../../../services/categories.service";
 import CategoryFormModal from "@/components/admin/CategoryFormModal";
+import BackgroundImage from "@/components/layout/backgroundImage";
 import BrownButton from "@/components/ui/brownButtom";
+import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
+import { BsToggleOn } from "react-icons/bs";
+import { Pencil } from "lucide-react";
 
 export default function AdminCategoriesPage() {
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [showInactive, setShowInactive] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showInactive, setShowInactive] = useState(true);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   const activeCategories = categories
     .filter((c) => c.isActive)
@@ -30,7 +34,13 @@ export default function AdminCategoriesPage() {
   useEffect(() => {
     getAdminCategories()
       .then(setCategories)
-      .catch((err) => console.error("Erro ao buscar categorias:", err.message))
+      .catch((err) =>
+        toast.error(
+          `Erro ao carregar categorias: ${
+            err.response.data.error || err.message
+          }`
+        )
+      )
       .finally(() => setLoading(false));
   }, []);
 
@@ -39,86 +49,68 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* HEADER */}
-      <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div>
-          <h2 className="text-4xl font-semibold text-[#a35c42]">Categorias</h2>
-          <p className="text-gray-600 mt-3 max-w-xl">
-            Gerencie as categorias que organizam os produtos do ateliê.
-          </p>
-        </div>
+    <>
+      <div className="flex flex-col">
+        {/* BACKGROUND */}
+        <BackgroundImage
+          src="/image/organic3.jpg"
+          alt="Textura de fundo do ateliê"
+          opacity={20}
+        />
+        <Toaster position="top-center" />
+        {/* HEADER */}
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6 z-10">
+          <div>
+            <h2 className="text-4xl font-normal text-[#a35c42]">Categorias</h2>
+            <p className="text-gray-600 mt-3 max-w-xl">
+              Gerencie as categorias que organizam os produtos do ateliê.
+            </p>
+          </div>
 
-        <BrownButton
-          text="+ Nova categoria"
-          maxWidth="max-w-fit"
-          onClick={() => setIsModalOpen(true)}
-        ></BrownButton>
-      </header>
+          <BrownButton
+            text="+ Nova categoria"
+            maxWidth="max-w-fit"
+            onClick={() => setIsModalOpen(true)}
+          ></BrownButton>
+        </header>
 
-      {/* TOGGLE INATIVAS */}
-      {inactiveCategories.length > 0 && (
-        <div className="flex justify-end">
-          <button
-            onClick={() => setShowInactive((prev) => !prev)}
-            className="text-sm font-medium text-gray-600 hover:text-gray-800 transition"
-          >
-            {showInactive
-              ? "Ocultar categorias inativas"
-              : "Mostrar categorias inativas"}
-          </button>
-        </div>
-      )}
+        {/* TOGGLE INATIVAS */}
+        {inactiveCategories.length > 0 && (
+          <div className="flex justify-end mb-2 cursor-pointer z-10">
+            <button
+              onClick={() => setShowInactive((prev) => !prev)}
+              className="text-sm font-medium text-gray-600 hover:text-gray-800 transition cursor-pointer"
+            >
+              {showInactive
+                ? "Ocultar categorias inativas"
+                : "Mostrar categorias inativas"}
+            </button>
+          </div>
+        )}
 
-      {/* TABELA */}
-      <section className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600">
-            <tr>
-              <th className="text-left px-6 py-4 font-medium">Nome</th>
-              <th className="text-left px-6 py-4 font-medium">Slug</th>
-              <th className="text-left px-6 py-4 font-medium">Status</th>
-              <th className="text-right px-6 py-4 font-medium">Ações</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {/* ATIVAS */}
-            {activeCategories.map((category) => (
-              <CategoryRow
-                key={category.id}
-                category={category}
-                onEdit={() => {
-                  setEditingCategory(category);
-                  setIsModalOpen(true);
-                }}
-                onToggle={async () => {
-                  const updated = await updateCategoryStatus(
-                    category.id,
-                    !category.isActive
-                  );
-
-                  setCategories((prev) =>
-                    prev.map((c) => (c.id === category.id ? updated : c))
-                  );
-                }}
-              />
-            ))}
-
-            {/* INATIVAS */}
-            {showInactive && inactiveCategories.length > 0 && (
+        {/* TABELA */}
+        <section className="bg-white/70 rounded-2xl border border-gray-100 shadow-sm overflow-hidden z-10">
+          <table className="w-full text-sm">
+            <thead className="bg-[#a35c42]">
               <tr>
-                <td
-                  colSpan={4}
-                  className="px-6 py-4 text-xs uppercase tracking-wide text-gray-400"
-                >
-                  Categorias inativas
-                </td>
+                <th className="text-left px-6 py-4 font-medium text-white">
+                  NOME
+                </th>
+                <th className="text-left px-6 py-4 font-medium text-white">
+                  SLUG
+                </th>
+                <th className="text-left px-6 py-4 font-medium text-white">
+                  STATUS
+                </th>
+                <th className="text-right px-6 py-4 font-medium text-white">
+                  AÇÕES
+                </th>
               </tr>
-            )}
+            </thead>
 
-            {showInactive &&
-              inactiveCategories.map((category) => (
+            <tbody className="divide-y divide-gray-400">
+              {/* ATIVAS */}
+              {activeCategories.map((category) => (
                 <CategoryRow
                   key={category.id}
                   category={category}
@@ -127,80 +119,152 @@ export default function AdminCategoriesPage() {
                     setIsModalOpen(true);
                   }}
                   onToggle={async () => {
-                    const updated = await updateCategoryStatus(
-                      category.id,
-                      !category.isActive
-                    );
+                    try {
+                      const updated = await updateCategoryStatus(
+                        category.id,
+                        !category.isActive
+                      );
 
-                    setCategories((prev) =>
-                      prev.map((c) => (c.id === category.id ? updated : c))
-                    );
+                      setCategories((prev) =>
+                        prev.map((c) => (c.id === category.id ? updated : c))
+                      );
+
+                      toast.success(
+                        `Categoria ${
+                          updated.isActive ? "ativada" : "desativada"
+                        } com sucesso!`
+                      );
+                    } catch (err: any) {
+                      toast.error(
+                        `Erro ao atualizar status: ${
+                          err.response?.data?.error || err.message
+                        }`
+                      );
+                    }
                   }}
                 />
               ))}
 
-            {/* EMPTY STATE */}
-            {categories.length === 0 && (
-              <tr>
-                <td colSpan={4} className="px-6 py-16 text-center">
-                  <p className="text-gray-500 mb-4">
-                    Nenhuma categoria cadastrada ainda
-                  </p>
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="inline-flex items-center gap-2 bg-[#a35c42] text-white px-5 py-2 rounded-xl font-medium hover:bg-[#8f4f38] transition"
+              {/* INATIVAS */}
+              {showInactive && inactiveCategories.length > 0 && (
+                <tr className="bg-gray-200/70">
+                  <td
+                    colSpan={4}
+                    className="px-6 py-4 text-xs uppercase tracking-wide text-gray-500 divide-none"
                   >
-                    Criar primeira categoria
-                  </button>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </section>
+                    Categorias inativas
+                  </td>
+                </tr>
+              )}
 
-      {/* MODAL */}
-      <CategoryFormModal
-        open={isModalOpen}
-        loading={creating}
-        initialData={
-          editingCategory
-            ? {
-                name: editingCategory.name,
-                slug: editingCategory.slug,
-                isActive: editingCategory.isActive,
-              }
-            : null
-        }
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingCategory(null);
-        }}
-        onSubmit={async (data) => {
-          try {
-            setCreating(true);
+              {showInactive &&
+                inactiveCategories.map((category) => (
+                  <CategoryRow
+                    key={category.id}
+                    category={category}
+                    onEdit={() => {
+                      setEditingCategory(category);
+                      setIsModalOpen(true);
+                    }}
+                    onToggle={async () => {
+                      try {
+                        const updated = await updateCategoryStatus(
+                          category.id,
+                          !category.isActive
+                        );
 
-            if (editingCategory) {
-              const updated = await updateCategory(editingCategory.id, data);
+                        setCategories((prev) =>
+                          prev.map((c) => (c.id === category.id ? updated : c))
+                        );
 
-              setCategories((prev) =>
-                prev.map((c) => (c.id === updated.id ? updated : c))
-              );
-            } else {
-              const created = await createCategory(data);
-              setCategories((prev) => [created, ...prev]);
-            }
+                        toast.success(
+                          `Categoria ${
+                            updated.isActive ? "ativada" : "desativada"
+                          } com sucesso!`
+                        );
+                      } catch (err: any) {
+                        toast.error(
+                          `Erro ao atualizar status: ${
+                            err.response?.data?.error || err.message
+                          }`
+                        );
+                      }
+                    }}
+                  />
+                ))}
 
+              {/* EMPTY STATE */}
+              {categories.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-16 text-center">
+                    <p className="text-gray-500 text-xl mb-4">
+                      Nenhuma categoria cadastrada ainda
+                    </p>
+                    <BrownButton
+                      text="Criar primeira categoria"
+                      maxWidth="max-w-fit"
+                      onClick={() => setIsModalOpen(true)}
+                    ></BrownButton>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </section>
+
+        {/* MODAL */}
+        <CategoryFormModal
+          open={isModalOpen}
+          loading={creating}
+          initialData={
+            editingCategory
+              ? {
+                  name: editingCategory.name,
+                  slug: editingCategory.slug,
+                  isActive: editingCategory.isActive,
+                }
+              : null
+          }
+          onClose={() => {
             setIsModalOpen(false);
             setEditingCategory(null);
-          } catch (err: any) {
-            console.error(err.message);
-          } finally {
-            setCreating(false);
-          }
-        }}
-      />
-    </div>
+          }}
+          onSubmit={async (data) => {
+            try {
+              setCreating(true);
+
+              if (editingCategory) {
+                const updated = await updateCategory(editingCategory.id, data);
+
+                setCategories((prev) =>
+                  prev.map((c) => (c.id === updated.id ? updated : c))
+                );
+              } else {
+                const created = await createCategory(data);
+                setCategories((prev) => [created, ...prev]);
+              }
+
+              setIsModalOpen(false);
+              setEditingCategory(null);
+
+              toast.success(
+                `Categoria ${
+                  editingCategory ? "atualizada" : "criada"
+                } com sucesso!`
+              );
+            } catch (err: any) {
+              toast.error(
+                `Erro ao ${
+                  editingCategory ? "atualizar" : "criar"
+                } categoria: ${err.response?.data?.error || err.message}`
+              );
+            } finally {
+              setCreating(false);
+            }
+          }}
+        />
+      </div>
+    </>
   );
 }
 
@@ -218,8 +282,15 @@ function CategoryRow({
   onToggle: () => void;
 }) {
   return (
-    <tr className="border-t hover:bg-gray-50 transition">
-      <td className="px-6 py-4 font-semibold text-gray-800">{category.name}</td>
+    <tr className="hover:bg-gray-200/60 transition">
+      <td
+        className="px-6 py-4 font-semibold text-gray-800"
+        onClick={() => {
+          toast.success(category.name);
+        }}
+      >
+        {category.name}
+      </td>
 
       <td className="px-6 py-4 text-gray-500">{category.slug}</td>
 
@@ -231,20 +302,28 @@ function CategoryRow({
         <div className="inline-flex items-center gap-4">
           <button
             onClick={onEdit}
-            className="text-sm font-medium text-gray-600 hover:text-[#a35c42] transition"
+            title="Editar categoria"
+            className="text-sm font-medium text-gray-600 hover:text-[#a35c42] transition cursor-pointer"
           >
-            Editar
+            <Pencil size={20} />
           </button>
 
           <button
             onClick={onToggle}
-            className={`text-sm font-medium transition ${
+            title={
+              category.isActive ? "Desativar categoria" : "Ativar categoria"
+            }
+            className={`text-sm font-medium transition cursor-pointer ${
               category.isActive
-                ? "text-red-600 hover:text-red-700"
-                : "text-green-600 hover:text-green-700"
+                ? "text-green-600 hover:text-red-700"
+                : "text-red-600 hover:text-green-700"
             }`}
           >
-            {category.isActive ? "Desativar" : "Ativar"}
+            {category.isActive ? (
+              <BsToggleOn size={25} className="hover:rotate-180" />
+            ) : (
+              <BsToggleOn size={25} className="rotate-180 hover:rotate-0" />
+            )}
           </button>
         </div>
       </td>

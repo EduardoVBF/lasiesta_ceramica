@@ -21,8 +21,9 @@ export default function BackgroundImage({
         src={src}
         alt={alt}
         fill
-        className={`object-cover opacity-${opacity} mix-blend-overlay ${className}`}
         priority
+        style={{ opacity: opacity / 100 }}
+        className={`object-cover mix-blend-overlay ${className}`}
       />
     </div>
   );
