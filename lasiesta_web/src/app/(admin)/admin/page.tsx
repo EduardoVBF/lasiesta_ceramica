@@ -1,5 +1,5 @@
 "use client";
-
+import BackgroundImage from "@/components/layout/backgroundImage";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -13,8 +13,13 @@ export default function AdminPage() {
 
   return (
     <div className="flex flex-col gap-12">
+      <BackgroundImage
+        src="/image/organic3.jpg"
+        alt="Textura de fundo do ateliê"
+        opacity={20}
+      />  
       {/* HERO / BOAS-VINDAS */}
-      <section className="bg-white rounded-2xl p-10 shadow-sm border border-gray-100">
+      <section className="bg-white rounded-2xl p-10 shadow-sm border border-gray-100 z-10">
         <div className="flex items-center justify-between">
           <h1 className="text-4xl text-[#a35c42] font-semibold leading-tight">
             Lasiesta Cerâmica - Admin
@@ -32,7 +37,7 @@ export default function AdminPage() {
       </section>
 
       {/* AÇÕES */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-8 z-10">
         <ActionCard
           title="Categorias"
           description="Organize os tipos de produtos do ateliê."
@@ -67,7 +72,7 @@ function ActionCard({
   return (
     <Link
       href={href}
-      className="group rounded-2xl bg-white p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all"
+      className="group rounded-2xl bg-white p-8 shadow-sm border border-gray-100 hover:shadow-md hover:scale-105 transition-all"
     >
       <h2 className="text-2xl font-semibold text-gray-800 mb-3 group-hover:text-[#a35c42] transition-colors">
         {title}

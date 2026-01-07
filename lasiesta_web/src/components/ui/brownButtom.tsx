@@ -8,6 +8,7 @@ interface BrownButtonProps {
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
   textSize?: string;
+  className?: string;
 }
 
 export default function BrownButton({
@@ -15,6 +16,7 @@ export default function BrownButton({
   maxWidth,
   disabled = false,
   textSize = "text-base",
+  className = "",
   type = "button",
   onClick,
 }: BrownButtonProps) {
@@ -23,7 +25,7 @@ export default function BrownButton({
       onClick={onClick}
       className={`px-6 py-2 bg-[#a35c42] text-white rounded-xl
                  hover:bg-[#8f4f38] transition cursor-pointer disabled:opacity-60 ${textSize}
-                 hover:shadow-lg hover:scale-[1.01] z-20 w-full ${maxWidth}`}
+                 hover:shadow-lg hover:scale-[1.01] z-20 w-full ${maxWidth} ${className}`}
       disabled={disabled}
       type={type}
     >

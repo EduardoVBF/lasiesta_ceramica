@@ -1,6 +1,7 @@
 "use client";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
+import PrimaryInput from "@/components/ui/primaryInput";
 import BrownButton from "@/components/ui/brownButtom";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
@@ -34,42 +35,36 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#80542fab] px-4">
       <BackgroundImage
-        src="/image/organic2.jpg"
+        src="/image/organic3.jpg"
         alt="Textura de fundo do ateliê"
         opacity={15}
       />
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg py-8 px-6 z-10">
         {/* Header */}
-        <div className="mb-8 text-center">
+        <div className="mb-5 text-center">
           <h1 className="text-4xl font-bold text-[#a35c42]">LaSiesta</h1>
           <p className="text-gray-600 mt-2">Área administrativa</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              placeholder="seu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#a35c42]"
-              required
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <PrimaryInput
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="seu@email.com"
+            required
+          />
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Senha</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#a35c42]"
-              required
-            />
-          </div>
+          <PrimaryInput
+            label="Senha"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
 
           {error && <ColoredTextBox type="error" text={error} />}
 
@@ -77,6 +72,7 @@ export default function LoginPage() {
             type="submit"
             disabled={loading}
             text={loading ? "Entrando..." : "Entrar"}
+            className="mt-5"
           />
         </form>
 
