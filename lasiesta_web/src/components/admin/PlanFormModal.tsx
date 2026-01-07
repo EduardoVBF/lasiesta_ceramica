@@ -89,9 +89,6 @@ export default function PlanFormModal({
   function handleClose() {
     onClose();
   }
-  console.log("initialData", initialData);
-  console.log({ longDescription });
-  console.log({ shortDescription });
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
