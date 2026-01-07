@@ -1,19 +1,25 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import ColoredTextBox from "../ui/coloredTextBox";
+import PrimarySwitch from "../ui/primarySwitch";
+import PrimaryInput from "../ui/primaryInput";
+import BrownButton from "../ui/brownButtom";
+import GrayButton from "../ui/grayButtom";
+import { Info } from "lucide-react";
 
-type CategoryFormData = {
+interface CategoryFormData {
   name: string;
   slug: string;
   isActive: boolean;
-};
+}
 
-type Props = {
+interface Props {
   open: boolean;
   loading: boolean;
   initialData?: CategoryFormData | null;
   onClose: () => void;
   onSubmit: (data: CategoryFormData) => void;
-};
+}
 
 export default function CategoryFormModal({
   open,
@@ -22,6 +28,7 @@ export default function CategoryFormModal({
   onClose,
   onSubmit,
 }: Props) {
+  const [infoVisible, setInfoVisible] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
@@ -71,91 +78,87 @@ export default function CategoryFormModal({
       <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl w-full max-w-md p-8 shadow-lg">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-          {initialData ? "Editar categoria" : "Nova categoria"}
-        </h2>
+      <div className="relative bg-white rounded-2xl w-full max-w-lg p-4 shadow-lg">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-normal text-[#a35c42] mb-1">
+            {initialData ? "Editar categoria" : "Nova categoria"}
+          </h2>
+          <Info
+            size={20}
+            name="ajuda"
+            className={`${
+              infoVisible
+                ? "text-blue-500 hover:text-gray-500"
+                : "text-gray-500 hover:text-blue-500"
+            } cursor-pointer`}
+            onClick={() => setInfoVisible((prev) => !prev)}
+          />
+        </div>
 
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 mb-3 text-sm">
           {initialData
             ? "Edite os detalhes da categoria."
             : "Crie uma nova categoria para organizar os produtos."}
         </p>
 
+        {infoVisible && (
+          <ColoredTextBox type="info" className="mb-3">
+            <ul className="list-disc pl-4 space-y-1 text-sm">
+              <li>
+                Escolha o nome da categoria e o slug será feito automaticamente,
+                você pode editar se desejar.
+              </li>
+              <li>O slug é uma versão amigável do nome, usada na URL.</li>
+              <li>
+                Selecione também se a categoria está ativa ou não, categorias
+                ativas são exibidas no site.
+              </li>
+            </ul>
+          </ColoredTextBox>
+        )}
+
         {loading ? (
           <p className="text-gray-500">Salvando categoria...</p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Nome</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Ex: Copos"
-                className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#a35c42]"
-                required
-                autoFocus
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <PrimaryInput
+              label="Nome"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ex: Copos"
+              required
+            />
 
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Slug</label>
-              <input
-                type="text"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                placeholder="ex: copos"
-                className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#a35c42]"
-                required
-                disabled
-              />
-            </div>
+            <PrimaryInput
+              label="Slug"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="ex: copos"
+              required
+              disabled
+            />
 
-            <div className="flex items-center justify-start gap-x-2 pt-2">
-              <span className="text-sm font-medium text-gray-700">
-                Categoria ativa
-              </span>
-
-              <button
-                type="button"
-                onClick={() => setIsActive((prev) => !prev)}
-                className={`w-12 h-6 flex items-center rounded-full p-1 transition ${
-                  isActive ? "bg-green-500" : "bg-gray-300"
-                }`}
-              >
-                <span
-                  className={`bg-white w-4 h-4 rounded-full shadow transform transition ${
-                    isActive ? "translate-x-6" : "translate-x-0"
-                  }`}
-                />
-              </button>
-            </div>
+            <PrimarySwitch
+              label="Categoria ativa"
+              checked={isActive}
+              onChange={setIsActive}
+            />
 
             <div className="flex items-center justify-end gap-3 pt-4">
-              <button
-                type="button"
+              <GrayButton
+                text="Cancelar"
                 onClick={handleClose}
-                className="px-5 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
-              >
-                Cancelar
-              </button>
+                maxWidth="max-w-fit"
+              />
 
-              <button
+              <BrownButton
                 type="submit"
                 disabled={loading}
-                className={`px-6 py-2 rounded-lg font-medium text-white transition ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-[#a35c42] hover:bg-[#8f4f38]"
-                }`}
-              >
-                {loading
-                  ? "Salvando..."
-                  : initialData
-                  ? "Salvar alterações"
-                  : "Salvar"}
-              </button>
+                maxWidth="max-w-fit"
+                text={
+                  loading ? "Salvando..." : initialData ? "Editar" : "Salvar"
+                }
+              />
             </div>
           </form>
         )}

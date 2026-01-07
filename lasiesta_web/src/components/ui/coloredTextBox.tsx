@@ -1,17 +1,18 @@
 "use client";
-import { error } from "console";
 import React from "react";
 
 interface ColoredTextBoxProps {
-  text: string;
+  children: React.ReactNode;
   type: "info" | "warning" | "error" | "success";
   maxWidth?: string;
+  className?: string;
 }
 
 export default function ColoredTextBox({
-  text,
+  children,
   type,
   maxWidth,
+  className = "",
 }: ColoredTextBoxProps) {
   const TypeColors = {
     error: {
@@ -38,10 +39,10 @@ export default function ColoredTextBox({
 
   return (
     <div
-      className={`w-full rounded-md px-2 py-1 border-2 ${TypeColors[type].border} ${TypeColors[type].bg}`}
+      className={`w-full rounded-md px-3 py-2 border-2 ${TypeColors[type].border} ${TypeColors[type].bg} ${TypeColors[type].text} ${className}`}
       style={{ maxWidth }}
     >
-      <p className={`text-sm text-center ${TypeColors[type].text}`}>{text}</p>
+      <div className="text-sm space-y-1">{children}</div>
     </div>
   );
 }

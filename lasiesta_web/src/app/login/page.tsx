@@ -3,7 +3,7 @@ import BackgroundImage from "@/components/layout/backgroundImage";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
 import PrimaryInput from "@/components/ui/primaryInput";
 import BrownButton from "@/components/ui/brownButtom";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 
@@ -71,7 +71,7 @@ export default function LoginPage() {
             required
           />
 
-          {error && <ColoredTextBox type="error" text={error} />}
+          {error && <ColoredTextBox type="error">{error}</ColoredTextBox>}
 
           <BrownButton
             type="submit"

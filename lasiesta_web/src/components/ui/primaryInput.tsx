@@ -9,6 +9,7 @@ interface PrimaryInputProps {
   placeholder?: string;
   required?: boolean;
   className?: string;
+  disabled?: boolean;
 }
 
 export default function PrimaryInput({
@@ -19,6 +20,7 @@ export default function PrimaryInput({
   placeholder = "",
   required = false,
   className = "",
+  disabled = false,
 }: PrimaryInputProps) {
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
@@ -29,7 +31,8 @@ export default function PrimaryInput({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#a35c42]"
+        disabled={disabled}
+        className={`px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:bg-gray-100 disabled:cursor-not-allowed ${disabled ? "bg-gray-100" : "bg-white"}`}
       />
     </div>
   );
