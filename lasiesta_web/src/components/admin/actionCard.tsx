@@ -19,7 +19,7 @@ ActionCardProps) {
   return (
     <Link
       href={href}
-      className="group relative rounded-3xl bg-white/90 backdrop-blur border border-white/60 p-8 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1"
+      className="group relative rounded-3xl bg-white/90 backdrop-blur border border-white/60 p-6 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1"
     >
       <div className="flex items-center gap-4 mb-4">
         <span className="text-3xl">{icon}</span>
