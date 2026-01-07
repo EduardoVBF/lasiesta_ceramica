@@ -1,4 +1,5 @@
 "use client";
+
 import {
   getAdminCategories,
   createCategory,
@@ -7,6 +8,7 @@ import {
   Category,
 } from "../../../../services/categories.service";
 import CategoryFormModal from "@/components/admin/CategoryFormModal";
+import BrownButton from "@/components/ui/brownButtom";
 import { useEffect, useState } from "react";
 
 export default function AdminCategoriesPage() {
@@ -28,9 +30,7 @@ export default function AdminCategoriesPage() {
   useEffect(() => {
     getAdminCategories()
       .then(setCategories)
-      .catch((err) => {
-        console.error("Erro ao buscar categorias:", err.message);
-      })
+      .catch((err) => console.error("Erro ao buscar categorias:", err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -39,29 +39,29 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-8">
       {/* HEADER */}
-      <header className="flex items-start justify-between mb-10">
+      <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-800">Categorias</h1>
-          <p className="text-gray-600 mt-2 max-w-xl">
+          <h2 className="text-4xl font-semibold text-[#a35c42]">Categorias</h2>
+          <p className="text-gray-600 mt-3 max-w-xl">
             Gerencie as categorias que organizam os produtos do ateliê.
           </p>
         </div>
 
-        <button
+        <BrownButton
+          text="+ Nova categoria"
+          maxWidth="max-w-fit"
           onClick={() => setIsModalOpen(true)}
-          className="bg-[#a35c42] hover:bg-[#8f4f38] text-white px-6 py-3 rounded-xl font-medium transition"
-        >
-          Nova categoria
-        </button>
+        ></BrownButton>
       </header>
 
+      {/* TOGGLE INATIVAS */}
       {inactiveCategories.length > 0 && (
-        <div className="flex w-full justify-end mb-1">
+        <div className="flex justify-end">
           <button
             onClick={() => setShowInactive((prev) => !prev)}
-            className="text-sm font-medium text-gray-600 hover:underline"
+            className="text-sm font-medium text-gray-600 hover:text-gray-800 transition"
           >
             {showInactive
               ? "Ocultar categorias inativas"
@@ -83,60 +83,35 @@ export default function AdminCategoriesPage() {
           </thead>
 
           <tbody>
+            {/* ATIVAS */}
             {activeCategories.map((category) => (
-              <tr
+              <CategoryRow
                 key={category.id}
-                className="border-t hover:bg-gray-50 transition"
-              >
-                <td className="px-6 py-4 font-bold text-gray-800">
-                  {category.name}
-                </td>
+                category={category}
+                onEdit={() => {
+                  setEditingCategory(category);
+                  setIsModalOpen(true);
+                }}
+                onToggle={async () => {
+                  const updated = await updateCategoryStatus(
+                    category.id,
+                    !category.isActive
+                  );
 
-                <td className="px-6 py-4 text-gray-500">{category.slug}</td>
-
-                <td className="px-6 py-4">
-                  <StatusBadge active={category.isActive} />
-                </td>
-
-                <td className="px-6 py-4 text-right whitespace-nowrap">
-                  <button
-                    onClick={() => {
-                      setEditingCategory(category);
-                      setIsModalOpen(true);
-                    }}
-                    className="text-[#a35c42] font-medium hover:underline mr-4"
-                  >
-                    Editar
-                  </button>
-
-                  <button
-                    onClick={async () => {
-                      try {
-                        const updated = await updateCategoryStatus(
-                          category.id,
-                          !category.isActive
-                        );
-
-                        setCategories((prev) =>
-                          prev.map((c) => (c.id === category.id ? updated : c))
-                        );
-                      } catch (err: any) {
-                        console.error("Erro ao atualizar status:", err.message);
-                      }
-                    }}
-                    className={`font-medium hover:underline ${
-                      category.isActive ? "text-red-600" : "text-green-600"
-                    }`}
-                  >
-                    {category.isActive ? "Desativar" : "Ativar"}
-                  </button>
-                </td>
-              </tr>
+                  setCategories((prev) =>
+                    prev.map((c) => (c.id === category.id ? updated : c))
+                  );
+                }}
+              />
             ))}
 
+            {/* INATIVAS */}
             {showInactive && inactiveCategories.length > 0 && (
               <tr>
-                <td colSpan={4} className="px-6 py-4 text-sm text-gray-500">
+                <td
+                  colSpan={4}
+                  className="px-6 py-4 text-xs uppercase tracking-wide text-gray-400"
+                >
                   Categorias inativas
                 </td>
               </tr>
@@ -144,74 +119,47 @@ export default function AdminCategoriesPage() {
 
             {showInactive &&
               inactiveCategories.map((category) => (
-                <tr
+                <CategoryRow
                   key={category.id}
-                  className="border-t hover:bg-gray-50 transition"
-                >
-                  <td className="px-6 py-4 font-bold text-gray-800">
-                    {category.name}
-                  </td>
+                  category={category}
+                  onEdit={() => {
+                    setEditingCategory(category);
+                    setIsModalOpen(true);
+                  }}
+                  onToggle={async () => {
+                    const updated = await updateCategoryStatus(
+                      category.id,
+                      !category.isActive
+                    );
 
-                  <td className="px-6 py-4 text-gray-500">{category.slug}</td>
-
-                  <td className="px-6 py-4">
-                    <StatusBadge active={category.isActive} />
-                  </td>
-
-                  <td className="px-6 py-4 text-right whitespace-nowrap">
-                    <button
-                      onClick={() => {
-                        setEditingCategory(category);
-                        setIsModalOpen(true);
-                      }}
-                      className="text-[#a35c42] font-medium hover:underline mr-4"
-                    >
-                      Editar
-                    </button>
-
-                    <button
-                      onClick={async () => {
-                        try {
-                          const updated = await updateCategoryStatus(
-                            category.id,
-                            !category.isActive
-                          );
-
-                          setCategories((prev) =>
-                            prev.map((c) =>
-                              c.id === category.id ? updated : c
-                            )
-                          );
-                        } catch (err: any) {
-                          console.error(
-                            "Erro ao atualizar status:",
-                            err.message
-                          );
-                        }
-                      }}
-                      className={`font-medium hover:underline ${
-                        category.isActive ? "text-red-600" : "text-green-600"
-                      }`}
-                    >
-                      {category.isActive ? "Desativar" : "Ativar"}
-                    </button>
-                  </td>
-                </tr>
+                    setCategories((prev) =>
+                      prev.map((c) => (c.id === category.id ? updated : c))
+                    );
+                  }}
+                />
               ))}
 
+            {/* EMPTY STATE */}
             {categories.length === 0 && (
               <tr>
-                <td
-                  colSpan={4}
-                  className="px-6 py-12 text-center text-gray-500"
-                >
-                  Nenhuma categoria cadastrada
+                <td colSpan={4} className="px-6 py-16 text-center">
+                  <p className="text-gray-500 mb-4">
+                    Nenhuma categoria cadastrada ainda
+                  </p>
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="inline-flex items-center gap-2 bg-[#a35c42] text-white px-5 py-2 rounded-xl font-medium hover:bg-[#8f4f38] transition"
+                  >
+                    Criar primeira categoria
+                  </button>
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </section>
+
+      {/* MODAL */}
       <CategoryFormModal
         open={isModalOpen}
         loading={creating}
@@ -256,13 +204,66 @@ export default function AdminCategoriesPage() {
   );
 }
 
+/* ---------------------------------------------
+ * COMPONENTES AUXILIARES
+ * --------------------------------------------- */
+
+function CategoryRow({
+  category,
+  onEdit,
+  onToggle,
+}: {
+  category: Category;
+  onEdit: () => void;
+  onToggle: () => void;
+}) {
+  return (
+    <tr className="border-t hover:bg-gray-50 transition">
+      <td className="px-6 py-4 font-semibold text-gray-800">{category.name}</td>
+
+      <td className="px-6 py-4 text-gray-500">{category.slug}</td>
+
+      <td className="px-6 py-4">
+        <StatusBadge active={category.isActive} />
+      </td>
+
+      <td className="px-6 py-4 text-right">
+        <div className="inline-flex items-center gap-4">
+          <button
+            onClick={onEdit}
+            className="text-sm font-medium text-gray-600 hover:text-[#a35c42] transition"
+          >
+            Editar
+          </button>
+
+          <button
+            onClick={onToggle}
+            className={`text-sm font-medium transition ${
+              category.isActive
+                ? "text-red-600 hover:text-red-700"
+                : "text-green-600 hover:text-green-700"
+            }`}
+          >
+            {category.isActive ? "Desativar" : "Ativar"}
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 function StatusBadge({ active }: { active: boolean }) {
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
         active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
       }`}
     >
+      <span
+        className={`w-2 h-2 rounded-full ${
+          active ? "bg-green-600" : "bg-red-600"
+        }`}
+      />
       {active ? "Ativa" : "Inativa"}
     </span>
   );

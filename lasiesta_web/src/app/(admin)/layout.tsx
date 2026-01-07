@@ -30,7 +30,7 @@ export default function AdminLayout({
         <aside className="w-64 bg-gray-300 text-[#994121be] py-6 px-3 flex flex-col border-r-2 border-[#994121be] shadow-lg shadow-gray-400/50">
           <div>
             <div className="px-3 mb-4 py-2 border-b-2 border-[#994121be]">
-              <h1 className="text-2xl font-bold mb-2">Lasiesta Admin</h1>
+              <h2 className="text-2xl font-bold mb-2">Lasiesta · Admin</h2>
               <p className="text-sm opacity-80">{session.user?.firstName} {session.user?.lastName}</p>
               <p className="text-xs opacity-80">{session.user?.email}</p>
             </div>
