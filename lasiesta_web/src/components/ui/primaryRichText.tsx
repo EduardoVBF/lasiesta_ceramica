@@ -2,6 +2,7 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
 import { useEffect } from "react";
 import {
   Bold,
@@ -16,15 +17,25 @@ type Props = {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  placeholder?: string;
 };
 
 export default function PrimaryRichText({
   label,
   value,
   onChange,
+  placeholder,
 }: Props) {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder:
+          placeholder || "Digite o conteúdo aqui…",
+        emptyEditorClass:
+          "text-[#a35c427e] before:content-[attr(data-placeholder)] before:pointer-events-none before:absolute",
+      }),
+    ],
     content: value || "<p></p>",
     immediatelyRender: false,
     onUpdate({ editor }) {
@@ -32,13 +43,11 @@ export default function PrimaryRichText({
     },
   });
 
-  // 🔥 SINCRONIZAR quando value mudar (edição)
+  // 🔄 sincronizar quando editar
   useEffect(() => {
     if (!editor) return;
 
     const currentHTML = editor.getHTML();
-
-    // evita loop infinito
     if (value !== currentHTML) {
       editor.commands.setContent(value || "<p></p>");
     }
@@ -72,12 +81,12 @@ export default function PrimaryRichText({
   );
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 relative">
       <label className="text-sm font-medium text-gray-700">
         {label}
       </label>
 
-      <div className="rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-[#a35c42]">
+      <div className="relative rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-[#a35c42]">
         {/* TOOLBAR */}
         <div className="flex items-center gap-1 px-2 py-1 border-b border-gray-200 bg-gray-50">
           <Button
@@ -154,7 +163,7 @@ export default function PrimaryRichText({
         </div>
 
         {/* EDITOR */}
-        <div className="p-3">
+        <div className="relative p-3 min-h-[80px]">
           <EditorContent editor={editor} />
         </div>
       </div>

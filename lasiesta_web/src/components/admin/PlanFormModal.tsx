@@ -179,14 +179,14 @@ export default function PlanFormModal({
               label="Descrição curta"
               value={shortDescription}
               onChange={setShortDescription}
-              // placeholder="Resumo curto do plano"
+              placeholder="Resumo curto do plano"
             />
 
             <PrimaryRichText
               label="Descrição longa"
               value={longDescription}
               onChange={setLongDescription}
-              // placeholder="Descrição completa do plano ou aula"
+              placeholder="Descrição completa do plano ou aula"
             />
 
             <div className="flex items-center justify-start gap-5">
