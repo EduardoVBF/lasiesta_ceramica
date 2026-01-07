@@ -1,6 +1,4 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import {
   getAdminPlans,
   Plan,
@@ -8,13 +6,13 @@ import {
   updatePlan,
   updatePlanStatus,
 } from "../../../../services/plans.service";
-
-import PlanFormModal from "@/components/admin/PlanFormModal";
 import BackgroundImage from "@/components/layout/backgroundImage";
+import PlanFormModal from "@/components/admin/PlanFormModal";
+import { Pencil, ChevronDown, ChevronUp } from "lucide-react";
 import BrownButton from "@/components/ui/brownButtom";
+import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BsToggleOn } from "react-icons/bs";
-import { Pencil } from "lucide-react";
 
 export default function AdminPlansPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -243,12 +241,20 @@ function PlanCard({
 
         {/* EXPAND */}
         <div className="flex w-full justify-start">
-          <button
+          <div
             onClick={() => setExpanded((prev) => !prev)}
-            className="text-sm font-medium text-[#a35c42] hover:underline w-fit"
+            className="text-sm font-medium text-[#a35c42] hover:underline cursor-pointer w-fit"
           >
-            {expanded ? "Ocultar detalhes" : "Ver mais detalhes"}
-          </button>
+            {expanded ? (
+              <div className="flex items-center gap-1">
+                Ocultar detalhes <ChevronUp size={16} />
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                Ver mais detalhes <ChevronDown size={16} />
+              </div>
+            )}
+          </div>
         </div>
 
         {expanded && (
