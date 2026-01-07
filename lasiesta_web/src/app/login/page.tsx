@@ -3,6 +3,7 @@ import BackgroundImage from "@/components/layout/backgroundImage";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
 import PrimaryInput from "@/components/ui/primaryInput";
 import BrownButton from "@/components/ui/brownButtom";
+import toast, { Toaster } from 'react-hot-toast';
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 
@@ -24,16 +25,20 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
+      toast.error("Email ou senha inválidos");
       setError("Email ou senha inválidos");
       setLoading(false);
       return;
     }
+
+    toast.success("Login realizado com sucesso!");
 
     window.location.href = "/admin";
   }
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#80542fab] px-4">
+      <Toaster position="top-center" reverseOrder={true} />
       <BackgroundImage
         src="/image/organic3.jpg"
         alt="Textura de fundo do ateliê"
