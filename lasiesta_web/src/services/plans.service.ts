@@ -7,6 +7,11 @@ export type Plan = {
   price: number | null;
   durationLabel: string | null;
   isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  shortDescription?: string;
+  longDescription?: string;
+  isFeatured?: boolean;
 };
 
 export type PlanFormData = {

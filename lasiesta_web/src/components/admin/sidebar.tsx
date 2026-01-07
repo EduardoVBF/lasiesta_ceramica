@@ -20,7 +20,7 @@ export default function AdminSidebar() {
   if (pathname === "/admin") return null;
 
   return (
-    <aside className="w-64 h-screen sticky top-0 bg-white/10 backdrop-blur border-r border-gray-100 shadow-sm flex flex-col px-4 py-6 z-20">
+    <aside className="w-64 h-screen sticky top-0 bg-white/30 backdrop-blur border-r border-gray-100 shadow-sm flex flex-col px-4 py-6 z-20">
       {/* HEADER */}
       <div className="mb-6 px-2">
         <h2 className="text-2xl font-semibold text-[#a35c42]">
