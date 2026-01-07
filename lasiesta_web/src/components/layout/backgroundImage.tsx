@@ -16,7 +16,7 @@ export default function BackgroundImage({
   className,
 }: BackgroundImageProps) {
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none">
+    <div className="fixed inset-0 z-0 pointer-events-none">
       <Image
         src={src}
         alt={alt}
