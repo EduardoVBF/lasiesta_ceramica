@@ -10,6 +10,7 @@ const menuItems = [
   { label: "Planos & Aulas", href: "/admin/plans", icon: "🪔" },
   { label: "Categorias", href: "/admin/categories", icon: "🏷️" },
   { label: "Produtos", href: "/admin/products", icon: "🏺" },
+  { label: "Usuários", href: "/admin/users", icon: "👥" },
 ];
 
 export default function AdminSidebar() {

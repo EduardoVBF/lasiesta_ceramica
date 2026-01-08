@@ -75,6 +75,13 @@ export default function AdminPage() {
           href="/admin/products"
           icon="🏺"
         />
+
+        <ActionCard
+        title="Usuários"
+        description="Gerencie os usuários do sistema."
+        href="/admin/users"
+        icon="👥"
+      />
       </section>
     </div>
   );
