@@ -37,7 +37,7 @@ export default function AdminCategoriesPage() {
       .catch((err) =>
         toast.error(
           `Erro ao carregar categorias: ${
-            err.response.data.error || err.message
+            err.response?.data?.error || err.message
           }`
         )
       )

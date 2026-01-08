@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createPlanSchema = z.object({
   name: z.string().min(1),
@@ -10,6 +10,7 @@ export const createPlanSchema = z.object({
   isFeatured: z.boolean().optional(),
   orderIndex: z.number().optional(),
   isActive: z.boolean().optional(),
+  imageBase64: z.string().optional(),
 });
 
 export type CreatePlanDTO = z.infer<typeof createPlanSchema>;

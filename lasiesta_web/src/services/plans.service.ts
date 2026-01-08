@@ -12,6 +12,7 @@ export type Plan = {
   shortDescription?: string;
   longDescription?: string;
   isFeatured?: boolean;
+  imageUrl?: string;
 };
 
 export type PlanFormData = {
@@ -23,6 +24,7 @@ export type PlanFormData = {
   shortDescription?: string | null;
   longDescription?: string | null;
   isFeatured?: boolean;
+  imageUrl?: string | null;
 };
 
 export async function getAdminPlans() {

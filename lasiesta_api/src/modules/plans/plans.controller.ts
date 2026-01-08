@@ -1,3 +1,4 @@
+import { uploadBase64ToFirebase } from "../../services/uploadImageBase64";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { createPlanSchema } from "./plans.schemas";
 import { PlansService } from "./plans.service";
@@ -17,9 +18,28 @@ export async function createPlanController(
     });
   }
 
-  const plan = await plansService.createPlan(parsedBody.data);
+  // ✅ SEMPRE usar o parsedBody
+  const { imageBase64, ...planData } = parsedBody.data;
+
+  let imageUrl: string | undefined;
+
+  // ✅ upload só se base64 existir
+  if (imageBase64) {
+    imageUrl = await uploadBase64ToFirebase(
+      imageBase64,
+      "plans"
+    );
+  }
+
+  // ✅ Prisma recebe só dados finais
+  const plan = await plansService.createPlan({
+    ...planData,
+    imageUrl,
+  });
+
   return reply.status(201).send(plan);
 }
+
 
 export async function getAllPlansController() {
   return await plansService.getAllPlans();
@@ -49,23 +69,45 @@ export async function updatePlanController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
-  const parsedBody = createPlanSchema.partial().safeParse(request.body);
 
-    if (!parsedBody.success) {
-        return reply.status(400).send({
-        error: "Dados inválidos.",
-        details: parsedBody.error,
-      });
-    }
-    try {
-      const plan = await plansService.updatePlan(id, parsedBody.data);
-      return reply.send(plan);
-    } catch (err: any) {
-        return reply.status(404).send({
-        message: err.message ?? "Plano não encontrado.",
-      });
-    }
+  const parsedBody = createPlanSchema.partial().safeParse(
+    request.body
+  );
+
+  if (!parsedBody.success) {
+    return reply.status(400).send({
+      error: "Dados inválidos.",
+      details: parsedBody.error,
+    });
+  }
+
+  // ✅ Sempre usar parsedBody
+  const { imageBase64, ...planData } = parsedBody.data;
+
+  let imageUrl: string | undefined;
+
+  // ✅ Se veio base64, faz upload e troca imagem
+  if (imageBase64) {
+    imageUrl = await uploadBase64ToFirebase(
+      imageBase64,
+      "plans"
+    );
+  }
+
+  try {
+    const plan = await plansService.updatePlan(id, {
+      ...planData,
+      ...(imageUrl && { imageUrl }),
+    });
+
+    return reply.send(plan);
+  } catch (err: any) {
+    return reply.status(404).send({
+      message: err.message ?? "Plano não encontrado.",
+    });
+  }
 }
+
 
 export async function deletePlanController(
     request: FastifyRequest,

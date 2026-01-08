@@ -10,6 +10,7 @@ import BackgroundImage from "@/components/layout/backgroundImage";
 import PlanFormModal from "@/components/admin/PlanFormModal";
 import { Pencil, ChevronDown, ChevronUp } from "lucide-react";
 import BrownButton from "@/components/ui/brownButtom";
+import ImageZoom from "@/components/layout/ImageZoom";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BsToggleOn } from "react-icons/bs";
@@ -198,40 +199,56 @@ function PlanCard({
       {/* HEADER */}
       <div className="flex flex-col gap-4 px-2 w-full">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3">
-              <h3 className="text-3xl font-semibold text-gray-800 leading-tight">
-                {plan.name}
-              </h3>
-              <StatusBadge active={plan.isActive} />
-              {/* Destaque */}
-              {plan.isFeatured && (
-                <span className="bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
-                  Destaque
-                </span>
+          <div className="flex items-center gap-2">
+            <div className="w-20 h-20 mb-2 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+              {plan.imageUrl ? (
+                <ImageZoom
+                  src={plan.imageUrl}
+                  alt={plan.name}
+                  width={80}
+                  zoom
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                  Sem imagem
+                </div>
               )}
             </div>
-
-            {/* PREÇO */}
-            <div className="flex items-end gap-1">
-              {plan.price !== null ? (
-                <>
-                  <span className="text-lg text-gray-500">R$</span>
-                  <span className="text-3xl font-semibold text-gray-700">
-                    {Number(plan.price).toFixed(2).replace(".", ",")}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <h3 className="text-3xl font-semibold text-gray-800 leading-tight">
+                  {plan.name}
+                </h3>
+                <StatusBadge active={plan.isActive} />
+                {/* Destaque */}
+                {plan.isFeatured && (
+                  <span className="bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
+                    Destaque
                   </span>
-                </>
-              ) : (
-                <span className="text-gray-500 text-sm italic">
-                  Sob consulta
-                </span>
-              )}
+                )}
+              </div>
 
-              {plan.durationLabel && (
-                <span className="text-lg text-gray-500 pb-1">
-                  /{plan.durationLabel}
-                </span>
-              )}
+              {/* PREÇO */}
+              <div className="flex items-end gap-1">
+                {plan.price !== null ? (
+                  <>
+                    <span className="text-lg text-gray-500">R$</span>
+                    <span className="text-3xl font-semibold text-gray-700">
+                      {Number(plan.price).toFixed(2).replace(".", ",")}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-gray-500 text-sm italic">
+                    Sob consulta
+                  </span>
+                )}
+
+                {plan.durationLabel && (
+                  <span className="text-lg text-gray-500 pb-1">
+                    /{plan.durationLabel}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
