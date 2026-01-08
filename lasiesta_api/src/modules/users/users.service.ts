@@ -18,6 +18,7 @@ export class UsersService {
         lastName: true,
         email: true,
         role: true,
+        isActive: true,
       },
     }) as Promise<UsersListResponseDTO>;
   }
@@ -38,6 +39,7 @@ export class UsersService {
         lastName: true,
         email: true,
         role: true,
+        isActive: true,
       },
     }) as Promise<UserResponseDTO>;
   }
@@ -72,6 +74,7 @@ export class UsersService {
         firstName: data.firstName ?? user.firstName,
         lastName: data.lastName ?? user.lastName,
         role: data.role ?? user.role,
+        isActive: data.isActive ?? true,
       },
       select: {
         id: true,
@@ -79,6 +82,7 @@ export class UsersService {
         lastName: true,
         email: true,
         role: true,
+        isActive: true,
       },
     }) as Promise<UserResponseDTO>;
   }

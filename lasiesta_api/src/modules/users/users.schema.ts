@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { is } from "zod/v4/locales";
 
 export const userResponseSchema = z.object({
   id: z.uuid(),
@@ -6,6 +7,7 @@ export const userResponseSchema = z.object({
   lastName: z.string(),
   email: z.email(),
   role: z.string(),
+  isActive: z.boolean(),
 });
 
 export type UserResponseDTO = z.infer<typeof userResponseSchema>;
@@ -23,6 +25,7 @@ export const updateUserBodySchema = z.object({
   firstName: z.string().min(1).optional(),
   lastName: z.string().min(1).optional(),
   role: z.enum(["admin", "editor"]).optional(),
+  isActive: z.boolean().optional(),
 });
 export type UpdateUserBodyDTO = z.infer<typeof updateUserBodySchema>;
 
