@@ -13,6 +13,7 @@ export const registerSchema = z.object({
   email: z.email(),
   password: z.string().min(6),
   role: z.enum(["admin", "editor"]).optional(),
+  isActive: z.boolean(),
 });
 
 export type RegisterDTO = z.infer<typeof registerSchema>;

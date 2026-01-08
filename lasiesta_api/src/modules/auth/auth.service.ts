@@ -41,7 +41,8 @@ export class AuthService {
         lastName: data.lastName,
         email: data.email,
         passwordHash,
-        role: data.role || "admin",
+        role: data.role || "editor",
+        isActive: data.isActive,
       },
     });
 
@@ -51,6 +52,7 @@ export class AuthService {
       lastName: newUser.lastName,
       email: newUser.email,
       role: newUser.role,
+      isActive: newUser.isActive,
     };
   }
 }
