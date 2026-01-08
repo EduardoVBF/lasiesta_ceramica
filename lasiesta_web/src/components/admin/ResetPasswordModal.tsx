@@ -1,0 +1,68 @@
+"use client";
+import { User } from "../../services/users.service";
+import PrimaryInput from "../ui/primaryInput";
+import BrownButton from "../ui/brownButtom";
+import GrayButton from "../ui/grayButtom";
+import React, { useState } from "react";
+
+type Props = {
+  open: boolean;
+  loading: boolean;
+  user: User | null;
+  onClose: () => void;
+  onSubmit: (newPassword: string) => void;
+};
+
+export default function ResetPasswordModal({
+  open,
+  loading,
+  user,
+  onClose,
+  onSubmit,
+}: Props) {
+  const [password, setPassword] = useState("");
+
+  if (!open || !user) return null;
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    onSubmit(password);
+    setPassword("");
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+
+      <div className="relative bg-white rounded-2xl w-full max-w-md p-4 shadow-lg">
+        <h2 className="text-2xl font-normal text-[#a35c42] mb-2">
+          Redefinir senha
+        </h2>
+
+        <p className="text-gray-600 mb-4 text-sm">
+          Nova senha para <strong>{user.email}</strong>
+        </p>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <PrimaryInput
+            label="Nova senha"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <div className="flex justify-end gap-3 pt-4">
+            <GrayButton text="Cancelar" onClick={onClose} maxWidth="max-w-fit" />
+            <BrownButton
+              type="submit"
+              disabled={loading}
+              maxWidth="max-w-fit"
+              text={loading ? "Salvando..." : "Redefinir"}
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
