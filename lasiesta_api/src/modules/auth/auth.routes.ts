@@ -1,17 +1,22 @@
-import { authMiddleware } from "../../shared/middlewares/auth";
-import { adminOnly } from "../../shared/middlewares/adminOnly";
-import { registerController } from "./auth.controller";
-import { loginController } from "./auth.controller";
 import { FastifyInstance } from "fastify";
+import { loginController, registerController } from "./auth.controller";
+import { loginSchema, registerSchema } from "./auth.schemas";
+import { validateRequest } from "../../infra/http/validate";
 
 export async function authRoutes(app: FastifyInstance) {
-  app.post("/auth/login", loginController);
+  app.post("/auth/login", async (request, reply) => {
+    const { body } = await validateRequest(request, {
+      body: loginSchema,
+    });
 
-  app.post(
-    "/auth/register",
-    {
-      preHandler: [authMiddleware, adminOnly],
-    },
-    registerController
-  );
+    return loginController({ ...request, body } as any, reply);
+  });
+
+  app.post("/auth/register", async (request, reply) => {
+    const { body } = await validateRequest(request, {
+      body: registerSchema,
+    });
+
+    return registerController({ ...request, body } as any, reply);
+  });
 }

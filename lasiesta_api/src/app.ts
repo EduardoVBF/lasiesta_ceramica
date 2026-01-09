@@ -6,6 +6,7 @@ import { usersRoutes } from "./modules/users/users.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { registerPlugins } from "./config/fastify";
 import fastify from "fastify";
+import { errorHandler } from "./infra/http/error-handler";
 
 
 export async function buildApp() {
@@ -13,6 +14,8 @@ export async function buildApp() {
     logger: true,
     bodyLimit: 10 * 1024 * 1024, // 10MB
   });
+
+  app.setErrorHandler(errorHandler);
 
   // plugins PRIMEIRO
   await registerPlugins(app);

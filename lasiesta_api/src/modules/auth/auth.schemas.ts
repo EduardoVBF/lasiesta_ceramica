@@ -5,8 +5,6 @@ export const loginSchema = z.object({
   password: z.string().min(6),
 });
 
-export type LoginDTO = z.infer<typeof loginSchema>;
-
 export const registerSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
@@ -15,5 +13,3 @@ export const registerSchema = z.object({
   role: z.enum(["admin", "editor"]).optional(),
   isActive: z.boolean(),
 });
-
-export type RegisterDTO = z.infer<typeof registerSchema>;

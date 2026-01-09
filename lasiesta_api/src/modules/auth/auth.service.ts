@@ -1,58 +1,76 @@
 import { prisma } from "../../shared/database/prisma";
-import { RegisterDTO } from "./auth.schemas";
-import { LoginDTO } from "./auth.schemas";
+import { AppError } from "../../infra/erors/app-error";
 import bcrypt from "bcrypt";
 
+type LoginInput = {
+  email: string;
+  password: string;
+};
+
+type RegisterInput = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role?: "admin" | "editor";
+  isActive: boolean;
+};
+
 export class AuthService {
-  // Lógica de login
-  async login({ email, password }: LoginDTO) {
+  async login({ email, password }: LoginInput) {
     const user = await prisma.user.findUnique({
       where: { email },
     });
 
     if (!user || !user.isActive) {
-      throw new Error("Credenciais inválidas.");
+      throw new AppError("Credenciais inválidas", 401);
     }
 
     const passwordMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (!passwordMatch) {
-      throw new Error("Credenciais inválidas.");
+      throw new AppError("Credenciais inválidas", 401);
     }
 
-    return user;
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      isActive: user.isActive,
+    };
   }
 
-  // Lógica de registro
-  async register(data: RegisterDTO) {
+  async register(data: RegisterInput) {
     const existingUser = await prisma.user.findUnique({
       where: { email: data.email },
     });
 
     if (existingUser) {
-      throw new Error("Usuário com este email já existe.");
+      throw new AppError("Usuário com este email já existe", 409);
     }
 
     const passwordHash = await bcrypt.hash(data.password, 10);
 
-    const newUser = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         passwordHash,
-        role: data.role || "editor",
+        role: data.role ?? "editor",
         isActive: data.isActive,
       },
     });
 
     return {
-      id: newUser.id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
-      role: newUser.role,
-      isActive: newUser.isActive,
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      isActive: user.isActive,
     };
   }
 }
