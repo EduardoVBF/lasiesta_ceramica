@@ -1,3 +1,4 @@
+import { AppError } from "../../infra/errors/app-error";
 import { prisma } from "../../shared/database/prisma";
 import { CreatePlanDTO } from "./plans.schemas";
 
@@ -23,16 +24,14 @@ export class PlansService {
 
   async getPlanById(id: string) {
     const plan = await prisma.plan.findUnique({
-        where: { id },
+      where: { id },
     });
 
     if (!plan) {
-      throw new Error("Plano não encontrado.");
+      throw new AppError("Plano não encontrado", 404);
     }
 
-    return prisma.plan.findUnique({
-      where: { id },
-    });
+    return plan;
   }
 
   async updatePlan(id: string, data: Partial<CreatePlanDTO>) {
@@ -41,7 +40,7 @@ export class PlansService {
     });
 
     if (!plan) {
-      throw new Error("Plano não encontrado.");
+      throw new AppError("Plano não encontrado", 404);
     }
 
     return prisma.plan.update({
@@ -56,9 +55,9 @@ export class PlansService {
     });
 
     if (!plan || !plan.isActive) {
-      throw new Error("Plano não encontrado.");
+      throw new AppError("Plano não encontrado", 404);
     }
-    
+
     return prisma.plan.update({
       where: { id },
       data: { isActive: false },
