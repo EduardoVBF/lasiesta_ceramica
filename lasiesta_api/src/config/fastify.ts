@@ -4,7 +4,7 @@ import fastifyCors from "@fastify/cors";
 import { env } from "./env";
 
 export async function registerPlugins(app: FastifyInstance) {
-  // CORS (frontend vai consumir a API)
+  // CORS
   await app.register(fastifyCors, {
     origin: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

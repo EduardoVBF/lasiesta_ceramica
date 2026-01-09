@@ -18,14 +18,13 @@ export async function createCategoryController(
     });
   }
 
-  // ✅ SEMPRE usar o parsedBody
   const { imageBase64, ...categoryData } = parsedData.data;
 
   let imageUrl: string | undefined;
 
   // ✅ upload só se base64 existir
   if (imageBase64) {
-    imageUrl = await uploadBase64ToFirebase(imageBase64, "plans");
+    imageUrl = await uploadBase64ToFirebase(imageBase64, "categories");
   }
   // ✅ Prisma recebe só dados finais
   const categoryFinal = {
@@ -74,7 +73,6 @@ export async function updateCategoryController(
     });
   }
 
-  // ✅ Sempre usar parsedBody
   const { imageBase64, ...categoryData } = parsedData.data;
 
   let imageUrl: string | undefined;

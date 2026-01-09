@@ -10,6 +10,8 @@ const menuItems = [
   { label: "Planos & Aulas", href: "/admin/plans", icon: "🪔" },
   { label: "Categorias", href: "/admin/categories", icon: "🏷️" },
   { label: "Produtos", href: "/admin/products", icon: "🏺" },
+  { label: "Banners", href: "/admin/banners", icon: "🖼️" },
+  { label: "Carrossel", href: "/admin/carousel", icon: "🎠" },
   { label: "Usuários", href: "/admin/users", icon: "👥" },
 ];
 

@@ -77,11 +77,25 @@ export default function AdminPage() {
         />
 
         <ActionCard
-        title="Usuários"
-        description="Gerencie os usuários do sistema."
-        href="/admin/users"
-        icon="👥"
-      />
+          title="Banners"
+          description="Gerencie os banners do site."
+          href="/admin/banners"
+          icon="🖼️"
+        />
+
+        <ActionCard
+          title="Carrossel"
+          description="Organize os itens do carrossel da página inicial."
+          href="/admin/carousel"
+          icon="🎠"
+        />
+
+        <ActionCard
+          title="Usuários"
+          description="Gerencie os usuários do sistema."
+          href="/admin/users"
+          icon="👥"
+        />
       </section>
     </div>
   );

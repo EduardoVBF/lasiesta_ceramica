@@ -3,16 +3,6 @@ import { adminOnly } from "../../shared/middlewares/adminOnly";
 import { registerController } from "./auth.controller";
 import { loginController } from "./auth.controller";
 import { FastifyInstance } from "fastify";
-// import { loginSchema } from "./auth.schemas";
-
-// export async function authRoutes(app: FastifyInstance) {
-//     app.post('/auth/login', {
-//         schema: {
-//             body: loginSchema,
-//         },
-//         handler: loginController,
-//     });
-// }
 
 export async function authRoutes(app: FastifyInstance) {
   app.post("/auth/login", loginController);

@@ -18,7 +18,6 @@ export async function createPlanController(
     });
   }
 
-  // ✅ SEMPRE usar o parsedBody
   const { imageBase64, ...planData } = parsedBody.data;
 
   let imageUrl: string | undefined;
@@ -81,7 +80,6 @@ export async function updatePlanController(
     });
   }
 
-  // ✅ Sempre usar parsedBody
   const { imageBase64, ...planData } = parsedBody.data;
 
   let imageUrl: string | undefined;
