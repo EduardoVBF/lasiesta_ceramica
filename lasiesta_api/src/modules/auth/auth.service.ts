@@ -1,5 +1,5 @@
 import { prisma } from "../../shared/database/prisma";
-import { AppError } from "../../infra/erors/app-error";
+import { AppError } from "../../infra/errors/app-error";
 import bcrypt from "bcrypt";
 
 type LoginInput = {

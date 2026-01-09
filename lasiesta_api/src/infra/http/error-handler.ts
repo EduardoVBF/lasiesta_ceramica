@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { ValidationError } from "../erors/validation-error";
-import { AppError } from "../erors/app-error";
+import { ValidationError } from "../errors/validation-error";
+import { AppError } from "../errors/app-error";
 
 export function errorHandler(
   error: any,

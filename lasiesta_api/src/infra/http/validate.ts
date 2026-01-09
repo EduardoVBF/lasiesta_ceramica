@@ -1,6 +1,6 @@
 import { FastifyRequest } from "fastify";
 import { ZodError, ZodSchema } from "zod";
-import { ValidationError } from "../erors/validation-error";
+import { ValidationError } from "../errors/validation-error";
 import { translateZodIssue } from "../zod/zod-error-translator";
 
 type RequestPart = "body" | "params" | "query";
@@ -34,7 +34,9 @@ export async function validateRequest<T extends Schemas>(
     throw new ValidationError(errors);
   }
 
-  return parsedData;
+  return parsedData as {
+    [K in keyof T]: any;
+  };
 }
 
 function formatZodError(error: ZodError) {
