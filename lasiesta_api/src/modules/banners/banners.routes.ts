@@ -6,13 +6,14 @@ import {
 import { authMiddleware } from "../../shared/middlewares/auth";
 import { adminOnly } from "../../shared/middlewares/adminOnly";
 import { FastifyInstance } from "fastify";
+import { validateRequest } from "../../infra/http/validate";
+import { BannerIdSchema, updateBannerSchema } from "./banners.schema";
 
 export async function bannersRoutes(app: FastifyInstance) {
-
-  // 🌍 Público
+  // Público
   app.get("/banners/:page", getActiveBannerByPageController);
 
-  // 🔐 Admin
+  // Admin
   app.get(
     "/admin/banners",
     { preHandler: [authMiddleware, adminOnly] },
@@ -22,6 +23,13 @@ export async function bannersRoutes(app: FastifyInstance) {
   app.put(
     "/admin/banners/:id",
     { preHandler: [authMiddleware, adminOnly] },
-    updateBannerController
+    async (request, reply) => {
+      const { body, params } = await validateRequest(request, {
+        body: updateBannerSchema.partial(),
+        params: BannerIdSchema,
+      });
+
+      return updateBannerController({ ...request, body, params } as any, reply);
+    }
   );
 }

@@ -19,5 +19,9 @@ export const BannerSchema = z.object({
 
 export const updateBannerSchema = BannerSchema.partial();
 
+export const BannerIdSchema = z.object({
+  id: z.string().uuid("ID do banner inválido"),
+});
+
 export type BannerDTO = z.infer<typeof BannerSchema>;
 export type UpdateBannerDTO = z.infer<typeof updateBannerSchema>;

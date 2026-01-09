@@ -1,5 +1,6 @@
 import { prisma } from "../../shared/database/prisma";
 import { BannerPage, UpdateBannerDTO } from "./banners.schema";
+import { AppError } from "../../infra/errors/app-error";
 
 export class BannersService {
 
@@ -24,7 +25,7 @@ export class BannersService {
     });
 
     if (!banner) {
-      throw new Error("Banner não encontrado.");
+      throw new AppError("Banner não encontrado.", 404);
     }
 
     return banner;
@@ -36,7 +37,7 @@ export class BannersService {
     });
 
     if (!banner) {
-      throw new Error("Banner não encontrado.");
+      throw new AppError("Banner não encontrado.", 404);
     }
 
     return prisma.$transaction(async (tx) => {
