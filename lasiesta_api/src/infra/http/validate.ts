@@ -41,7 +41,6 @@ export async function validateRequest<T extends Schemas>(
 
 function formatZodError(error: ZodError) {
   const formatted: Record<string, string[]> = {};
-  console.log("ZOD ERROR:", error);
 
   error.issues.forEach((issue) => {
     const field =

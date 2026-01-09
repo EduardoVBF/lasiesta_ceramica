@@ -20,7 +20,6 @@ function extractReceivedType(message?: string): string | null {
 }
 
 export function translateZodIssue(issue: ZodIssueLike): string {
-  console.log("Translating Zod Issue:", issue);
   switch (issue.code) {
     case "invalid_type": {
       const received = extractReceivedType(issue.message);

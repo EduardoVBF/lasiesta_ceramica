@@ -6,7 +6,6 @@ import { LogOut } from "lucide-react";
 
 export default function AdminPage() {
   const { data: session } = useSession();
-  console.log("Sessão do usuário:", session);
 
   const fullName =
     session?.user?.firstName && session?.user?.lastName
