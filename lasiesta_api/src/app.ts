@@ -1,4 +1,5 @@
 import { categoriesRoutes } from "./modules/categories/categories.routes";
+import { bannersRoutes } from "./modules/banners/banners.routes";
 import { authMiddleware } from "./shared/middlewares/auth";
 import { plansRoutes } from "./modules/plans/plans.routes";
 import { usersRoutes } from "./modules/users/users.routes";
@@ -18,6 +19,7 @@ export async function buildApp() {
 
   // rotas
   await app.register(categoriesRoutes);
+  await app.register(bannersRoutes);
   await app.register(plansRoutes);
   await app.register(usersRoutes);
   await app.register(authRoutes);

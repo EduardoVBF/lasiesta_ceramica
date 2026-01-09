@@ -74,3 +74,24 @@ model Plan {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+enum BannerPage {
+  CLASSES
+  PRODUCTS
+  ABOUT
+}
+
+model Banner {
+  id        String     @id @default(uuid())
+  page      BannerPage
+
+  imageUrl  String
+  title     String?
+  subtitle  String?
+  linkUrl   String?
+
+  isActive  Boolean    @default(true)
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}

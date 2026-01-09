@@ -33,7 +33,7 @@ export async function createPlanController(
   // ✅ Prisma recebe só dados finais
   const plan = await plansService.createPlan({
     ...planData,
-    imageUrl,
+    ...(imageUrl && { imageUrl }),
   });
 
   return reply.status(201).send(plan);

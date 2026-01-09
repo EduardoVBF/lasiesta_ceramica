@@ -24,7 +24,7 @@ export default function Header({ bgColor }: HeaderProps) {
         <HeaderButton pathHref="/" label="Início" Icon={House} />
         <HeaderButton pathHref="/classes" label="Aulas" Icon={LibraryBig} />
         <HeaderButton pathHref="/products" label="Produtos" Icon={Amphora} />
-        <HeaderButton pathHref="/studio" label="O ateliê" Icon={GiFireBowl} />
+        <HeaderButton pathHref="/studio" label="O Ateliê" Icon={GiFireBowl} />
       </div>
 
       {/* Botão de menu para mobile */}
