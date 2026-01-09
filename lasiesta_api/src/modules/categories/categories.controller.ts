@@ -1,3 +1,4 @@
+import { uploadBase64ToFirebase } from "../../services/uploadImageBase64";
 import { createCategorySchema } from "./categories.schemas";
 import { CategoriesService } from "./categories.service";
 import { FastifyRequest, FastifyReply } from "fastify";
@@ -17,8 +18,23 @@ export async function createCategoryController(
     });
   }
 
-  const category = await categoriesService.createCategory(parsedData.data);
-  return reply.status(201).send(category);
+  // ✅ SEMPRE usar o parsedBody
+  const { imageBase64, ...categoryData } = parsedData.data;
+
+  let imageUrl: string | undefined;
+
+  // ✅ upload só se base64 existir
+  if (imageBase64) {
+    imageUrl = await uploadBase64ToFirebase(imageBase64, "plans");
+  }
+  // ✅ Prisma recebe só dados finais
+  const categoryFinal = {
+    ...categoryData,
+    imageUrl,
+  };
+
+  const category = await categoriesService.createCategory(categoryFinal);
+  return reply.status(201).send(categoryFinal);
 }
 
 export async function getAllCategoriesController() {
@@ -58,11 +74,22 @@ export async function updateCategoryController(
     });
   }
 
+  // ✅ Sempre usar parsedBody
+  const { imageBase64, ...categoryData } = parsedData.data;
+
+  let imageUrl: string | undefined;
+
+  // ✅ Se veio base64, faz upload e troca imagem
+  if (imageBase64) {
+    imageUrl = await uploadBase64ToFirebase(imageBase64, "plans");
+  }
+
   try {
-    const updatedCategory = await categoriesService.updateCategory(
-      id,
-      parsedData.data
-    );
+    const updatedCategory = await categoriesService.updateCategory(id, {
+      ...categoryData,
+      ...(imageUrl && { imageUrl }),
+    });
+
     return reply.send(updatedCategory);
   } catch (err: any) {
     return reply.status(404).send({

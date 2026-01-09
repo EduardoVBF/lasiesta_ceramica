@@ -29,6 +29,7 @@ model Category {
   slug     String  @unique
   imageUrl String?
   isActive Boolean @default(true)
+  isFeatured Boolean @default(false)
 
   products Product[]
 

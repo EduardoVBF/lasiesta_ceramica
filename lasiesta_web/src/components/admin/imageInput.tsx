@@ -62,7 +62,6 @@ export default function ImageInput({
             alt="Imagem selecionada"
             width={192}
             height={192}
-            zoom
           />
         ) : (
           <Image

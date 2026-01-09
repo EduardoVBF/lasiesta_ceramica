@@ -7,6 +7,7 @@ export type Category = {
   isActive: boolean;
   createdAt: string;
   imageUrl?: string;
+  isFeatured?: boolean;
 };
 
 export type CreateCategoryDTO = {
@@ -39,6 +40,8 @@ export async function updateCategory(
     name: string;
     slug: string;
     isActive: boolean;
+    isFeatured?: boolean;
+    imageBase64?: string | null;
   }
 ) {
   const response = await api.put(`/categories/${id}`, data);

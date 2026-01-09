@@ -5,12 +5,16 @@ import PrimarySwitch from "../ui/primarySwitch";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
+import ImageInput from "./imageInput";
 import { Info } from "lucide-react";
 
 interface CategoryFormData {
   name: string;
   slug: string;
   isActive: boolean;
+  imageBase64?: string | null;
+  isFeatured?: boolean;
+  imageUrl?: string | null;
 }
 
 interface Props {
@@ -28,7 +32,9 @@ export default function CategoryFormModal({
   onClose,
   onSubmit,
 }: Props) {
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [infoVisible, setInfoVisible] = useState(false);
+  const [isFeatured, setIsFeatured] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
@@ -50,10 +56,14 @@ export default function CategoryFormModal({
       setName(initialData.name);
       setSlug(initialData.slug);
       setIsActive(initialData.isActive);
+      setIsFeatured(initialData.isFeatured ?? false);
+      setImageBase64(null);
     } else {
       setName("");
       setSlug("");
       setIsActive(true);
+      setIsFeatured(false);
+      setImageBase64(null);
     }
   }, [initialData, open]);
 
@@ -61,7 +71,13 @@ export default function CategoryFormModal({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSubmit({ name, slug, isActive });
+    onSubmit({
+      name,
+      slug,
+      isActive,
+      isFeatured,
+      ...(imageBase64 && { imageBase64 }),
+    });
     // handleClose();
   }
 
@@ -121,6 +137,13 @@ export default function CategoryFormModal({
           <p className="text-gray-500">Salvando categoria...</p>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <div className="w-full flex justify-center items-center">
+              <ImageInput
+                value={initialData?.imageUrl || null}
+                onChange={setImageBase64}
+              />
+            </div>
+
             <PrimaryInput
               label="Nome"
               value={name}
@@ -138,11 +161,18 @@ export default function CategoryFormModal({
               disabled
             />
 
-            <PrimarySwitch
-              label="Categoria ativa"
-              checked={isActive}
-              onChange={setIsActive}
-            />
+            <div className="flex items-center justify-start gap-5">
+              <PrimarySwitch
+                label="Categoria ativa"
+                checked={isActive}
+                onChange={setIsActive}
+              />
+              <PrimarySwitch
+                label="Categoria em destaque"
+                checked={isFeatured}
+                onChange={setIsFeatured}
+              />
+            </div>
 
             <div className="flex items-center justify-end gap-3 pt-4">
               <GrayButton

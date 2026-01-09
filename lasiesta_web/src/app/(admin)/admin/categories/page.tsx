@@ -10,6 +10,7 @@ import {
 import CategoryFormModal from "@/components/admin/CategoryFormModal";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import BrownButton from "@/components/ui/brownButtom";
+import ImageZoom from "@/components/layout/ImageZoom";
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { BsToggleOn } from "react-icons/bs";
@@ -42,7 +43,7 @@ export default function AdminCategoriesPage() {
         )
       )
       .finally(() => setLoading(false));
-  }, []);
+  }, [isModalOpen]);
 
   if (loading) {
     return <p className="text-gray-500">Carregando categorias...</p>;
@@ -97,10 +98,16 @@ export default function AdminCategoriesPage() {
                   NOME
                 </th>
                 <th className="text-left px-6 py-4 font-medium text-white">
+                  IMAGEM
+                </th>
+                <th className="text-left px-6 py-4 font-medium text-white">
                   SLUG
                 </th>
                 <th className="text-left px-6 py-4 font-medium text-white">
                   STATUS
+                </th>
+                <th className="text-left px-6 py-4 font-medium text-white">
+                  DESTAQUE
                 </th>
                 <th className="text-right px-6 py-4 font-medium text-white">
                   AÇÕES
@@ -222,6 +229,9 @@ export default function AdminCategoriesPage() {
                   name: editingCategory.name,
                   slug: editingCategory.slug,
                   isActive: editingCategory.isActive,
+                  imageUrl: editingCategory.imageUrl,
+                  isFeatured: editingCategory.isFeatured,
+                  imageBase64: undefined,
                 }
               : null
           }
@@ -292,10 +302,33 @@ function CategoryRow({
         {category.name}
       </td>
 
+      <td className="px-6 py-4 text-gray-500">
+        {category.imageUrl ? (
+          <ImageZoom
+            src={category.imageUrl || "/image/no-image.png"}
+            alt={category.name}
+            width={50}
+            height={50}
+            className="object-cover rounded-md"
+            zoom
+          />
+        ) : (
+          "Sem imagem"
+        )}
+      </td>
+
       <td className="px-6 py-4 text-gray-500">{category.slug}</td>
 
       <td className="px-6 py-4">
         <StatusBadge active={category.isActive} />
+      </td>
+
+      <td className="px-6 py-4">
+        {category.isFeatured && (
+          <span className="bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
+            Destaque
+          </span>
+        )}
       </td>
 
       <td className="px-6 py-4 text-right">
