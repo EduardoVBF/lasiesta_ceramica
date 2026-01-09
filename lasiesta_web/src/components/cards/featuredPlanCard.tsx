@@ -1,5 +1,6 @@
 import BrownButton from "../ui/brownButtom";
 import { motion } from "framer-motion";
+import DOMPurify from "dompurify";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -7,10 +8,17 @@ import React from "react";
 interface FeaturedPlanCardProps {
   plan: {
     id: string;
-    title: string;
-    description: string;
-    image: string;
-    price: string;
+    name: string;
+    slug: string;
+    price: number | null;
+    durationLabel: string | null;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    shortDescription?: string;
+    longDescription?: string;
+    isFeatured?: boolean;
+    imageUrl?: string;
   };
   index: number;
 }
@@ -29,25 +37,36 @@ export default function FeaturedPlanCard({
     >
       <div className="flex flex-col">
         <Image
-          src={plan.image}
-          alt={plan.title}
+          src={plan.imageUrl || ""}
+          alt={plan.name}
           width={500}
           height={300}
           className="w-full h-56 object-cover"
         />
         <div className="p-6 space-y-3">
-          <h3 className="text-2xl font-semibold">{plan.title}</h3>
-          <p className="text-marrom-avermelhado/80 leading-relaxed">
-            {plan.description}
-          </p>
-          <p className="font-semibold text-marrom-avermelhado mt-3">
-            {plan.price}
-          </p>
+          <h1 className="text-2xl font-semibold">{plan.name}</h1>
+          <div
+            className="text-marrom-avermelhado text-base"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(plan.shortDescription || ""),
+            }}
+          />
         </div>
       </div>
-      <Link href="/classes" className="block mx-6 mb-6">
-        <BrownButton text="Saiba Mais" />
-      </Link>
+      <div className=" mx-6 mb-6">
+        <div className="flex items-baseline gap-2 mb-4 h-fit">
+          <span className="text-lg md:text-2xl font-bold text-marrom-avermelhado">
+            R$ {plan.price}
+          </span>
+          <span className="text-gray-500 text-base">
+            /{plan.durationLabel}
+          </span>
+        </div>
+
+        <Link href="/classes" className="block">
+          <BrownButton text="Saiba Mais" />
+        </Link>
+      </div>
     </motion.div>
   );
 }

@@ -1,14 +1,15 @@
 "use client";
 import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
+import { getAdminPlans, Plan } from "../../services/plans.service";
 import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import CarouselComponent from "@/components/layout/carousel";
 import BrownButton from "@/components/ui/brownButtom";
+import React, { useState, useEffect } from "react";
 import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const categories = [
   { id: "copos", label: "Copos", image: "/image/IMG_0190.JPG" },
@@ -17,34 +18,22 @@ const categories = [
   { id: "canecas", label: "Canecas", image: "/image/IMG_0094.JPG" },
 ];
 
-const plans = [
-  {
-    id: "1",
-    title: "Aula Experimental",
-    description:
-      "Um primeiro contato com o barro, leve e intuitivo. Você aprenderá o básico da modelagem e levará sua primeira peça feita à mão.",
-    price: "R$50 / aula",
-    image: "/image/pexels-1.jpg",
-  },
-  {
-    id: "2",
-    title: "Workshop Intensivo",
-    description:
-      "Três encontros imersivos para explorar técnicas, cores e texturas. Um mergulho criativo e transformador no universo cerâmico.",
-    price: "R$200 / workshop",
-    image: "/image/pexels-5.jpg",
-  },
-  {
-    id: "3",
-    title: "Plano Mensal",
-    description:
-      "Aulas semanais, acompanhamento contínuo e muita experimentação. Ideal para quem quer tornar a cerâmica parte da rotina.",
-    price: "R$400 / mês",
-    image: "/image/pexels-4.jpg",
-  },
-];
-
 export default function HomePage() {
+  const [plans, setPlans] = useState<Plan[]>([]);
+
+  useEffect(() => {
+    async function fetchPlans() {
+      try {
+        const data = await getAdminPlans();
+        setPlans(data as Plan[]);
+      } catch (error) {
+        console.error("Erro ao buscar planos:", error);
+      }
+    }
+
+    fetchPlans();
+  }, []);
+
   return (
     <main className="flex flex-col min-h-screen bg-bege-claro text-marrom-avermelhado overflow-hidden">
       {/* Carrossel */}
@@ -129,9 +118,11 @@ export default function HomePage() {
             Cursos e Experiências
           </h1>
           <div className="grid md:grid-cols-3 gap-12">
-            {plans.map((plan, index) => (
-              <FeaturedPlanCard plan={plan} index={index} key={index} />
-            ))}
+            {plans
+              .filter((plan) => plan.isFeatured && plan.isActive)
+              .map((plan, index) => (
+                <FeaturedPlanCard plan={plan} index={index} key={index} />
+              ))}
           </div>
         </div>
       </section>
