@@ -24,13 +24,16 @@ export default function ImageZoom({
 }: ImageZoomProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(true);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   function handleOpen() {
-    if (zoom) setOpen(true);
+    if (!zoom) return;
+    setLoadingImage(true);
+    setOpen(true);
   }
 
   function handleClose() {
@@ -62,13 +65,12 @@ export default function ImageZoom({
             className="fixed inset-0 z-[9999] bg-black/80 flex items-center justify-center p-6"
             onClick={handleClose}
           >
-            {/* moldura adaptativa */}
+            {/* moldura */}
             <div
               className="
                 relative inline-block
                 bg-white rounded-xl shadow-2xl p-2
                 max-w-[90vw] max-h-[90vh]
-                w-auto h-auto
               "
               onClick={(e) => e.stopPropagation()}
             >
@@ -85,17 +87,26 @@ export default function ImageZoom({
                 <X size={20} />
               </button>
 
+              {/* loader */}
+              {loadingImage && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-700 rounded-full animate-spin" />
+                </div>
+              )}
+
               {/* imagem grande */}
               <Image
                 src={src}
                 alt={alt}
                 width={1600}
                 height={1600}
-                className="
+                onLoadingComplete={() => setLoadingImage(false)}
+                className={`
                   max-w-[80vw] max-h-[80vh]
-                  w-auto h-auto
-                  rounded-xl
-                "
+                  w-auto h-auto rounded-xl
+                  transition-opacity duration-300
+                  ${loadingImage ? "opacity-0" : "opacity-100"}
+                `}
               />
             </div>
           </div>,

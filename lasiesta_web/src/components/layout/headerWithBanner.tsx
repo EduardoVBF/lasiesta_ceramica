@@ -20,7 +20,7 @@ export default function HeaderWithBanner({
   textColor = "text-white",
 }: HeaderWithBannerProps) {
   return (
-    <div className="relative w-full flex flex-col items-center">
+    <div className="relative w-full flex flex-col items-center z-20">
       {/* Header fixo no topo - TRANSPARENTE */}
       <div className="absolute top-0 z-20 w-full">
         <Header bgColor="bg-transparent" />
