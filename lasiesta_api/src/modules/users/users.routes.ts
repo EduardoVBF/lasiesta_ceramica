@@ -7,38 +7,60 @@ import {
 import { authMiddleware } from "../../shared/middlewares/auth";
 import { adminOnly } from "../../shared/middlewares/adminOnly";
 import { FastifyInstance } from "fastify";
+import { validateRequest } from "../../infra/http/validate";
+import { resetPasswordBodySchema, updateUserBodySchema, userParamsSchema } from "./users.schema";
 
 export async function usersRoutes(app: FastifyInstance) {
-    // Admin
-    app.get(
-      "/users",
-      {
-        preHandler: [authMiddleware, adminOnly],
-      },
-      getAllUsersController
-    );
+  // Admin
+  app.get(
+    "/users",
+    {
+      preHandler: [authMiddleware, adminOnly],
+    },
+    getAllUsersController
+  );
 
-    app.get(
-      "/users/:id",
-      {
-        preHandler: [authMiddleware, adminOnly],
-      },
-      getUserByIdController
-    );
+  app.get(
+    "/users/:id",
+    {
+      preHandler: [authMiddleware, adminOnly],
+    },
+    async (request, reply) => {
+      const { params } = await validateRequest(request, {
+        params: userParamsSchema,
+      });
 
-    app.put(
-      "/users/:id",
-      {
-        preHandler: [authMiddleware, adminOnly],
-      },
-      updateUserController
-    ); 
+      return getUserByIdController({ ...request, params } as any, reply);
+    }
+  );
 
-    app.post(
-      "/users/:id/reset-password",
-      {
-        preHandler: [authMiddleware, adminOnly],
-      },
-      resetPasswordController
-    );
+  app.put(
+    "/users/:id",
+    {
+      preHandler: [authMiddleware, adminOnly],
+    },
+    async (request, reply) => {
+      const { body, params } = await validateRequest(request, {
+        body: updateUserBodySchema.partial(),
+        params: userParamsSchema,
+      });
+
+      return updateUserController({ ...request, body, params } as any, reply);
+    }
+  );
+
+  app.post(
+    "/users/:id/reset-password",
+    {
+      preHandler: [authMiddleware, adminOnly],
+    },
+    async (request, reply) => {
+      const { params, body } = await validateRequest(request, {
+        params: userParamsSchema,
+        body: resetPasswordBodySchema,
+      });
+
+      return resetPasswordController({ ...request, body, params } as any, reply);
+    }
+  );
 }

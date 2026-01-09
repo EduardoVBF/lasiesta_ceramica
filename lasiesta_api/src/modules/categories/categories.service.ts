@@ -1,3 +1,5 @@
+import { app } from "firebase-admin";
+import { AppError } from "../../infra/errors/app-error";
 import { prisma } from "../../shared/database/prisma";
 import { CreateCategoryDTO } from "./categories.schemas";
 
@@ -31,7 +33,7 @@ export class CategoriesService {
     });
 
     if (!category) {
-      throw new Error("Categoria não encontrada.");
+      throw new AppError("Categoria não encontrada", 404);
     }
     return category;
   }
@@ -43,7 +45,7 @@ export class CategoriesService {
     });
 
     if (!category) {
-      throw new Error("Categoria não encontrada.");
+      throw new AppError("Categoria não encontrada", 404);
     }
 
     return await prisma.category.update({
@@ -59,7 +61,7 @@ export class CategoriesService {
     });
 
     if (!category || !category.isActive) {
-      throw new Error("Categoria não encontrada.");
+      throw new AppError("Categoria não encontrada", 404);
     }
 
     return await prisma.category.update({

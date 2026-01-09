@@ -9,16 +9,16 @@ export async function createCategoryController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const parsedData = createCategorySchema.safeParse(request.body);
+  // const parsedData = createCategorySchema.safeParse(request.body);
 
-  if (!parsedData.success) {
-    return reply.status(400).send({
-      message: "Dados de categoria inválidos.",
-      errors: parsedData.error,
-    });
-  }
+  // if (!parsedData.success) {
+  //   return reply.status(400).send({
+  //     message: "Dados de categoria inválidos.",
+  //     errors: parsedData.error,
+  //   });
+  // }
 
-  const { imageBase64, ...categoryData } = parsedData.data;
+  const { imageBase64, ...categoryData } = request.body as any;
 
   let imageUrl: string | undefined;
 
@@ -27,13 +27,11 @@ export async function createCategoryController(
     imageUrl = await uploadBase64ToFirebase(imageBase64, "categories");
   }
   // ✅ Prisma recebe só dados finais
-  const categoryFinal = {
+  const category = await categoriesService.createCategory({
     ...categoryData,
-    imageUrl,
-  };
-
-  const category = await categoriesService.createCategory(categoryFinal);
-  return reply.status(201).send(categoryFinal);
+    ...(imageUrl && { imageUrl }),
+  });
+  return reply.status(201).send(category);
 }
 
 export async function getAllCategoriesController() {
@@ -49,14 +47,17 @@ export async function getCategoryByIdController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
-  try {
-    const category = await categoriesService.getCategoryById(id);
-    return reply.send(category);
-  } catch (err: any) {
-    return reply.status(404).send({
-      message: err.message ?? "Categoria não encontrada.",
-    });
-  }
+
+  const category = await categoriesService.getCategoryById(id);
+  return reply.send(category);
+  // try {
+  //   const category = await categoriesService.getCategoryById(id);
+  //   return reply.send(category);
+  // } catch (err: any) {
+  //   return reply.status(404).send({
+  //     message: err.message ?? "Categoria não encontrada.",
+  //   });
+  // }
 }
 
 export async function updateCategoryController(
@@ -64,16 +65,16 @@ export async function updateCategoryController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
-  const parsedData = createCategorySchema.partial().safeParse(request.body);
+  // const parsedData = createCategorySchema.partial().safeParse(request.body);
 
-  if (!parsedData.success) {
-    return reply.status(400).send({
-      message: "Dados de categoria inválidos.",
-      errors: parsedData.error,
-    });
-  }
+  // if (!parsedData.success) {
+  //   return reply.status(400).send({
+  //     message: "Dados de categoria inválidos.",
+  //     errors: parsedData.error,
+  //   });
+  // }
 
-  const { imageBase64, ...categoryData } = parsedData.data;
+  const { imageBase64, ...categoryData } = request.body as any;
 
   let imageUrl: string | undefined;
 
@@ -82,18 +83,25 @@ export async function updateCategoryController(
     imageUrl = await uploadBase64ToFirebase(imageBase64, "plans");
   }
 
-  try {
-    const updatedCategory = await categoriesService.updateCategory(id, {
-      ...categoryData,
-      ...(imageUrl && { imageUrl }),
-    });
+  // try {
+  //   const updatedCategory = await categoriesService.updateCategory(id, {
+  //     ...categoryData,
+  //     ...(imageUrl && { imageUrl }),
+  //   });
 
-    return reply.send(updatedCategory);
-  } catch (err: any) {
-    return reply.status(404).send({
-      message: err.message ?? "Categoria não encontrada.",
-    });
-  }
+  //   return reply.send(updatedCategory);
+  // } catch (err: any) {
+  //   return reply.status(404).send({
+  //     message: err.message ?? "Categoria não encontrada.",
+  //   });
+  // }
+
+  const updatedCategory = await categoriesService.updateCategory(id, {
+    ...categoryData,
+    ...(imageUrl && { imageUrl }),
+  });
+
+  return reply.send(updatedCategory);
 }
 
 export async function deleteCategoryController(
@@ -101,12 +109,15 @@ export async function deleteCategoryController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
-  try {
-    await categoriesService.deleteCategory(id);
-    return reply.status(204).send();
-  } catch (err: any) {
-    return reply.status(404).send({
-      message: err.message ?? "Categoria não encontrada.",
-    });
-  }
+
+  await categoriesService.deleteCategory(id);
+  return reply.status(204).send();
+  // try {
+  //   await categoriesService.deleteCategory(id);
+  //   return reply.status(204).send();
+  // } catch (err: any) {
+  //   return reply.status(404).send({
+  //     message: err.message ?? "Categoria não encontrada.",
+  //   });
+  // }
 }

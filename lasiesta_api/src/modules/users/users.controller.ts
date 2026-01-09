@@ -14,14 +14,25 @@ export async function getUserByIdController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
-  try {
-    const user = await usersService.getUserById(id);
-    return reply.send(user);
-  } catch (err: any) {
-    return reply.status(404).send({
-      message: err.message ?? "Usuário não encontrado.",
-    });
-  }
+  // try {
+  //   const user = await usersService.getUserById(id);
+  //   return reply.send(user);
+  // } catch (err: any) {
+  //   return reply.status(404).send({
+  //     message: err.message ?? "Usuário não encontrado.",
+  //   });
+  // }
+  const user = await usersService.getUserById(id);
+  return reply.send({
+    user: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive,
+    },
+  });
 }
 
 // PUT
@@ -30,33 +41,40 @@ export async function updateUserController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
-  const parsedData = updateUserBodySchema.partial().safeParse(request.body);
+  // const parsedData = updateUserBodySchema.partial().safeParse(request.body);
 
-  if (!parsedData.success) {
-    return reply.status(400).send({
-      message: "Dados de usuário inválidos.",
-      errors: parsedData.error,
-    });
-  }
+  // if (!parsedData.success) {
+  //   return reply.status(400).send({
+  //     message: "Dados de usuário inválidos.",
+  //     errors: parsedData.error,
+  //   });
+  // }
 
   const requester = request.user as {
     id: string;
     role: "admin" | "editor";
   };
 
-  try {
-    const updatedUser = await usersService.updateUser(
-      id,
-      parsedData.data,
-      requester.role,
-      requester.id
-    );
-    return reply.send(updatedUser);
-  } catch (err: any) {
-    return reply.status(404).send({
-      message: err.message ?? "Operação não permitida.",
-    });
-  }
+  // try {
+  //   const updatedUser = await usersService.updateUser(
+  //     id,
+  //     request.body as any,
+  //     requester.role,
+  //     requester.id
+  //   );
+  //   return reply.send(updatedUser);
+  // } catch (err: any) {
+  //   return reply.status(404).send({
+  //     message: err.message ?? "Operação não permitida.",
+  //   });
+  // }
+  const updatedUser = await usersService.updateUser(
+    id,
+    request.body as any,
+    requester.role,
+    requester.id
+  );
+  return reply.send(updatedUser);
 }
 
 // POST reset password
@@ -65,21 +83,23 @@ export async function resetPasswordController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
-  const parsedData = resetPasswordBodySchema.safeParse(request.body);
+  // const parsedData = resetPasswordBodySchema.safeParse(request.body);
 
-  if (!parsedData.success) {
-    return reply.status(400).send({
-      message: "Dados de usuário inválidos.",
-      errors: parsedData.error,
-    });
-  }
+  // if (!parsedData.success) {
+  //   return reply.status(400).send({
+  //     message: "Dados de usuário inválidos.",
+  //     errors: parsedData.error,
+  //   });
+  // }
 
-  try {
-    await usersService.resetPassword(id, parsedData.data);
-    return reply.status(204).send();
-  } catch (err: any) {
-    return reply.status(404).send({
-      message: err.message ?? "Usuário não encontrado.",
-    });
-  }
+  // try {
+  //   await usersService.resetPassword(id, request.body as any);
+  //   return reply.status(204).send();
+  // } catch (err: any) {
+  //   return reply.status(404).send({
+  //     message: err.message ?? "Usuário não encontrado.",
+  //   });
+  // }
+  await usersService.resetPassword(id, request.body as any);
+  return reply.status(204).send();
 }

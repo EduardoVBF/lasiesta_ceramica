@@ -7,6 +7,7 @@ import {
 } from "./users.schema";
 import { prisma } from "../../shared/database/prisma";
 import bcrypt from "bcrypt";
+import { AppError } from "../../infra/errors/app-error";
 
 export class UsersService {
   async getAllUsers() {
@@ -29,7 +30,7 @@ export class UsersService {
     })) as UserResponseDTO | null;
 
     if (!user) {
-      throw new Error("Usuário não encontrado.");
+      throw new AppError("Usuário não encontrado.", 404);
     }
     return prisma.user.findUnique({
       where: { id },
@@ -55,17 +56,17 @@ export class UsersService {
     })) as UserResponseDTO | null;
 
     if (!user) {
-      throw new Error("Usuário não encontrado.");
+      throw new AppError("Usuário não encontrado.", 404);
     }
 
     // Editor nunca altera role
     if (data.role && requesterRole !== "admin") {
-      throw new Error("Sem permissão para alterar função.");
+      throw new AppError("Sem permissão para alterar função.", 403);
     }
 
     // Admin não pode se auto-rebaixar
     if (data.role && requesterId === id && data.role !== user.role) {
-      throw new Error("Você não pode alterar sua própria função.");
+      throw new AppError("Você não pode alterar sua própria função.", 403);
     }
 
     return prisma.user.update({
@@ -93,7 +94,7 @@ export class UsersService {
     })) as UserResponseDTO | null;
 
     if (!user) {
-      throw new Error("Usuário não encontrado.");
+      throw new AppError("Usuário não encontrado.", 404);
     }
 
     const hashedPassword = await bcrypt.hash(data.newPassword, 10);
