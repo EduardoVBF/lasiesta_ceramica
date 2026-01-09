@@ -123,7 +123,7 @@ export default function HomePage() {
       </div>
 
       {/* Seção de Cursos */}
-      <section className="bg-marrom-claro py-10 w-full overflow-hidden">
+      <section className="bg-marrom-claro py-10 w-full overflow-hidden z-20">
         <div className="max-w-6xl mx-auto px-6">
           <h1 className="text-4xl font-semibold text-center mb-12">
             Cursos e Experiências

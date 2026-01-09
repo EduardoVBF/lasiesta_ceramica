@@ -28,7 +28,7 @@ export type PlanFormData = {
 };
 
 export async function getAdminPlans() {
-  const response = await api.get<Plan[]>('/plans');
+  const response = await api.get<Plan[]>('/plans/active');
   return response.data;
 }
 

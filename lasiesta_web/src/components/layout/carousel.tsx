@@ -45,7 +45,7 @@ export default function CarouselComponent() {
   }, [emblaApi]);
 
   return (
-    <div className="relative">
+    <div className="relative z-20">
       {/* Header fixo no topo - TRANSPARENTE */}
       <div className="absolute top-0 z-20 w-full">
         <Header bgColor="bg-transparent" />
