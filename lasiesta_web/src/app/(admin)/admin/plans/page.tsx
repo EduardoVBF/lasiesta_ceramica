@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BsToggleOn } from "react-icons/bs";
 import DOMPurify from "dompurify";
+import Image from "next/image";
 
 export default function AdminPlansPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -135,6 +136,7 @@ export default function AdminPlansPage() {
                   shortDescription: editingPlan.shortDescription ?? null,
                   longDescription: editingPlan.longDescription ?? null,
                   isFeatured: editingPlan.isFeatured ?? false,
+                  imageUrl: editingPlan.imageUrl ?? null,
                 }
               : null
           }
@@ -209,9 +211,12 @@ function PlanCard({
                   zoom
                 />
               ) : (
-                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-                  Sem imagem
-                </div>
+                <Image
+                  src="/image/placeholder-image.png"
+                  alt="Imagem placeholder"
+                  width={80}
+                  height={80}
+                  />
               )}
             </div>
             <div className="flex flex-col gap-2">

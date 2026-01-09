@@ -11,6 +11,7 @@ import fastify from "fastify";
 export async function buildApp() {
   const app = fastify({
     logger: true,
+    bodyLimit: 10 * 1024 * 1024, // 10MB
   });
 
   await app.register(multipart, {

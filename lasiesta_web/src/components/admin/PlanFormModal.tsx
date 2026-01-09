@@ -7,6 +7,7 @@ import PrimarySwitch from "../ui/primarySwitch";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
+import ImageInput from "./imageInput";
 import { Info } from "lucide-react";
 
 type Props = {
@@ -34,42 +35,49 @@ export default function PlanFormModal({
   const [longDescription, setLongDescription] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isFeatured, setIsFeatured] = useState(false);
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
 
   // gerar slug automaticamente
   useEffect(() => {
-    setSlug(
-      name
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "")
-    );
-  }, [name]);
-
-  useEffect(() => {
     if (initialData) {
       setName(initialData.name);
-      setSlug(initialData.slug);
+      setSlug(initialData.slug); // 👈 valor fixo
       setPrice(initialData.price !== null ? String(initialData.price) : "");
       setDurationLabel(initialData.durationLabel ?? "");
       setShortDescription(initialData.shortDescription ?? "");
       setLongDescription(initialData.longDescription ?? "");
       setIsActive(initialData.isActive);
       setIsFeatured(initialData.isFeatured ?? false);
+      setImageBase64(null);
     } else {
       setName("");
-      setSlug("");
+      setSlug(""); // 👈 será preenchido automaticamente
       setPrice("");
       setDurationLabel("");
       setShortDescription("");
       setLongDescription("");
       setIsActive(true);
       setIsFeatured(false);
+      setImageBase64(null);
     }
   }, [initialData, open]);
 
+  useEffect(() => {
+    if (!initialData) {
+      setSlug(generateSlug(name));
+    }
+  }, [name, initialData]);
+
   if (!open) return null;
+
+  function generateSlug(value: string) {
+    return value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -83,6 +91,7 @@ export default function PlanFormModal({
       longDescription: longDescription || null,
       isActive,
       isFeatured,
+      ...(imageBase64 && { imageBase64 }), // 👈 chave mágica
     });
   }
 
@@ -127,7 +136,10 @@ export default function PlanFormModal({
               <li>O nome identifica o plano no admin e no site.</li>
               <li>O slug é gerado automaticamente e usado na URL.</li>
               <li>O preço deve ser em reais (R$) e use ponto para decimais.</li>
-              <li>A duração é a recorrência do plano, como &quot;mês&quot; ou &quot;aula&quot;.</li>
+              <li>
+                A duração é a recorrência do plano, como &quot;mês&quot; ou
+                &quot;aula&quot;.
+              </li>
               <li>A descrição curta aparece nos cards e listas.</li>
               <li>A descrição longa aparece na página de detalhes.</li>
               <li>Planos em destaque podem aparecer na home.</li>
@@ -140,6 +152,13 @@ export default function PlanFormModal({
           <p className="text-gray-500">Salvando plano...</p>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <div className="w-full flex justify-center items-center">
+              <ImageInput
+                value={initialData?.imageUrl || null}
+                onChange={setImageBase64}
+              />
+            </div>
+
             <PrimaryInput
               label="Nome"
               value={name}
@@ -154,7 +173,7 @@ export default function PlanFormModal({
               onChange={(e) => setSlug(e.target.value)}
               placeholder="ex: workshop-ceramica"
               required
-              disabled
+              disabled={!!initialData}
             />
 
             <PrimaryInput
