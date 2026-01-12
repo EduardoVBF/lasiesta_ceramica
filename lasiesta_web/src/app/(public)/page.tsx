@@ -1,6 +1,6 @@
 "use client";
 import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
-import { getAdminPlans, Plan } from "../../services/plans.service";
+import { getActivePlans, Plan } from "../../services/plans.service";
 import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import CarouselComponent from "@/components/layout/carousel";
@@ -24,7 +24,7 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchPlans() {
       try {
-        const data = await getAdminPlans();
+        const data = await getActivePlans();
         setPlans(data as Plan[]);
       } catch (error) {
         console.error("Erro ao buscar planos:", error);
