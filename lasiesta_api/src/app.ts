@@ -1,3 +1,4 @@
+import { homeCarouselRoutes } from "./modules/home-carousel/home-carousel.routes";
 import { categoriesRoutes } from "./modules/categories/categories.routes";
 import { bannersRoutes } from "./modules/banners/banners.routes";
 import { authMiddleware } from "./shared/middlewares/auth";
@@ -21,6 +22,7 @@ export async function buildApp() {
   await registerPlugins(app);
 
   // rotas
+  await app.register(homeCarouselRoutes);
   await app.register(categoriesRoutes);
   await app.register(bannersRoutes);
   await app.register(plansRoutes);

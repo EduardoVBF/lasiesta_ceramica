@@ -32,15 +32,6 @@ export async function updateBannerController(
 ) {
   const { id } = request.params as { id: string };
 
-  // const parsedBody = updateBannerSchema.safeParse(request.body);
-
-  // if (!parsedBody.success) {
-  //   return reply.status(400).send({
-  //     error: "Dados inválidos.",
-  //     details: parsedBody.error,
-  //   });
-  // }
-
   const { imageBase64, ...bannerData } = request.body as any;
 
   let imageUrl: string | undefined;
@@ -56,17 +47,4 @@ export async function updateBannerController(
   });
 
   return reply.send(banner);
-
-  // try {
-  //   const banner = await bannersService.updateBanner(id, {
-  //     ...bannerData,
-  //     ...(imageUrl && { imageUrl }),
-  //   });
-
-  //   return reply.send(banner);
-  // } catch (err: any) {
-  //   return reply.status(404).send({
-  //     message: err.message ?? "Banner não encontrado.",
-  //   });
-  // }
 }
