@@ -14,7 +14,6 @@ export class HomeCarouselService {
   }
 
   async getActive() {
-    console.log("Fetching active carousel items");
     return prisma.homeCarouselItem.findMany({
       where: { isActive: true },
       orderBy: { orderIndex: "asc" },
@@ -34,7 +33,6 @@ export class HomeCarouselService {
   }
 
   async create(data: CreateHomeCarouselDTO) {
-    console.log("Creating carousel item with data:", data);
     let orderIndex = data.orderIndex;
 
     if (!orderIndex) {

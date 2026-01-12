@@ -1,11 +1,10 @@
 "use client";
-
+import { Banner } from "../../services/banner.service";
 import React, { useEffect, useState } from "react";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
 import ImageInput from "./imageInput";
-import { Banner } from "../../services/banner.service";
 
 type BannerFormData = {
   title?: string | null;

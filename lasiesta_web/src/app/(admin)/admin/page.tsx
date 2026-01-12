@@ -48,7 +48,8 @@ export default function AdminPage() {
 
           <p className="text-gray-600 text-lg max-w-3xl">
             Este é o painel administrativo da LaSiesta. Aqui você organiza
-            produtos, categorias e planos com calma, clareza e controle.
+            produtos, categorias, planos, usuários, banners e carrossel com
+            calma, clareza e controle.
           </p>
         </div>
       </section>
@@ -57,14 +58,14 @@ export default function AdminPage() {
       <section className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6">
         <ActionCard
           title="Planos & Aulas"
-          description="Gerencie workshops, aulas e planos mensais."
+          description="Gerencie os planos e aulas oferecidos."
           href="/admin/plans"
           icon="🪔"
         />
 
         <ActionCard
           title="Categorias"
-          description="Organize os tipos de produtos do ateliê."
+          description="Organize os grupos de produtos do ateliê."
           href="/admin/categories"
           icon="🏷️"
         />
@@ -85,7 +86,7 @@ export default function AdminPage() {
 
         <ActionCard
           title="Carrossel"
-          description="Organize os itens do carrossel da página inicial."
+          description="Organize os slides do carrossel da página inicial."
           href="/admin/carousel"
           icon="🎠"
         />
