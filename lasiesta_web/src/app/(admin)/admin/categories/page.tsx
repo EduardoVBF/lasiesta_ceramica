@@ -11,6 +11,7 @@ import CategoryFormModal from "@/components/admin/CategoryFormModal";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import BrownButton from "@/components/ui/brownButtom";
 import ImageZoom from "@/components/layout/ImageZoom";
+import StatusBadge from "@/components/ui/statusBadge";
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { BsToggleOn } from "react-icons/bs";
@@ -361,22 +362,5 @@ function CategoryRow({
         </div>
       </td>
     </tr>
-  );
-}
-
-function StatusBadge({ active }: { active: boolean }) {
-  return (
-    <span
-      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
-        active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-      }`}
-    >
-      <span
-        className={`w-2 h-2 rounded-full ${
-          active ? "bg-green-600" : "bg-red-600"
-        }`}
-      />
-      {active ? "Ativa" : "Inativa"}
-    </span>
   );
 }
