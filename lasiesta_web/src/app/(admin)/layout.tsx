@@ -1,7 +1,7 @@
 "use client";
 import AdminSidebar from "@/components/admin/sidebar";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function AdminLayout({
@@ -10,13 +10,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { status } = useSession();
+  const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (status === "unauthenticated" && pathname.startsWith("/admin")) {
       router.replace("/login");
     }
-  }, [status, router]);
+  }, [status, router, pathname]);
 
   // Enquanto carrega ou redireciona
   if (status !== "authenticated") return null;

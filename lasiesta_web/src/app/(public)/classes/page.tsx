@@ -1,5 +1,5 @@
 "use client";
-import { getAdminPlans, Plan } from "../../../services/plans.service";
+import { getActivePlans, Plan } from "../../../services/plans.service";
 import HeaderWithBanner from "@/components/layout/headerWithBanner";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import PlansCard from "@/components/cards/plansCard";
@@ -12,7 +12,7 @@ export default function Classes() {
   useEffect(() => {
     async function fetchPlans() {
       try {
-        const data = await getAdminPlans();
+        const data = await getActivePlans();
         setPlans(data as Plan[]);
       } catch (error) {
         console.error("Erro ao buscar planos:", error);

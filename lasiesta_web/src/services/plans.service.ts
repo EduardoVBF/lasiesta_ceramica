@@ -32,6 +32,11 @@ export async function getAdminPlans() {
   return response.data;
 }
 
+export async function getActivePlans() {
+  const response = await api.get<Plan[]>('/plans/active');
+  return response.data;
+}
+
 export async function createPlan(data: PlanFormData) {
   const response = await api.post('/plans', data);
   return response.data;
