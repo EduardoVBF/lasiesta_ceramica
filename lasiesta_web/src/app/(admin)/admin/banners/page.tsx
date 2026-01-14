@@ -6,12 +6,12 @@ import {
 } from "../../../../services/banner.service";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import BannerFormModal from "@/components/admin/bannerFormModal";
+import ColoredTextBox from "@/components/ui/coloredTextBox";
 import BannerCard from "@/components/admin/bannerCard";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
-import ColoredTextBox from "@/components/ui/coloredTextBox";
-import { ValidationError } from "next/dist/compiled/amphtml-validator";
+import { AxiosError } from "axios";
 
 export default function AdminBannersPage() {
   const [infoVisible, setInfoVisible] = useState(false);
@@ -78,7 +78,8 @@ export default function AdminBannersPage() {
                 contexto da página.
               </li>
               <li>
-                Os banners são o cabeçalho visual das páginas que eles representam.
+                Os banners são o cabeçalho visual das páginas que eles
+                representam.
               </li>
             </ul>
           </ColoredTextBox>
@@ -115,12 +116,16 @@ export default function AdminBannersPage() {
 
               toast.success("Banner atualizado com sucesso!");
               setEditingBanner(null);
-            } catch (err: ValidationError) {
-              toast.error(
-                `Erro ao salvar banner: ${
-                  err.response?.data?.error || err.message
-                }`
-              );
+            } catch (err) {
+              if (err instanceof AxiosError) {
+                toast.error(
+                  err.response?.data?.error ||
+                    err.response?.data?.message ||
+                    err.message
+                );
+              } else {
+                toast.error("Erro inesperado ao salvar banner");
+              }
             } finally {
               setSaving(false);
             }

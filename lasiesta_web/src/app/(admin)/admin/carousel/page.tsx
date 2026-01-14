@@ -16,8 +16,8 @@ import SortableCarouselItem from "@/components/admin/sortableCarouselItem";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import BrownButton from "@/components/ui/brownButtom";
-import { ValidationError } from "next/dist/compiled/amphtml-validator";
 import { DragEndEvent } from "@dnd-kit/core";
+import { AxiosError } from "axios";
 
 import {
   DndContext,
@@ -184,12 +184,16 @@ export default function AdminHomeCarouselPage() {
                           updated.isActive ? "ativado" : "desativado"
                         } com sucesso!`
                       );
-                    } catch (err: ValidationError) {
-                      toast.error(
-                        `Erro ao atualizar status: ${
-                          err.response?.data?.error || err.message
-                        }`
-                      );
+                    } catch (err) {
+                      if (err instanceof AxiosError) {
+                        toast.error(
+                          err.response?.data?.error ||
+                            err.response?.data?.message ||
+                            err.message
+                        );
+                      } else {
+                        toast.error("Erro inesperado ao salvar banner");
+                      }
                     }
                   }}
                 />
@@ -232,12 +236,16 @@ export default function AdminHomeCarouselPage() {
                         updated.isActive ? "ativado" : "desativado"
                       } com sucesso!`
                     );
-                  } catch (err: ValidationError) {
-                    toast.error(
-                      `Erro ao atualizar status: ${
-                        err.response?.data?.error || err.message
-                      }`
-                    );
+                  } catch (err) {
+                    if (err instanceof AxiosError) {
+                      toast.error(
+                        err.response?.data?.error ||
+                          err.response?.data?.message ||
+                          err.message
+                      );
+                    } else {
+                      toast.error("Erro inesperado ao salvar banner");
+                    }
                   }
                 }}
               />
@@ -280,12 +288,16 @@ export default function AdminHomeCarouselPage() {
 
             setCreating(false);
             setEditingItem(null);
-          } catch (err: ValidationError) {
-            toast.error(
-              `Erro ao salvar slide: ${
-                err.response?.data?.error || err.message
-              }`
-            );
+          } catch (err) {
+            if (err instanceof AxiosError) {
+              toast.error(
+                err.response?.data?.error ||
+                  err.response?.data?.message ||
+                  err.message
+              );
+            } else {
+              toast.error("Erro inesperado ao salvar slide");
+            }
           } finally {
             setSaving(false);
           }

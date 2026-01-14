@@ -15,7 +15,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
-import { ValidationError } from "next/dist/compiled/amphtml-validator";
+import { AxiosError } from "axios";
 
 export default function AdminCategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -170,12 +170,16 @@ export default function AdminCategoriesPage() {
                           updated.isActive ? "ativada" : "desativada"
                         } com sucesso!`
                       );
-                    } catch (err: ValidationError) {
-                      toast.error(
-                        `Erro ao atualizar status: ${
-                          err.response?.data?.error || err.message
-                        }`
-                      );
+                    } catch (err) {
+                      if (err instanceof AxiosError) {
+                        toast.error(
+                          err.response?.data?.error ||
+                            err.response?.data?.message ||
+                            err.message
+                        );
+                      } else {
+                        toast.error("Erro inesperado ao salvar categoria");
+                      }
                     }
                   }}
                 />
@@ -218,12 +222,16 @@ export default function AdminCategoriesPage() {
                             updated.isActive ? "ativada" : "desativada"
                           } com sucesso!`
                         );
-                      } catch (err: ValidationError) {
-                        toast.error(
-                          `Erro ao atualizar status: ${
-                            err.response?.data?.error || err.message
-                          }`
-                        );
+                      } catch (err) {
+                        if (err instanceof AxiosError) {
+                          toast.error(
+                            err.response?.data?.error ||
+                              err.response?.data?.message ||
+                              err.message
+                          );
+                        } else {
+                          toast.error("Erro inesperado ao salvar categoria");
+                        }
                       }
                     }}
                   />
@@ -291,12 +299,16 @@ export default function AdminCategoriesPage() {
                   editingCategory ? "atualizada" : "criada"
                 } com sucesso!`
               );
-            } catch (err: ValidationError) {
-              toast.error(
-                `Erro ao ${
-                  editingCategory ? "atualizar" : "criar"
-                } categoria: ${err.response?.data?.error || err.message}`
-              );
+            } catch (err) {
+              if (err instanceof AxiosError) {
+                toast.error(
+                  err.response?.data?.error ||
+                    err.response?.data?.message ||
+                    err.message
+                );
+              } else {
+                toast.error("Erro inesperado ao salvar categoria");
+              }
             } finally {
               setCreating(false);
             }

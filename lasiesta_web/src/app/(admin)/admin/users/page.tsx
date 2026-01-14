@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { BsToggleOn } from "react-icons/bs";
 import { Pencil, Key, Info } from "lucide-react";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
-import { ValidationError } from "next/dist/compiled/amphtml-validator";
+import { AxiosError } from "axios";
 
 export default function AdminUsersPage() {
   const [infoVisible, setInfoVisible] = useState(false);
@@ -238,13 +238,16 @@ export default function AdminUsersPage() {
 
             setFormOpen(false);
             setEditingUser(null);
-          } catch (err: ValidationError) {
-            console.error(err);
-            toast.error(
-              `Erro ao salvar usuário: ${
-                err.response?.data?.error || err.message
-              }`
-            );
+          } catch (err) {
+            if (err instanceof AxiosError) {
+              toast.error(
+                err.response?.data?.error ||
+                  err.response?.data?.message ||
+                  err.message
+              );
+            } else {
+              toast.error("Erro inesperado ao salvar usuário");
+            }
           } finally {
             setSaving(false);
           }
@@ -268,8 +271,16 @@ export default function AdminUsersPage() {
             toast.success("Senha redefinida com sucesso");
             setResetOpen(false);
             setResetUser(null);
-          } catch {
-            toast.error("Erro ao redefinir senha");
+          } catch (err) {
+            if (err instanceof AxiosError) {
+              toast.error(
+                err.response?.data?.error ||
+                  err.response?.data?.message ||
+                  err.message
+              );
+            } else {
+              toast.error("Erro inesperado ao redefinir senha");
+            }
           } finally {
             setSaving(false);
           }
