@@ -1,6 +1,6 @@
 import { api } from "./api";
 
-type LoginResponse = {
+export type LoginResponse = {
   accessToken: string;
   user: {
     id: string;
@@ -10,6 +10,16 @@ type LoginResponse = {
     lastName: string;
   };
 };
+
+export type AuthUser = {
+  id: string;
+  email: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  accessToken: string;
+};
+
 
 export async function loginRequest(
   email: string,

@@ -10,6 +10,14 @@ declare module 'next-auth' {
       lastName?: string;
     } & DefaultSession['user'];
   }
+
+  interface User {
+    role: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    accessToken: string;
+  }
 }
 
 declare module 'next-auth/jwt' {
