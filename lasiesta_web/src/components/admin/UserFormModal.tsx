@@ -69,8 +69,8 @@ export default function UserFormModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-      <div className="relative bg-white rounded-2xl w-full max-w-lg p-4 shadow-lg">
-        <div className="flex items-center justify-between">
+      <div className="relative bg-white rounded-2xl w-full max-w-lg p-4 shadow-lg max-h-[95dvh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl font-normal text-[#a35c42]">
             {initialData ? "Editar usuário" : "Novo usuário"}
           </h2>
@@ -89,6 +89,8 @@ export default function UserFormModal({
             <ul className="list-disc pl-4 text-sm space-y-1">
               <li>Email não pode ser alterado</li>
               <li>Senha só é definida na criação</li>
+              <li>Administradores têm acesso total ao painel</li>
+              <li>Editores têm acesso limitado para edição de conteúdo</li>
               <li>Usuários inativos não acessam o sistema</li>
             </ul>
           </ColoredTextBox>

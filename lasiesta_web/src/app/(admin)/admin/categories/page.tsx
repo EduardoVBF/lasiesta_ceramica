@@ -13,11 +13,14 @@ import CategoryRow from "@/components/admin/categoryRow";
 import BrownButton from "@/components/ui/brownButtom";
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
+import { Info } from "lucide-react";
+import ColoredTextBox from "@/components/ui/coloredTextBox";
 
 export default function AdminCategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [showInactive, setShowInactive] = useState(true);
+  const [infoVisible, setInfoVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -61,9 +64,20 @@ export default function AdminCategoriesPage() {
         <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6 z-10">
           <div>
             <h2 className="text-4xl font-normal text-[#a35c42]">Categorias</h2>
-            <p className="text-gray-600 mt-3 max-w-xl">
-              Gerencie as categorias que organizam os produtos do ateliê.
-            </p>
+            <div className="flex items-center mt-2 gap-1">
+              <p className="text-gray-600 max-w-xl">
+                Gerencie as categorias que organizam os produtos do ateliê.
+              </p>
+              <Info
+                size={20}
+                className={`cursor-pointer ${
+                  infoVisible
+                    ? "text-blue-500 hover:text-gray-500"
+                    : "text-gray-500 hover:text-blue-500"
+                }`}
+                onClick={() => setInfoVisible((prev) => !prev)}
+              />
+            </div>
           </div>
 
           <BrownButton
@@ -72,6 +86,22 @@ export default function AdminCategoriesPage() {
             onClick={() => setIsModalOpen(true)}
           ></BrownButton>
         </header>
+
+        {infoVisible && (
+          <ColoredTextBox type="info" className="mb-3">
+            <ul className="list-disc pl-4 text-sm space-y-1">
+              <li>Categorias ajudam a organizar os produtos em grupos.</li>
+              <li>
+                Categorias ativas aparecem na loja, inativas ficam ocultas.
+              </li>
+              <li>Categorias em destaque são exibidas na página inicial.</li>
+              <li>
+                A imagem das categorias é a imagem padrão para a categoria e
+                será mostrada no destque da página inicial.
+              </li>
+            </ul>
+          </ColoredTextBox>
+        )}
 
         {/* TOGGLE INATIVAS */}
         {inactiveCategories.length > 0 && (
@@ -154,7 +184,7 @@ export default function AdminCategoriesPage() {
               {showInactive && inactiveCategories.length > 0 && (
                 <tr className="bg-gray-200/70">
                   <td
-                    colSpan={4}
+                    colSpan={6}
                     className="px-6 py-4 text-xs uppercase tracking-wide text-gray-500 divide-none"
                   >
                     Categorias inativas

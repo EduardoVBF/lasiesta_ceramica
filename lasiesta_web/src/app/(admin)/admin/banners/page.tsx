@@ -9,8 +9,11 @@ import BannerFormModal from "@/components/admin/bannerFormModal";
 import BannerCard from "@/components/admin/bannerCard";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { Info } from "lucide-react";
+import ColoredTextBox from "@/components/ui/coloredTextBox";
 
 export default function AdminBannersPage() {
+  const [infoVisible, setInfoVisible] = useState(false);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,14 +48,40 @@ export default function AdminBannersPage() {
         <Toaster position="top-center" />
 
         {/* HEADER */}
-        <header className="flex flex-col gap-4 mb-6 z-10">
+        <header className="flex flex-col gap-2 mb-6 z-10">
           <h2 className="text-4xl font-normal text-[#a35c42]">
             Banners do Site
           </h2>
-          <p className="text-gray-600 max-w-xl">
-            Edite os banners exibidos nas páginas principais do site.
-          </p>
+          <div className="flex items-center mt-0 gap-1">
+            <p className="text-gray-600 max-w-xl">
+              Edite os banners exibidos nas páginas principais do site.
+            </p>
+            <Info
+              size={20}
+              className={`cursor-pointer ${
+                infoVisible
+                  ? "text-blue-500 hover:text-gray-500"
+                  : "text-gray-500 hover:text-blue-500"
+              }`}
+              onClick={() => setInfoVisible((prev) => !prev)}
+            />
+          </div>
         </header>
+
+        {infoVisible && (
+          <ColoredTextBox className="my-2 z-10 w-fit" type="info">
+            <ul className="list-disc pl-4 space-y-1 text-sm">
+              <li>Os banners são exibidos em páginas específicas do site.</li>
+              <li>
+                Cada banner deve ter uma imagem, título e descrição adequados ao
+                contexto da página.
+              </li>
+              <li>
+                Os banners são o cabeçalho visual das páginas que eles representam.
+              </li>
+            </ul>
+          </ColoredTextBox>
+        )}
 
         {/* LISTAGEM */}
         <section className="grid grid-cols-1 gap-6 z-10">

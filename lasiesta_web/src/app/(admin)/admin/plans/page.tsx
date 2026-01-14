@@ -12,10 +12,13 @@ import PlanCard from "@/components/admin/adminPlanCard";
 import BrownButton from "@/components/ui/brownButtom";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { Info } from "lucide-react";
+import ColoredTextBox from "@/components/ui/coloredTextBox";
 
 export default function AdminPlansPage() {
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [infoVisible, setInfoVisible] = useState(false);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -53,10 +56,19 @@ export default function AdminPlansPage() {
             <h2 className="text-4xl font-normal text-[#a35c42]">
               Planos & Aulas
             </h2>
-            <p className="text-gray-600 mt-3 max-w-xl">
-              Gerencie as opções de planos e aulas disponíveis para seus
-              clientes.
-            </p>
+            <div className="flex items-center mt-2 gap-1">
+              <p className="text-gray-600 max-w-xl">
+                Gerencie as opções de planos e aulas disponíveis para seus
+                clientes.
+              </p>
+              <Info
+                size={20}
+                className={`cursor-pointer ${
+                  infoVisible ? "text-blue-500" : "text-gray-500"
+                }`}
+                onClick={() => setInfoVisible((p) => !p)}
+              />
+            </div>
           </div>
 
           <BrownButton
@@ -65,6 +77,25 @@ export default function AdminPlansPage() {
             onClick={() => setIsModalOpen(true)}
           />
         </header>
+
+        {infoVisible && (
+          <ColoredTextBox type="info" className="mb-3">
+            <ul className="list-disc pl-4 text-sm space-y-1">
+              <li>
+                Planos representam as opções de assinatura ou aulas oferecidas.
+              </li>
+              <li>
+                Planos ativos ficam disponíveis para os clientes, inativos são
+                ocultos.
+              </li>
+              <li>Planos em destaque são promovidos na página inicial.</li>
+              <li>
+                Descrição curta aparece na página principal, descrição longa na
+                página do plano.
+              </li>
+            </ul>
+          </ColoredTextBox>
+        )}
 
         {/* LISTAGEM */}
         <section className="grid grid-cols-1 gap-6 z-10">

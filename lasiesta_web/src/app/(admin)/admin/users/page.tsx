@@ -12,11 +12,14 @@ import UserFormModal from "@/components/admin/UserFormModal";
 import BrownButton from "@/components/ui/brownButtom";
 import StatusBadge from "@/components/ui/statusBadge";
 import toast, { Toaster } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { BsToggleOn } from "react-icons/bs";
-import { Pencil, Key } from "lucide-react";
+import { Pencil, Key, Info } from "lucide-react";
+import ColoredTextBox from "@/components/ui/coloredTextBox";
 
 export default function AdminUsersPage() {
+  const [infoVisible, setInfoVisible] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,6 +29,9 @@ export default function AdminUsersPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const { data: session } = useSession();
+  console.log("Sessão do usuário:", session);
 
   useEffect(() => {
     getAdminUsers()
@@ -48,9 +54,20 @@ export default function AdminUsersPage() {
       <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6 z-10">
         <div>
           <h2 className="text-4xl font-normal text-[#a35c42]">Usuários</h2>
-          <p className="text-gray-600 mt-3 max-w-xl">
-            Gerencie os usuários com acesso ao painel administrativo.
-          </p>
+          <div className="flex items-center mt-2 gap-1">
+            <p className="text-gray-600 max-w-xl">
+              Gerencie os usuários com acesso ao painel administrativo.
+            </p>
+            <Info
+              size={20}
+              className={`cursor-pointer ${
+                infoVisible
+                  ? "text-blue-500 hover:text-gray-500"
+                  : "text-gray-500 hover:text-blue-500"
+              }`}
+              onClick={() => setInfoVisible((prev) => !prev)}
+            />
+          </div>
         </div>
 
         <BrownButton
@@ -59,6 +76,21 @@ export default function AdminUsersPage() {
           onClick={() => setFormOpen(true)}
         />
       </header>
+
+      {infoVisible && (
+        <ColoredTextBox className="my-2 z-10 w-fit" type="info">
+          <ul className="list-disc pl-4 space-y-1 text-sm">
+            <li>Estes são os usuários com acesso ao painel administrativo.</li>
+            <li>Usuários administradores têm acesso total ao painel.</li>
+            <li>
+              Usuários editores têm acesso limitado para edição de conteúdo.
+            </li>
+            <li>
+              Apenas administradores podem criar, editar ou desativar usuários.
+            </li>
+          </ul>
+        </ColoredTextBox>
+      )}
 
       {/* TABELA */}
       <section className="bg-white/70 rounded-2xl border border-gray-100 shadow-sm overflow-hidden z-10">
@@ -100,69 +132,73 @@ export default function AdminUsersPage() {
                   </td>
 
                   <td className="px-6 py-4 text-right">
-                    <div className="inline-flex items-center gap-4">
-                      {/* EDITAR */}
-                      <button
-                        onClick={() => {
-                          setEditingUser(user);
-                          setFormOpen(true);
-                        }}
-                        className="text-gray-600 hover:text-[#a35c42]"
-                        title="Editar usuário"
-                      >
-                        <Pencil size={20} />
-                      </button>
+                    {session?.user?.role === "admin" ? (
+                      <div className="inline-flex items-center gap-4">
+                        {/* EDITAR */}
+                        <button
+                          onClick={() => {
+                            setEditingUser(user);
+                            setFormOpen(true);
+                          }}
+                          className="text-gray-600 hover:text-[#a35c42]"
+                          title="Editar usuário"
+                        >
+                          <Pencil size={20} />
+                        </button>
 
-                      {/* RESET SENHA */}
-                      <button
-                        onClick={() => {
-                          setResetUser(user);
-                          setResetOpen(true);
-                        }}
-                        className="text-gray-600 hover:text-[#a35c42]"
-                        title="Redefinir senha"
-                      >
-                        <Key size={20} />
-                      </button>
+                        {/* RESET SENHA */}
+                        <button
+                          onClick={() => {
+                            setResetUser(user);
+                            setResetOpen(true);
+                          }}
+                          className="text-gray-600 hover:text-[#a35c42]"
+                          title="Redefinir senha"
+                        >
+                          <Key size={20} />
+                        </button>
 
-                      {/* TOGGLE */}
-                      <button
-                        onClick={async () => {
-                          try {
-                            const updated = await updateUser(user.id, {
-                              isActive: !user.isActive,
-                            });
+                        {/* TOGGLE */}
+                        <button
+                          onClick={async () => {
+                            try {
+                              const updated = await updateUser(user.id, {
+                                isActive: !user.isActive,
+                              });
 
-                            setUsers((prev) =>
-                              prev.map((u) =>
-                                u.id === user.id ? updated : u
-                              )
-                            );
+                              setUsers((prev) =>
+                                prev.map((u) =>
+                                  u.id === user.id ? updated : u
+                                )
+                              );
 
-                            toast.success(
-                              `Usuário ${
-                                updated.isActive ? "ativado" : "desativado"
-                              }`
-                            );
-                          } catch {
-                            toast.error("Erro ao atualizar status");
-                          }
-                        }}
-                        className={`${
-                          user.isActive
-                            ? "text-green-600 hover:text-red-700"
-                            : "text-red-600 hover:text-green-700"
-                        }`}
-                        title="Ativar / Desativar"
-                      >
-                        <BsToggleOn
-                          size={25}
-                          className={
-                            user.isActive ? "" : "rotate-180 transition"
-                          }
-                        />
-                      </button>
-                    </div>
+                              toast.success(
+                                `Usuário ${
+                                  updated.isActive ? "ativado" : "desativado"
+                                }`
+                              );
+                            } catch {
+                              toast.error("Erro ao atualizar status");
+                            }
+                          }}
+                          className={`${
+                            user.isActive
+                              ? "text-green-600 hover:text-red-700"
+                              : "text-red-600 hover:text-green-700"
+                          }`}
+                          title="Ativar / Desativar"
+                        >
+                          <BsToggleOn
+                            size={25}
+                            className={
+                              user.isActive ? "" : "rotate-180 transition"
+                            }
+                          />
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 italic">Sem ações</span>
+                    )}
                   </td>
                 </tr>
               ))}
