@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
-import { Mail, Phone, MapPin, Instagram, MessageCircle } from "lucide-react";
+import { Phone, MapPin, Instagram } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
+import React from "react";
 
 export default function Footer() {
   return (

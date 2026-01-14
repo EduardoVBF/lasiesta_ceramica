@@ -14,7 +14,7 @@ type Props = {
   loading: boolean;
   initialData?: User | null;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Partial<User>) => void;
 };
 
 export default function UserFormModal({
@@ -135,7 +135,7 @@ export default function UserFormModal({
           <PrimarySelect
             label="Perfil"
             value={role}
-            onChange={(e) => setRole(e.target.value as any)}
+            onChange={(e) => setRole(e.target.value as "admin" | "editor")}
             options={[
               { value: "admin", label: "Administrador" },
               { value: "editor", label: "Editor" },

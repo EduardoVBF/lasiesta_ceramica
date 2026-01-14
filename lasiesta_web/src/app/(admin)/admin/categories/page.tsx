@@ -15,6 +15,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
+import { ValidationError } from "next/dist/compiled/amphtml-validator";
 
 export default function AdminCategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -169,7 +170,7 @@ export default function AdminCategoriesPage() {
                           updated.isActive ? "ativada" : "desativada"
                         } com sucesso!`
                       );
-                    } catch (err: any) {
+                    } catch (err: ValidationError) {
                       toast.error(
                         `Erro ao atualizar status: ${
                           err.response?.data?.error || err.message
@@ -217,7 +218,7 @@ export default function AdminCategoriesPage() {
                             updated.isActive ? "ativada" : "desativada"
                           } com sucesso!`
                         );
-                      } catch (err: any) {
+                      } catch (err: ValidationError) {
                         toast.error(
                           `Erro ao atualizar status: ${
                             err.response?.data?.error || err.message
@@ -290,7 +291,7 @@ export default function AdminCategoriesPage() {
                   editingCategory ? "atualizada" : "criada"
                 } com sucesso!`
               );
-            } catch (err: any) {
+            } catch (err: ValidationError) {
               toast.error(
                 `Erro ao ${
                   editingCategory ? "atualizar" : "criar"

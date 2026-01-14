@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
+import { ValidationError } from "next/dist/compiled/amphtml-validator";
 
 export default function AdminBannersPage() {
   const [infoVisible, setInfoVisible] = useState(false);
@@ -114,7 +115,7 @@ export default function AdminBannersPage() {
 
               toast.success("Banner atualizado com sucesso!");
               setEditingBanner(null);
-            } catch (err: any) {
+            } catch (err: ValidationError) {
               toast.error(
                 `Erro ao salvar banner: ${
                   err.response?.data?.error || err.message

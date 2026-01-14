@@ -16,6 +16,8 @@ import SortableCarouselItem from "@/components/admin/sortableCarouselItem";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import BrownButton from "@/components/ui/brownButtom";
+import { ValidationError } from "next/dist/compiled/amphtml-validator";
+import { DragEndEvent } from "@dnd-kit/core";
 
 import {
   DndContext,
@@ -66,7 +68,7 @@ export default function AdminHomeCarouselPage() {
   const activeItems = items.filter((i) => i.isActive);
   const inactiveItems = items.filter((i) => !i.isActive);
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -182,7 +184,7 @@ export default function AdminHomeCarouselPage() {
                           updated.isActive ? "ativado" : "desativado"
                         } com sucesso!`
                       );
-                    } catch (err: any) {
+                    } catch (err: ValidationError) {
                       toast.error(
                         `Erro ao atualizar status: ${
                           err.response?.data?.error || err.message
@@ -230,7 +232,7 @@ export default function AdminHomeCarouselPage() {
                         updated.isActive ? "ativado" : "desativado"
                       } com sucesso!`
                     );
-                  } catch (err: any) {
+                  } catch (err: ValidationError) {
                     toast.error(
                       `Erro ao atualizar status: ${
                         err.response?.data?.error || err.message
@@ -278,7 +280,7 @@ export default function AdminHomeCarouselPage() {
 
             setCreating(false);
             setEditingItem(null);
-          } catch (err: any) {
+          } catch (err: ValidationError) {
             toast.error(
               `Erro ao salvar slide: ${
                 err.response?.data?.error || err.message

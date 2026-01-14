@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import { BsToggleOn } from "react-icons/bs";
 import { Pencil, Key, Info } from "lucide-react";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
+import { ValidationError } from "next/dist/compiled/amphtml-validator";
+import { getApiErrorMessage } from "@/app/utils/getApiErrorMessage";
 
 export default function AdminUsersPage() {
   const [infoVisible, setInfoVisible] = useState(false);
@@ -233,8 +235,12 @@ export default function AdminUsersPage() {
 
             setFormOpen(false);
             setEditingUser(null);
-          } catch {
-            toast.error("Erro ao salvar usuário");
+          } catch (err) {
+            console.error(err);
+
+            toast.error(`Erro ao salvar usuário:\n${getApiErrorMessage(err)}`, {
+              duration: 5000,
+            });
           } finally {
             setSaving(false);
           }

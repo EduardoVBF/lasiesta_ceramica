@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
+import { ValidationError } from "next/dist/compiled/amphtml-validator";
 
 export default function AdminPlansPage() {
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
@@ -123,7 +124,7 @@ export default function AdminPlansPage() {
                       updated.isActive ? "ativado" : "desativado"
                     } com sucesso!`
                   );
-                } catch (err: any) {
+                } catch (err: ValidationError) {
                   toast.error(
                     `Erro ao atualizar status: ${
                       err.response?.data?.error || err.message
@@ -193,7 +194,7 @@ export default function AdminPlansPage() {
 
               setIsModalOpen(false);
               setEditingPlan(null);
-            } catch (err: any) {
+            } catch (err: ValidationError) {
               toast.error(
                 `Erro ao salvar plano: ${
                   err.response?.data?.error || err.message
