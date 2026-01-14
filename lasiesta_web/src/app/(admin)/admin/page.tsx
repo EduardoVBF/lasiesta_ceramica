@@ -39,7 +39,7 @@ export default function AdminPage() {
             {/* SIGN OUT */}
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm text-gray-500 hover:text-[#a35c42] hover:bg-gray-100 transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm text-gray-500 hover:text-[#a35c42] hover:bg-gray-100 transition cursor-pointer"
             >
               <LogOut size={16} />
               <span className="hidden sm:inline">Sair</span>

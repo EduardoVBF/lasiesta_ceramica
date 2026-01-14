@@ -50,7 +50,7 @@ export default function PlanCard({
                 <StatusBadge active={plan.isActive} />
                 {/* Destaque */}
                 {plan.isFeatured && (
-                  <span className="bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
+                  <span className="bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
                     Destaque
                   </span>
                 )}

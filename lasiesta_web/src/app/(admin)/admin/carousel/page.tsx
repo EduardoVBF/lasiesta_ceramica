@@ -37,10 +37,10 @@ import { Info } from "lucide-react";
 export default function AdminHomeCarouselPage() {
   const [items, setItems] = useState<HomeCarouselItem[]>([]);
   const [editingItem, setEditingItem] = useState<HomeCarouselItem | null>(null);
+  const [infoVisible, setInfoVisible] = useState(false);
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [infoVisible, setInfoVisible] = useState(true);
 
   useEffect(() => {
     getAdminHomeCarousel()
@@ -167,6 +167,29 @@ export default function AdminHomeCarouselPage() {
                   item={item}
                   index={index}
                   onEdit={() => setEditingItem(item)}
+                  onToggle={async () => {
+                    try {
+                      const updated = await updateHomeCarouselItem(item.id, {
+                        isActive: !item.isActive,
+                      });
+
+                      setItems((prev) =>
+                        prev.map((i) => (i.id === updated.id ? updated : i))
+                      );
+
+                      toast.success(
+                        `Slide ${
+                          updated.isActive ? "ativado" : "desativado"
+                        } com sucesso!`
+                      );
+                    } catch (err: any) {
+                      toast.error(
+                        `Erro ao atualizar status: ${
+                          err.response?.data?.error || err.message
+                        }`
+                      );
+                    }
+                  }}
                 />
               </SortableCarouselItem>
             ))}
@@ -194,6 +217,27 @@ export default function AdminHomeCarouselPage() {
                 item={item}
                 index={index}
                 onEdit={() => setEditingItem(item)}
+                onToggle={async () => {
+                  try {
+                    const updated = await updateHomeCarouselItem(item.id, {
+                      isActive: !item.isActive,
+                    });
+                    setItems((prev) =>
+                      prev.map((i) => (i.id === updated.id ? updated : i))
+                    );
+                    toast.success(
+                      `Slide ${
+                        updated.isActive ? "ativado" : "desativado"
+                      } com sucesso!`
+                    );
+                  } catch (err: any) {
+                    toast.error(
+                      `Erro ao atualizar status: ${
+                        err.response?.data?.error || err.message
+                      }`
+                    );
+                  }
+                }}
               />
             ))}
           </section>

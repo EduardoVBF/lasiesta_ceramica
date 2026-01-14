@@ -4,33 +4,55 @@ import StatusBadge from "../ui/statusBadge";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { BsToggleOn } from "react-icons/bs";
 
 export default function HomeCarouselCard({
   item,
   index,
   onEdit,
+  onToggle,
 }: {
   item: HomeCarouselItem;
   index: number;
   onEdit: () => void;
+  onToggle: () => void;
 }) {
   return (
     <div className="relative rounded-3xl overflow-hidden shadow-lg group">
       <div className="absolute top-4 left-4 z-20 flex items-center gap-3">
         {item.isActive && (
-          <div className="bg-white/90 backdrop-blur rounded-full p-2 w-8 h-8 text-[#a35c42] transition flex items-center justify-center text-lg font-bold shadow">
+          <div className="bg-[#a35c42] backdrop-blur rounded-full p-2 w-8 h-8 text-white transition flex items-center justify-center text-lg font-bold shadow-md">
             {index + 1}
           </div>
         )}
         <StatusBadge active={item.isActive} />
       </div>
-      <button
-        onClick={onEdit}
-        title="Editar slide"
-        className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur rounded-full p-2 text-gray-700 hover:text-[#a35c42] transition shadow"
-      >
-        <Pencil size={22} />
-      </button>
+      <div className="absolute top-4 right-4 z-20 flex flex-col items-center gap-3">
+        <button
+          onClick={onEdit}
+          title="Editar slide"
+          className="bg-white/90 backdrop-blur rounded-full p-2 text-gray-700 hover:text-[#a35c42] transition shadow"
+        >
+          <Pencil size={22} />
+        </button>
+
+        <button
+          onClick={onToggle}
+          title={item.isActive ? "Desativar plano" : "Ativar plano"}
+          className={`inline-flex items-center gap-2 p-1 bg-white/90 rounded-full text-sm font-medium transition ${
+            item.isActive
+              ? "text-green-700 hover:text-red-700"
+              : "text-red-700 hover:text-green-700"
+          }`}
+        >
+          <BsToggleOn
+            size={30}
+            className={`${
+              item.isActive ? "hover:rotate-180" : "rotate-180 hover:rotate-0"
+            }`}
+          />
+        </button>
+      </div>
 
       <div className="relative w-full h-[340px]">
         <Image
