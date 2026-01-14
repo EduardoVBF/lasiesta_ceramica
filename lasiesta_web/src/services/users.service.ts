@@ -5,16 +5,16 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: "admin" | "editor";
   isActive: boolean;
 };
 
-type CreateUserPayload = {
+export type CreateUserPayload = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  role?: string;
+  role: "admin" | "editor";
   isActive: boolean;
 };
 

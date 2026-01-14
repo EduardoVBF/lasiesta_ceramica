@@ -135,6 +135,7 @@ export default function UserFormModal({
           <PrimarySelect
             label="Perfil"
             value={role}
+            required
             onChange={(e) => setRole(e.target.value as "admin" | "editor")}
             options={[
               { value: "admin", label: "Administrador" },

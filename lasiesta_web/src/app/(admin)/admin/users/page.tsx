@@ -5,6 +5,8 @@ import {
   updateUser,
   resetUserPassword,
   User,
+  CreateUserPayload,
+  UpdateUserPayload,
 } from "../../../../services/users.service";
 import ResetPasswordModal from "@/components/admin/ResetPasswordModal";
 import BackgroundImage from "@/components/layout/backgroundImage";
@@ -32,7 +34,6 @@ export default function AdminUsersPage() {
   const [saving, setSaving] = useState(false);
 
   const { data: session } = useSession();
-  console.log("Sessão do usuário:", session);
 
   useEffect(() => {
     getAdminUsers()
@@ -221,13 +222,16 @@ export default function AdminUsersPage() {
             setSaving(true);
 
             if (editingUser) {
-              const updated = await updateUser(editingUser.id, data);
+              const updated = await updateUser(
+                editingUser.id,
+                data as UpdateUserPayload
+              );
               setUsers((prev) =>
                 prev.map((u) => (u.id === updated.id ? updated : u))
               );
               toast.success("Usuário atualizado");
             } else {
-              const created = await createUser(data);
+              const created = await createUser(data as CreateUserPayload);
               setUsers((prev) => [created, ...prev]);
               toast.success("Usuário criado");
             }
