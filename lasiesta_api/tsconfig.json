@@ -7,7 +7,7 @@
     // USANDO CommonJS PORQUE TEM PROBLEMAS COM O NODE16 EM AMBIENTE DE PRODUÇÃO
     "module": "CommonJS",
     "moduleResolution": "node10",
-    "rootDir": ",",
+    "rootDir": ".",
     "outDir": "dist",
 
     "strict": true,
@@ -21,5 +21,5 @@
     "resolveJsonModule": true
   },
   "include": ["src", "api"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }
