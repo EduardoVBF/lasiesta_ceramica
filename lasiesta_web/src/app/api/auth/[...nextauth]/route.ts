@@ -16,8 +16,8 @@ const handler = NextAuth({
       async authorize(credentials): Promise<AuthUser | null> {
         try {
           const response = await axios.post(
-            // "http://localhost:3333/auth/login",
-            "https://lasiesta-ceramica-api.vercel.app/auth/login",
+            "http://localhost:3333/auth/login",
+            // "https://lasiesta-ceramica-api.vercel.app/auth/login",
             {
               email: credentials?.email,
               password: credentials?.password,

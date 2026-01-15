@@ -2,7 +2,8 @@
   "name": "lasiesta_api",
   "version": "1.0.0",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.local.ts",
+    "build": "tsc",
     "postinstall": "prisma generate"
   },
   "prisma": {

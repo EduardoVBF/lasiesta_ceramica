@@ -1,14 +1,13 @@
-import 'dotenv/config';
-import { buildApp } from './app';
+import awsLambdaFastify from "@fastify/aws-lambda";
+import app from "./app";
 
-async function start() {
-  const app = await buildApp();
+const handler = awsLambdaFastify(app);
 
-  const PORT = Number(process.env.PORT) || 3333;
+export default async function vercelHandler(req: any, res: any) {
+  // garante que plugins e rotas estejam prontos no cold start
+  if (!app.ready) {
+    await app.ready();
+  }
 
-  app.listen({ port: PORT }, () => {
-    console.log(`🚀 API running on port ${PORT}`);
-  });
+  return handler(req, res);
 }
-
-start();
