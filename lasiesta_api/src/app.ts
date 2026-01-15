@@ -1,14 +1,14 @@
+import fastify from "fastify";
+
 import { homeCarouselRoutes } from "./modules/home-carousel/home-carousel.routes";
 import { categoriesRoutes } from "./modules/categories/categories.routes";
 import { bannersRoutes } from "./modules/banners/banners.routes";
-import { authMiddleware } from "./shared/middlewares/auth";
 import { plansRoutes } from "./modules/plans/plans.routes";
 import { usersRoutes } from "./modules/users/users.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
-import { registerPlugins } from "./config/fastify";
-import fastify from "fastify";
-import { errorHandler } from "./infra/http/error-handler";
 
+import { registerPlugins } from "./config/fastify";
+import { errorHandler } from "./infra/http/error-handler";
 
 export async function buildApp() {
   const app = fastify({
@@ -18,7 +18,7 @@ export async function buildApp() {
 
   app.setErrorHandler(errorHandler);
 
-  // plugins PRIMEIRO
+  // plugins
   await registerPlugins(app);
 
   // rotas
