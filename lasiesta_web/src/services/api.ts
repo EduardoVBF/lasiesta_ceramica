@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 export const api = axios.create({
   baseURL: "http://localhost:3333",
+  // baseURL: "https://lasiesta-ceramica-api.vercel.app",
 });
 
 // 🔐 Request interceptor: injeta token

@@ -6,7 +6,8 @@ import { env } from "./env";
 export async function registerPlugins(app: FastifyInstance) {
   // CORS
   await app.register(fastifyCors, {
-    origin: true,
+    // origin: true,
+    origin: ["https://lasiesta-ceramica.vercel.app", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   });
