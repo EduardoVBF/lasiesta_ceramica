@@ -15,7 +15,6 @@ const app = Fastify({
   bodyLimit: 10 * 1024 * 1024,
 });
 
-// tudo async vai aqui
 app.register(async (app) => {
   app.setErrorHandler(errorHandler);
 
@@ -29,5 +28,4 @@ app.register(async (app) => {
   await app.register(authRoutes);
 });
 
-// 🚨 ISSO É O MAIS IMPORTANTE
 export default app;
