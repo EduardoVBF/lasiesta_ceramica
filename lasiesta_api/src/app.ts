@@ -28,7 +28,7 @@ app.register(async (app) => {
   await app.register(authRoutes);
 });
 
-// export default app;
+export { app };
 
 export default async (req: any, res: any) => {
   await app.ready();
