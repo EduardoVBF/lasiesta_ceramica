@@ -80,7 +80,7 @@ export default function AdminPlansPage() {
         </header>
 
         {infoVisible && (
-          <ColoredTextBox type="info" className="mb-3">
+          <ColoredTextBox type="info" className="mb-3 z-10">
             <ul className="list-disc pl-4 text-sm space-y-1">
               <li>
                 Planos representam as opções de assinatura ou aulas oferecidas.

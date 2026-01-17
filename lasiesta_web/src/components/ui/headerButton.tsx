@@ -23,10 +23,10 @@ export default function HeaderButton({
       className={`h-fit pt-3 flex items-end px-4 rounded-b-lg ${
         isActive(pathHref)
           ? "border-b-4 border-cinza-claro bg-bege-escuro bg-white/80 text-marrom avermelhado"
-          : "text-cinza-claro bg-red-300/20"
+          : "text-cinza-claro bg-[#a35c4286] hover:bg-[#a35c42]"
       }`}
     >
-      <div className="flex pb-1 items-center space-x-1 cursor-pointer hover:scale-105 transition-all">
+      <div className="flex pb-1 items-center space-x-1 cursor-pointer hover:scale-105 transition-all hover:text-white">
         <Icon size={24} className="" />
         <p className="text-sm font-bold">{label}</p>
       </div>
