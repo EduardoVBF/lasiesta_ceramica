@@ -6,6 +6,7 @@ import { JWT } from "next-auth/jwt";
 import type { Session } from "next-auth";
 
 const handler = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
