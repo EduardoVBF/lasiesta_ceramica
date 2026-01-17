@@ -33,13 +33,7 @@ export default function Products() {
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-bege-claro overflow-hidden">
-      <HeaderWithBanner
-        src="/image/IMG_0036.JPG"
-        alt="Produtos em Cerâmica"
-        title="Produtos Lasiesta"
-        description="Descubra nossa coleção única de produtos artesanais, feitos com dedicação e atenção aos detalhes."
-        textColor="text-white"
-      />
+      <HeaderWithBanner page="PRODUCTS" textColor="text-white" />
 
       {/* Tabs Navigation */}
       <ProductsCategoriesNav

@@ -24,13 +24,7 @@ export default function Classes() {
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-bege-claro overflow-x-hidden">
-      <HeaderWithBanner
-        src="/image/aula2pb.jpg"
-        alt="Aulas de Cerâmica"
-        title="Aulas de Cerâmica"
-        description="Nossas aulas de cerâmica são um convite para mergulhar no mundo do barro, explorar a criatividade e encontrar relaxamento na arte manual. Seja para iniciantes ou para quem já tem experiência, cada encontro é um momento único de criação e descoberta."
-        textColor="text-white"
-      />
+      <HeaderWithBanner textColor="text-white" page="CLASSES" />
 
       {/* Planos de assinatura */}
       <section className="relative w-full flex flex-col gap-10 pb-20 pt-5">

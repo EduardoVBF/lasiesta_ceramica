@@ -98,7 +98,7 @@ export default function AdminHomeCarouselPage() {
   }
 
   if (loading) {
-    return <p className="text-gray-500">Carregando carrossel...</p>;
+    return <p className="text-gray-500">Carregando Carrossel...</p>;
   }
 
   return (

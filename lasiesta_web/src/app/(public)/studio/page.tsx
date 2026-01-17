@@ -9,13 +9,7 @@ import React from "react";
 export default function Studio() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-bege-claro overflow-hidden">
-      <HeaderWithBanner
-        src="/image/IMG_0065.JPG"
-        alt="Ateliê de Cerâmica"
-        title="O Ateliê LaSiesta"
-        description="Um espaço onde o tempo desacelera, o barro respira e a criação se transforma em encontro."
-        textColor="text-white"
-      />
+      <HeaderWithBanner page="ABOUT" textColor="text-white" />
 
       <section className="w-full pb-10 space-y-8 pt-5 relative">
         <BackgroundImage

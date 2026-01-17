@@ -1,11 +1,15 @@
 "use client";
+import {
+  getAdminCategories,
+  Category,
+} from "../../services/categories.service";
 import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
 import { getActivePlans, Plan } from "../../services/plans.service";
 import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import CarouselComponent from "@/components/layout/carousel";
 import BrownButton from "@/components/ui/brownButtom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -19,19 +23,36 @@ const categories = [
 ];
 
 export default function HomePage() {
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]);
+  const [featuredPlans, setFeaturedPlans] = useState<Plan[]>([]);
 
   useEffect(() => {
     async function fetchPlans() {
       try {
         const data = await getActivePlans();
-        setPlans(data as Plan[]);
+        const featured = data.filter((plan: Plan) => plan.isFeatured) as Plan[];
+        setFeaturedPlans(featured);
       } catch (error) {
         console.error("Erro ao buscar planos:", error);
       }
     }
 
     fetchPlans();
+  }, []);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const data = await getAdminCategories();
+        setFeaturedCategories(
+          data.filter((cat: Category) => cat.isFeatured) as Category[]
+        );
+      } catch (error) {
+        console.error("Erro ao buscar categorias:", error);
+      }
+    }
+
+    fetchCategories();
   }, []);
 
   return (
@@ -98,8 +119,8 @@ export default function HomePage() {
         {/* Coleções */}
         <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
           <div className="grid md:grid-cols-4 gap-8 my-4">
-            {categories.map((cat, index) => (
-              <FeaturedCategoryCard cat={cat} index={index} key={index} />
+            {featuredCategories.map((cat) => (
+              <FeaturedCategoryCard cat={cat} key={cat.id} />
             ))}
           </div>
 
@@ -118,7 +139,7 @@ export default function HomePage() {
             Cursos e Experiências
           </h1>
           <div className="grid md:grid-cols-3 gap-12">
-            {plans
+            {featuredPlans
               .filter((plan) => plan.isFeatured && plan.isActive)
               .map((plan, index) => (
                 <FeaturedPlanCard plan={plan} index={index} key={index} />
