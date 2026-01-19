@@ -1,7 +1,7 @@
 "use client";
 import {
-  getAdminCategories,
   Category,
+  getActiveCategories,
 } from "../../services/categories.service";
 import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
 import { getActivePlans, Plan } from "../../services/plans.service";
@@ -43,7 +43,7 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const data = await getAdminCategories();
+        const data = await getActiveCategories();
         setFeaturedCategories(
           data.filter(
             (cat: Category) => cat.isFeatured && cat.isActive

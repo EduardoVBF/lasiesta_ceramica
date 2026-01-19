@@ -1,7 +1,7 @@
 "use client";
 import {
-  getAdminHomeCarousel,
   HomeCarouselItem,
+  getHomeCarousel,
 } from "../../services/carousel.service";
 import React, { useEffect, useCallback, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -47,7 +47,7 @@ export default function CarouselComponent() {
   }, [emblaApi]);
 
   useEffect(() => {
-    getAdminHomeCarousel()
+    getHomeCarousel()
       .then((data) =>
         setItems(
           [...data]
