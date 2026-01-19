@@ -91,6 +91,10 @@ export default function AdminPlansPage() {
               </li>
               <li>Planos em destaque são promovidos na página inicial.</li>
               <li>
+                Use idealmente de 2 a 4 planos em destaque para melhor
+                visualização.
+              </li>
+              <li>
                 Descrição curta aparece na página principal, descrição longa na
                 página do plano.
               </li>
@@ -100,44 +104,92 @@ export default function AdminPlansPage() {
 
         {/* LISTAGEM */}
         <section className="grid grid-cols-1 gap-6 z-10">
-          {plans.map((plan) => (
-            <PlanCard
-              key={plan.id}
-              plan={plan}
-              onEdit={() => {
-                setEditingPlan(plan);
-                setIsModalOpen(true);
-              }}
-              onToggle={async () => {
-                try {
-                  const updated = await updatePlanStatus(
-                    plan.id,
-                    !plan.isActive
-                  );
-
-                  setPlans((prev) =>
-                    prev.map((p) => (p.id === updated.id ? updated : p))
-                  );
-
-                  toast.success(
-                    `Plano ${
-                      updated.isActive ? "ativado" : "desativado"
-                    } com sucesso!`
-                  );
-                } catch (err) {
-                  if (err instanceof AxiosError) {
-                    toast.error(
-                      err.response?.data?.error ||
-                        err.response?.data?.message ||
-                        err.message
+          {plans
+            .filter((plan) => plan.isActive)
+            .map((plan) => (
+              <PlanCard
+                key={plan.id}
+                plan={plan}
+                onEdit={() => {
+                  setEditingPlan(plan);
+                  setIsModalOpen(true);
+                }}
+                onToggle={async () => {
+                  try {
+                    const updated = await updatePlanStatus(
+                      plan.id,
+                      !plan.isActive
                     );
-                  } else {
-                    toast.error("Erro inesperado ao salvar plano");
+
+                    setPlans((prev) =>
+                      prev.map((p) => (p.id === updated.id ? updated : p))
+                    );
+
+                    toast.success(
+                      `Plano ${
+                        updated.isActive ? "ativado" : "desativado"
+                      } com sucesso!`
+                    );
+                  } catch (err) {
+                    if (err instanceof AxiosError) {
+                      toast.error(
+                        err.response?.data?.error ||
+                          err.response?.data?.message ||
+                          err.message
+                      );
+                    } else {
+                      toast.error("Erro inesperado ao salvar plano");
+                    }
                   }
-                }
-              }}
-            />
-          ))}
+                }}
+              />
+            ))}
+
+          {plans.filter((plan) => !plan.isActive).length > 0 && (
+            <div className="mt-2 z-10">
+              <h3 className="text-2xl font-normal text-[#a35c42] mb-4">
+                Planos inativos
+              </h3>
+              {plans
+                .filter((plan) => !plan.isActive)
+                .map((plan) => (
+                  <PlanCard
+                    key={plan.id}
+                    plan={plan}
+                    onEdit={() => {
+                      setEditingPlan(plan);
+                      setIsModalOpen(true);
+                    }}
+                    onToggle={async () => {
+                      try {
+                        const updated = await updatePlanStatus(
+                          plan.id,
+                          !plan.isActive
+                        );
+                        setPlans((prev) =>
+                          prev.map((p) => (p.id === updated.id ? updated : p))
+                        );
+                        toast.success(
+                          `Plano ${
+                            updated.isActive ? "ativado" : "desativado"
+                          } com sucesso!`
+                        );
+                      } catch (err) {
+                        if (err instanceof AxiosError) {
+                          toast.error(
+                            err.response?.data?.error ||
+                              err.response?.data?.message ||
+                              err.message
+                          );
+                        } else {
+                          toast.error("Erro inesperado ao salvar plano");
+                        }
+                      }
+                    }}
+                  />
+                ))}
+            </div>
+          )}
 
           {/* EMPTY STATE */}
           {plans.length === 0 && (

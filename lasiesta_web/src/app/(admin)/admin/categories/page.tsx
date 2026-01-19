@@ -97,6 +97,10 @@ export default function AdminCategoriesPage() {
               </li>
               <li>Categorias em destaque são exibidas na página inicial.</li>
               <li>
+                Use idealmente de 3 a 5 categorias em destaque para melhor
+                visualização.
+              </li>
+              <li>
                 A imagem das categorias é a imagem padrão para a categoria e
                 será mostrada no destque da página inicial.
               </li>

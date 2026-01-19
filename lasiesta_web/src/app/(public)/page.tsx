@@ -45,7 +45,9 @@ export default function HomePage() {
       try {
         const data = await getAdminCategories();
         setFeaturedCategories(
-          data.filter((cat: Category) => cat.isFeatured) as Category[]
+          data.filter(
+            (cat: Category) => cat.isFeatured && cat.isActive
+          ) as Category[]
         );
       } catch (error) {
         console.error("Erro ao buscar categorias:", error);
@@ -118,7 +120,9 @@ export default function HomePage() {
 
         {/* Coleções */}
         <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
-          <div className="grid md:grid-cols-4 gap-8 my-4">
+          <div
+            className={`grid md:grid-cols-${featuredCategories.length} gap-4 my-4`}
+          >
             {featuredCategories.map((cat) => (
               <FeaturedCategoryCard cat={cat} key={cat.id} />
             ))}
@@ -138,7 +142,12 @@ export default function HomePage() {
           <h1 className="text-4xl font-semibold text-center mb-12">
             Cursos e Experiências
           </h1>
-          <div className="grid md:grid-cols-3 gap-12">
+          <div
+            className={`grid md:grid-cols-${
+              featuredPlans.filter((plan) => plan.isFeatured && plan.isActive)
+                .length
+            } gap-6`}
+          >
             {featuredPlans
               .filter((plan) => plan.isFeatured && plan.isActive)
               .map((plan, index) => (

@@ -1,9 +1,13 @@
 "use client";
 import { Pencil, ChevronDown, ChevronUp } from "lucide-react";
+import FeaturedPlanCard from "../cards/featuredPlanCard";
+import { LiaSearchPlusSolid } from "react-icons/lia";
 import { Plan } from "../../services/plans.service";
+import PlanSection from "../cards/plansCard";
 import ImageZoom from "../layout/ImageZoom";
 import StatusBadge from "../ui/statusBadge";
 import { BsToggleOn } from "react-icons/bs";
+import PreviewModal from "./previewModal";
 import React, { useState } from "react";
 import DOMPurify from "dompurify";
 import Image from "next/image";
@@ -137,6 +141,29 @@ export default function PlanCard({
 
       {/* ACTION BAR */}
       <div className="flex flex-col items-center justify-start">
+        {/* PREVIEW */}
+        <PreviewModal
+        className="min-w-5xl min-h-4xl max-h-[90vh] max-w-[90vw]"
+          trigger={
+            <p className="text-gray-600 hover:text-[#a35c42] ">
+              <LiaSearchPlusSolid size={30} title="Preview Extendida"/>
+            </p>
+          }
+        >
+          <PlanSection plan={plan} />
+        </PreviewModal>
+
+        <PreviewModal
+          className="min-w-[300px] min-h-[80vh] max-h-[90vh] max-w-[30vw]"
+          trigger={
+            <p className="text-gray-600 hover:text-[#a35c42] ">
+              <LiaSearchPlusSolid size={30} title="Preview Compacta"/>
+            </p>
+          }
+        >
+          <FeaturedPlanCard plan={plan} index={0} />
+        </PreviewModal>
+
         {/* EDIT */}
         <button
           onClick={onEdit}

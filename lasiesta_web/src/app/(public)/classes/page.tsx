@@ -27,7 +27,7 @@ export default function Classes() {
       <HeaderWithBanner textColor="text-white" page="CLASSES" />
 
       {/* Planos de assinatura */}
-      <section className="relative w-full flex flex-col gap-10 pb-20 pt-5">
+      <section className="relative w-full flex flex-col gap-8 pb-20 pt-5">
         <BackgroundImage
           src="/image/organic3.jpg"
           alt="Textura de fundo do ateliê"

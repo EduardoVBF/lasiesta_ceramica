@@ -1,101 +1,76 @@
 "use client";
-import BrownButton from "@/components/ui/brownButtom";
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
 import Image from "next/image";
-import React from "react";
+import BrownButton from "@/components/ui/brownButtom";
+import { Plan } from "../../services/plans.service";
 
 interface PlanSectionProps {
-  plan: {
-    id: string;
-    name: string;
-    slug: string;
-    price: number | null;
-    durationLabel: string | null;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-    shortDescription?: string;
-    longDescription?: string;
-    isFeatured?: boolean;
-    imageUrl?: string;
-  };
+  plan: Plan;
   reverse?: boolean;
-  buttonText?: string;
 }
 
-function PlanSection({
+export default function PlanSection({
   plan,
   reverse = false,
-  buttonText = "Tenho interesse",
 }: PlanSectionProps) {
-  return (
-    <motion.section
-      key={plan.id}
-      initial={{ opacity: 0, x: reverse ? 80 : -80 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      viewport={{ once: true }}
-      className={`relative flex flex-col md:flex-row items-center justify-between gap-10 py-6 px-6 rounded-3xl w-[60%] z-20 mx-auto shadow-lg bg-[#9f9f9fd7] ${
-        reverse ? "md:flex-row-reverse" : ""
-      }`}
-    >
-      {/* Imagem */}
-      <motion.div
-        whileHover={{ scale: 1.03 }}
-        transition={{ type: "spring", stiffness: 150 }}
-        className="relative w-[300px] h-[400px] flex-shrink-0 rounded-2xl overflow-hidden shadow-lg"
-      >
-        <Image
-          src={plan.imageUrl || ""}
-          alt={plan.name || ""}
-          fill
-          className="object-cover"
-        />
-      </motion.div>
+  const whatsappUrl = `https://wa.me/5516991401921?text=Olá! Tenho interesse no ${plan.name}`;
 
-      {/* Conteúdo */}
-      <div className="flex flex-col justify-between min-h-[400px] w-[100%] max-w-full text-marrom-avermelhado">
-        <div>
-          <h1 className="text-3xl font-semibold mb-3 tracking-tight text-marrom-avermelhado/90">
-            {plan.name}
-          </h1>
-          {plan.longDescription && (
+  return (
+    <section id={plan.slug} className="py-0 px-4 z-20">
+      <div
+        className={`max-w-6xl mx-auto flex flex-col ${
+          reverse ? "md:flex-row-reverse" : "md:flex-row"
+        } gap-8 lg:gap-12 p-4 bg-gray-200/70 rounded-xl shadow-2xl`}
+      >
+        {/* Lado da Imagem: Mantendo a proporção 1:1 ou 4:5 */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          className="relative w-full max-w-[400px] aspect-[4/5] md:aspect-square"
+        >
+          <div className="relative w-full h-full rounded-2xl overflow-hidden">
+            <Image
+              src={plan.imageUrl || ""}
+              alt={plan.name}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </motion.div>
+
+        {/* Lado do Conteúdo */}
+        <div className="flex-1 min-h-full flex flex-col justify-between space-y-4 mx-1">
+          <div className="flex-1 space-y-4">
+            <header>
+              <h1 className="text-4xl font-serif font-bold mt-2 leading-tight">
+                {plan.name}
+              </h1>
+            </header>
             <div
-              className="text-xs text-marrom-avermelhado/80 mb-4 leading-relaxed"
+              className="text-sm text-stone-600"
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(plan.longDescription),
+                __html: DOMPurify.sanitize(plan.longDescription || ""),
               }}
             />
-          )}
-        </div>
-
-        <div>
-          {/* Preço */}
-          <div className="flex items-baseline gap-2 mb-4 h-fit">
-            <span className="text-lg md:text-2xl font-bold text-marrom-avermelhado">
-              R$ {plan.price}
-            </span>
-            <span className="text-gray-500 text-base">
-              / {plan.durationLabel}
-            </span>
           </div>
-          {/* Botão */}
-          <BrownButton
-            text={buttonText}
-            onClick={() => {
-              window.open(
-                `https://wa.me/5516991401921?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(
-                  plan.name
-                )}`,
-                "_blank"
-              );
-            }}
-          />
+
+          <div className="flex flex-col gap-2">
+            <div className="pt-6 flex items-start sm:items-center gap-2">
+              <span className="text-3xl font-bold text-stone-800">
+                R$ {plan.price}
+              </span>
+              <span className="text-marrom-avermelhado font-semibold tracking-[0.2em] uppercase text-sm">
+                /{plan.durationLabel}
+              </span>
+            </div>
+            <BrownButton
+              text="Tenho Interesse"
+              onClick={() => window.open(whatsappUrl, "_blank")}
+            />
+          </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
-
-export default PlanSection;

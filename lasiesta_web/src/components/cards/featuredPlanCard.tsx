@@ -1,71 +1,80 @@
-import BrownButton from "../ui/brownButtom";
+"use client";
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import BrownButton from "../ui/brownButtom";
 
-interface FeaturedPlanCardProps {
-  plan: {
-    id: string;
-    name: string;
-    slug: string;
-    price: number | null;
-    durationLabel: string | null;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-    shortDescription?: string;
-    longDescription?: string;
-    isFeatured?: boolean;
-    imageUrl?: string;
-  };
-  index: number;
+export interface PlanData {
+  id: string;
+  name: string;
+  slug: string;
+  price: number | string | null;
+  durationLabel: string | null;
+  shortDescription?: string;
+  longDescription?: string;
+  imageUrl?: string;
 }
 
 export default function FeaturedPlanCard({
   plan,
   index,
-}: FeaturedPlanCardProps) {
+}: {
+  plan: PlanData;
+  index: number;
+}) {
   return (
     <motion.div
-      key={plan.id}
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.2 }}
-      className="bg-[#818b7e7c] rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all flex flex-col justify-between"
+      transition={{ delay: index * 0.1 }}
+      viewport={{ once: true }}
+      className="group relative flex flex-col bg-white/60 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 h-full"
     >
-      <div className="flex flex-col">
+      {/* Container da Imagem */}
+      <div className="relative aspect-square overflow-hidden">
         <Image
           src={plan.imageUrl || ""}
           alt={plan.name}
-          width={500}
-          height={300}
-          className="w-full h-56 object-cover"
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="p-6 space-y-3">
-          <h1 className="text-2xl font-semibold">{plan.name}</h1>
-          <div
-            className="text-marrom-avermelhado text-base"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(plan.shortDescription || ""),
-            }}
-          />
-        </div>
+        {/* Overlay sutil para dar profundidade no hover */}
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
-      <div className=" mx-6 mb-6">
-        <div className="flex items-baseline gap-2 mb-4 h-fit">
-          <span className="text-lg md:text-2xl font-bold text-marrom-avermelhado">
-            R$ {plan.price}
-          </span>
-          <span className="text-gray-500 text-base">
-            /{plan.durationLabel}
-          </span>
+
+      {/* Conteúdo */}
+      <div className="px-3 py-5 flex flex-col flex-grow">
+        <div className="mb-3">
+          <h1 className="text-xl font-serif font-bold leading-tight">
+            {plan.name}
+          </h1>
         </div>
 
-        <Link href="/classes" className="block">
-          <BrownButton text="Saiba Mais" />
-        </Link>
+        <div
+          className="text-stone-600 text-sm line-clamp-5 mb-4 flex-grow leading-relaxed"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(plan.shortDescription || ""),
+          }}
+        />
+
+        {/* Footer do Card: Preço e Botão */}
+        <div className="mt-auto pt-2">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-bold text-stone-800">
+                R$ {plan.price}
+              </span>
+              <span className="text-xs text-marrom-avermelhado font-bold uppercase tracking-widest">
+                /{plan.durationLabel}
+              </span>
+            </div>
+
+            <Link href={`/classes#${plan.slug}`} className="w-full">
+              <BrownButton text="Ver Detalhes" className="w-full" />
+            </Link>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
