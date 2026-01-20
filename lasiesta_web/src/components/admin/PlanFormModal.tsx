@@ -7,6 +7,7 @@ import PrimarySwitch from "../ui/primarySwitch";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
+import LoaderComp from "../ui/loaderComp";
 import ImageInput from "./imageInput";
 import { Info } from "lucide-react";
 
@@ -149,7 +150,9 @@ export default function PlanFormModal({
 
         {/* FORM */}
         {loading ? (
-          <p className="text-gray-500">Salvando plano...</p>
+          <div className="flex justify-center items-center">
+            <LoaderComp text={"Salvando plano..."} />
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <div className="w-full flex justify-center items-center">

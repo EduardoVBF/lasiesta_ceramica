@@ -35,6 +35,7 @@ import {
 
 import ColoredTextBox from "@/components/ui/coloredTextBox";
 import { Info } from "lucide-react";
+import LoaderComp from "@/components/ui/loaderComp";
 
 export default function AdminHomeCarouselPage() {
   const [items, setItems] = useState<HomeCarouselItem[]>([]);
@@ -97,10 +98,6 @@ export default function AdminHomeCarouselPage() {
     });
   }
 
-  if (loading) {
-    return <p className="text-gray-500">Carregando Carrossel...</p>;
-  }
-
   return (
     <div className="flex flex-col">
       <BackgroundImage
@@ -152,106 +149,120 @@ export default function AdminHomeCarouselPage() {
         </ColoredTextBox>
       )}
 
-      {/* ATIVOS (COM DRAG) */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={activeItems.map((i) => i.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <section className="grid grid-cols-1 gap-6 z-10">
-            {activeItems.map((item, index) => (
-              <SortableCarouselItem key={item.id} id={item.id}>
-                <HomeCarouselCard
-                  item={item}
-                  index={index}
-                  onEdit={() => setEditingItem(item)}
-                  onToggle={async () => {
-                    try {
-                      const updated = await updateHomeCarouselItem(item.id, {
-                        isActive: !item.isActive,
-                      });
-
-                      setItems((prev) =>
-                        prev.map((i) => (i.id === updated.id ? updated : i))
-                      );
-
-                      toast.success(
-                        `Slide ${
-                          updated.isActive ? "ativado" : "desativado"
-                        } com sucesso!`
-                      );
-                    } catch (err) {
-                      if (err instanceof AxiosError) {
-                        toast.error(
-                          err.response?.data?.error ||
-                            err.response?.data?.message ||
-                            err.message
-                        );
-                      } else {
-                        toast.error("Erro inesperado ao salvar banner");
-                      }
-                    }
-                  }}
-                />
-              </SortableCarouselItem>
-            ))}
-
-            {activeItems.length === 0 && (
-              <p className="text-gray-500 text-center py-12">
-                Nenhum slide ativo.
-              </p>
-            )}
-          </section>
-        </SortableContext>
-      </DndContext>
-
-      {/* INATIVOS (SEM DRAG) */}
-      {inactiveItems.length > 0 && (
-        <div className="mt-10 z-10">
-          <h3 className="text-2xl font-normal text-[#a35c42] mb-4">
-            Slides inativos
-          </h3>
-
-          <section className="grid grid-cols-1 gap-6 opacity-70">
-            {inactiveItems.map((item, index) => (
-              <HomeCarouselCard
-                key={item.id}
-                item={item}
-                index={index}
-                onEdit={() => setEditingItem(item)}
-                onToggle={async () => {
-                  try {
-                    const updated = await updateHomeCarouselItem(item.id, {
-                      isActive: !item.isActive,
-                    });
-                    setItems((prev) =>
-                      prev.map((i) => (i.id === updated.id ? updated : i))
-                    );
-                    toast.success(
-                      `Slide ${
-                        updated.isActive ? "ativado" : "desativado"
-                      } com sucesso!`
-                    );
-                  } catch (err) {
-                    if (err instanceof AxiosError) {
-                      toast.error(
-                        err.response?.data?.error ||
-                          err.response?.data?.message ||
-                          err.message
-                      );
-                    } else {
-                      toast.error("Erro inesperado ao salvar banner");
-                    }
-                  }
-                }}
-              />
-            ))}
-          </section>
+      {loading ? (
+        <div className="flex justify-center items-center z-10">
+          <LoaderComp
+            text={"Carregando slides do carrossel..."}
+            classname="min-h-[500px]"
+          />
         </div>
+      ) : (
+        <>
+          {/* ATIVOS (COM DRAG) */}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={activeItems.map((i) => i.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <section className="grid grid-cols-1 gap-6 z-10">
+                {activeItems.map((item, index) => (
+                  <SortableCarouselItem key={item.id} id={item.id}>
+                    <HomeCarouselCard
+                      item={item}
+                      index={index}
+                      onEdit={() => setEditingItem(item)}
+                      onToggle={async () => {
+                        try {
+                          const updated = await updateHomeCarouselItem(
+                            item.id,
+                            {
+                              isActive: !item.isActive,
+                            }
+                          );
+
+                          setItems((prev) =>
+                            prev.map((i) => (i.id === updated.id ? updated : i))
+                          );
+
+                          toast.success(
+                            `Slide ${
+                              updated.isActive ? "ativado" : "desativado"
+                            } com sucesso!`
+                          );
+                        } catch (err) {
+                          if (err instanceof AxiosError) {
+                            toast.error(
+                              err.response?.data?.error ||
+                                err.response?.data?.message ||
+                                err.message
+                            );
+                          } else {
+                            toast.error("Erro inesperado ao salvar banner");
+                          }
+                        }
+                      }}
+                    />
+                  </SortableCarouselItem>
+                ))}
+
+                {activeItems.length === 0 && (
+                  <p className="text-gray-500 text-center py-12">
+                    Nenhum slide ativo.
+                  </p>
+                )}
+              </section>
+            </SortableContext>
+          </DndContext>
+
+          {/* INATIVOS (SEM DRAG) */}
+          {inactiveItems.length > 0 && (
+            <div className="mt-10 z-10">
+              <h3 className="text-2xl font-normal text-[#a35c42] mb-4">
+                Slides inativos
+              </h3>
+
+              <section className="grid grid-cols-1 gap-6 opacity-70">
+                {inactiveItems.map((item, index) => (
+                  <HomeCarouselCard
+                    key={item.id}
+                    item={item}
+                    index={index}
+                    onEdit={() => setEditingItem(item)}
+                    onToggle={async () => {
+                      try {
+                        const updated = await updateHomeCarouselItem(item.id, {
+                          isActive: !item.isActive,
+                        });
+                        setItems((prev) =>
+                          prev.map((i) => (i.id === updated.id ? updated : i))
+                        );
+                        toast.success(
+                          `Slide ${
+                            updated.isActive ? "ativado" : "desativado"
+                          } com sucesso!`
+                        );
+                      } catch (err) {
+                        if (err instanceof AxiosError) {
+                          toast.error(
+                            err.response?.data?.error ||
+                              err.response?.data?.message ||
+                              err.message
+                          );
+                        } else {
+                          toast.error("Erro inesperado ao salvar banner");
+                        }
+                      }
+                    }}
+                  />
+                ))}
+              </section>
+            </div>
+          )}
+        </>
       )}
 
       {/* MODAL */}

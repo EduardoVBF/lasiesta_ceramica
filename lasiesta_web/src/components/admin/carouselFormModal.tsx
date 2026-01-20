@@ -1,13 +1,14 @@
 "use client";
 import { HomeCarouselItem } from "../../services/carousel.service";
 import React, { useEffect, useState } from "react";
+import ColoredTextBox from "../ui/coloredTextBox";
+import PrimarySwitch from "../ui/primarySwitch";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
+import LoaderComp from "../ui/loaderComp";
 import ImageInput from "./imageInput";
-import PrimarySwitch from "../ui/primarySwitch";
 import { Info } from "lucide-react";
-import ColoredTextBox from "../ui/coloredTextBox";
 
 type HomeCarouselFormData = {
   title?: string | null;
@@ -101,7 +102,9 @@ export default function HomeCarouselFormModal({
         )}
 
         {loading ? (
-          <p className="text-gray-500">Salvando slide...</p>
+          <div className="flex justify-center items-center">
+            <LoaderComp text={"Salvando slide..."} />
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <div className="flex justify-center">

@@ -4,6 +4,7 @@ import ColoredTextBox from "../ui/coloredTextBox";
 import PrimarySwitch from "../ui/primarySwitch";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
+import LoaderComp from "../ui/loaderComp";
 import GrayButton from "../ui/grayButtom";
 import ImageInput from "./imageInput";
 import { Info } from "lucide-react";
@@ -134,7 +135,9 @@ export default function CategoryFormModal({
         )}
 
         {loading ? (
-          <p className="text-gray-500">Salvando categoria...</p>
+          <div className="flex justify-center items-center">
+            <LoaderComp text={"Salvando categoria..."} />
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <div className="w-full flex justify-center items-center">

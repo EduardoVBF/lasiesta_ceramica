@@ -9,12 +9,13 @@ import {
 } from "../../../../services/categories.service";
 import CategoryFormModal from "@/components/admin/CategoryFormModal";
 import BackgroundImage from "@/components/layout/backgroundImage";
+import ColoredTextBox from "@/components/ui/coloredTextBox";
 import CategoryRow from "@/components/admin/categoryRow";
 import BrownButton from "@/components/ui/brownButtom";
+import LoaderComp from "@/components/ui/loaderComp";
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
-import ColoredTextBox from "@/components/ui/coloredTextBox";
 import { AxiosError } from "axios";
 
 export default function AdminCategoriesPage() {
@@ -46,10 +47,6 @@ export default function AdminCategoriesPage() {
       )
       .finally(() => setLoading(false));
   }, [isModalOpen]);
-
-  if (loading) {
-    return <p className="text-gray-500">Carregando categorias...</p>;
-  }
 
   return (
     <>
@@ -108,157 +105,172 @@ export default function AdminCategoriesPage() {
           </ColoredTextBox>
         )}
 
-        {/* TOGGLE INATIVAS */}
-        {inactiveCategories.length > 0 && (
-          <div className="flex justify-end mb-2 cursor-pointer z-10">
-            <button
-              onClick={() => setShowInactive((prev) => !prev)}
-              className="text-sm font-medium text-gray-600 hover:text-gray-800 transition cursor-pointer"
-            >
-              {showInactive
-                ? "Ocultar categorias inativas"
-                : "Mostrar categorias inativas"}
-            </button>
+        {loading ? (
+          <div className="flex justify-center items-center z-10">
+            <LoaderComp
+              text={"Carregando categorias..."}
+              classname="min-h-[500px]"
+            />
           </div>
-        )}
+        ) : (
+          <>
+            {/* TOGGLE INATIVAS */}
+            {inactiveCategories.length > 0 && (
+              <div className="flex justify-end mb-2 cursor-pointer z-10">
+                <button
+                  onClick={() => setShowInactive((prev) => !prev)}
+                  className="text-sm font-medium text-gray-600 hover:text-gray-800 transition cursor-pointer"
+                >
+                  {showInactive
+                    ? "Ocultar categorias inativas"
+                    : "Mostrar categorias inativas"}
+                </button>
+              </div>
+            )}
+            <section className="bg-white/70 rounded-2xl border border-gray-100 shadow-sm overflow-hidden z-10">
+              <table className="w-full text-sm">
+                <thead className="bg-[#a35c42]">
+                  <tr>
+                    <th className="text-left px-6 py-4 font-medium text-white">
+                      NOME
+                    </th>
+                    <th className="text-left px-6 py-4 font-medium text-white">
+                      IMAGEM
+                    </th>
+                    <th className="text-left px-6 py-4 font-medium text-white">
+                      SLUG
+                    </th>
+                    <th className="text-left px-6 py-4 font-medium text-white">
+                      STATUS
+                    </th>
+                    <th className="text-left px-6 py-4 font-medium text-white">
+                      DESTAQUE
+                    </th>
+                    <th className="text-right px-6 py-4 font-medium text-white">
+                      AÇÕES
+                    </th>
+                  </tr>
+                </thead>
 
-        {/* TABELA */}
-        <section className="bg-white/70 rounded-2xl border border-gray-100 shadow-sm overflow-hidden z-10">
-          <table className="w-full text-sm">
-            <thead className="bg-[#a35c42]">
-              <tr>
-                <th className="text-left px-6 py-4 font-medium text-white">
-                  NOME
-                </th>
-                <th className="text-left px-6 py-4 font-medium text-white">
-                  IMAGEM
-                </th>
-                <th className="text-left px-6 py-4 font-medium text-white">
-                  SLUG
-                </th>
-                <th className="text-left px-6 py-4 font-medium text-white">
-                  STATUS
-                </th>
-                <th className="text-left px-6 py-4 font-medium text-white">
-                  DESTAQUE
-                </th>
-                <th className="text-right px-6 py-4 font-medium text-white">
-                  AÇÕES
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y divide-gray-400">
-              {/* ATIVAS */}
-              {activeCategories.map((category) => (
-                <CategoryRow
-                  key={category.id}
-                  category={category}
-                  onEdit={() => {
-                    setEditingCategory(category);
-                    setIsModalOpen(true);
-                  }}
-                  onToggle={async () => {
-                    try {
-                      const updated = await updateCategoryStatus(
-                        category.id,
-                        !category.isActive
-                      );
-
-                      setCategories((prev) =>
-                        prev.map((c) => (c.id === category.id ? updated : c))
-                      );
-
-                      toast.success(
-                        `Categoria ${
-                          updated.isActive ? "ativada" : "desativada"
-                        } com sucesso!`
-                      );
-                    } catch (err) {
-                      if (err instanceof AxiosError) {
-                        toast.error(
-                          err.response?.data?.error ||
-                            err.response?.data?.message ||
-                            err.message
-                        );
-                      } else {
-                        toast.error("Erro inesperado ao salvar categoria");
-                      }
-                    }
-                  }}
-                />
-              ))}
-
-              {/* INATIVAS */}
-              {showInactive && inactiveCategories.length > 0 && (
-                <tr className="bg-gray-200/70">
-                  <td
-                    colSpan={6}
-                    className="px-6 py-4 text-xs uppercase tracking-wide text-gray-500 divide-none"
-                  >
-                    Categorias inativas
-                  </td>
-                </tr>
-              )}
-
-              {showInactive &&
-                inactiveCategories.map((category) => (
-                  <CategoryRow
-                    key={category.id}
-                    category={category}
-                    onEdit={() => {
-                      setEditingCategory(category);
-                      setIsModalOpen(true);
-                    }}
-                    onToggle={async () => {
-                      try {
-                        const updated = await updateCategoryStatus(
-                          category.id,
-                          !category.isActive
-                        );
-
-                        setCategories((prev) =>
-                          prev.map((c) => (c.id === category.id ? updated : c))
-                        );
-
-                        toast.success(
-                          `Categoria ${
-                            updated.isActive ? "ativada" : "desativada"
-                          } com sucesso!`
-                        );
-                      } catch (err) {
-                        if (err instanceof AxiosError) {
-                          toast.error(
-                            err.response?.data?.error ||
-                              err.response?.data?.message ||
-                              err.message
+                <tbody className="divide-y divide-gray-400">
+                  {/* ATIVAS */}
+                  {activeCategories.map((category) => (
+                    <CategoryRow
+                      key={category.id}
+                      category={category}
+                      onEdit={() => {
+                        setEditingCategory(category);
+                        setIsModalOpen(true);
+                      }}
+                      onToggle={async () => {
+                        try {
+                          const updated = await updateCategoryStatus(
+                            category.id,
+                            !category.isActive
                           );
-                        } else {
-                          toast.error("Erro inesperado ao salvar categoria");
-                        }
-                      }
-                    }}
-                  />
-                ))}
 
-              {/* EMPTY STATE */}
-              {categories.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-16 text-center">
-                    <p className="text-gray-500 text-xl mb-4">
-                      Nenhuma categoria cadastrada ainda
-                    </p>
-                    <BrownButton
-                      text="Criar primeira categoria"
-                      maxWidth="max-w-fit"
-                      onClick={() => setIsModalOpen(true)}
-                    ></BrownButton>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </section>
+                          setCategories((prev) =>
+                            prev.map((c) =>
+                              c.id === category.id ? updated : c
+                            )
+                          );
+
+                          toast.success(
+                            `Categoria ${
+                              updated.isActive ? "ativada" : "desativada"
+                            } com sucesso!`
+                          );
+                        } catch (err) {
+                          if (err instanceof AxiosError) {
+                            toast.error(
+                              err.response?.data?.error ||
+                                err.response?.data?.message ||
+                                err.message
+                            );
+                          } else {
+                            toast.error("Erro inesperado ao salvar categoria");
+                          }
+                        }
+                      }}
+                    />
+                  ))}
+
+                  {/* INATIVAS */}
+                  {showInactive && inactiveCategories.length > 0 && (
+                    <tr className="bg-gray-200/70">
+                      <td
+                        colSpan={6}
+                        className="px-6 py-4 text-xs uppercase tracking-wide text-gray-500 divide-none"
+                      >
+                        Categorias inativas
+                      </td>
+                    </tr>
+                  )}
+
+                  {showInactive &&
+                    inactiveCategories.map((category) => (
+                      <CategoryRow
+                        key={category.id}
+                        category={category}
+                        onEdit={() => {
+                          setEditingCategory(category);
+                          setIsModalOpen(true);
+                        }}
+                        onToggle={async () => {
+                          try {
+                            const updated = await updateCategoryStatus(
+                              category.id,
+                              !category.isActive
+                            );
+
+                            setCategories((prev) =>
+                              prev.map((c) =>
+                                c.id === category.id ? updated : c
+                              )
+                            );
+
+                            toast.success(
+                              `Categoria ${
+                                updated.isActive ? "ativada" : "desativada"
+                              } com sucesso!`
+                            );
+                          } catch (err) {
+                            if (err instanceof AxiosError) {
+                              toast.error(
+                                err.response?.data?.error ||
+                                  err.response?.data?.message ||
+                                  err.message
+                              );
+                            } else {
+                              toast.error(
+                                "Erro inesperado ao salvar categoria"
+                              );
+                            }
+                          }
+                        }}
+                      />
+                    ))}
+
+                  {/* EMPTY STATE */}
+                  {categories.length === 0 && (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-16 text-center">
+                        <p className="text-gray-500 text-xl mb-4">
+                          Nenhuma categoria cadastrada ainda
+                        </p>
+                        <BrownButton
+                          text="Criar primeira categoria"
+                          maxWidth="max-w-fit"
+                          onClick={() => setIsModalOpen(true)}
+                        ></BrownButton>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </section>
+          </>
+        )}
 
         {/* MODAL */}
         <CategoryFormModal

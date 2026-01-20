@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
+import LoaderComp from "../ui/loaderComp";
 import ImageInput from "./imageInput";
 
 type BannerFormData = {
@@ -86,7 +87,9 @@ export default function BannerFormModal({
         </p>
 
         {loading ? (
-          <p className="text-gray-500">Salvando banner...</p>
+          <div className="flex justify-center items-center">
+            <LoaderComp text={"Salvando banner..."} />
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <div className="flex justify-center">

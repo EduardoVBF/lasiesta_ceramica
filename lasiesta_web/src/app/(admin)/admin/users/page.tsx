@@ -11,14 +11,15 @@ import {
 import ResetPasswordModal from "@/components/admin/ResetPasswordModal";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import UserFormModal from "@/components/admin/UserFormModal";
+import ColoredTextBox from "@/components/ui/coloredTextBox";
 import BrownButton from "@/components/ui/brownButtom";
 import StatusBadge from "@/components/ui/statusBadge";
+import LoaderComp from "@/components/ui/loaderComp";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { BsToggleOn } from "react-icons/bs";
 import { Pencil, Key, Info } from "lucide-react";
-import ColoredTextBox from "@/components/ui/coloredTextBox";
 import { AxiosError } from "axios";
 
 export default function AdminUsersPage() {
@@ -94,119 +95,121 @@ export default function AdminUsersPage() {
         </ColoredTextBox>
       )}
 
-      {/* TABELA */}
-      <section className="bg-white/70 rounded-2xl border border-gray-100 shadow-sm overflow-hidden z-10">
-        <table className="w-full text-sm">
-          <thead className="bg-[#a35c42]">
-            <tr>
-              <th className="text-left px-6 py-4 text-white">NOME</th>
-              <th className="text-left px-6 py-4 text-white">EMAIL</th>
-              <th className="text-left px-6 py-4 text-white">PERFIL</th>
-              <th className="text-left px-6 py-4 text-white">STATUS</th>
-              <th className="text-right px-6 py-4 text-white">AÇÕES</th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-gray-300">
-            {loading && (
+      {loading ? (
+        <div className="flex justify-center items-center z-10">
+          <LoaderComp
+            text={"Carregando usuários..."}
+            classname="min-h-[500px]"
+          />
+        </div>
+      ) : users.length == 0 ? (
+        <p className="text-gray-600 italic z-10">Nenhum usuário encontrado.</p>
+      ) : (
+        <section className="bg-white/70 rounded-2xl border border-gray-100 shadow-sm overflow-hidden z-10">
+          <table className="w-full text-sm">
+            <thead className="bg-[#a35c42]">
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-gray-500">
-                  Carregando usuários...
-                </td>
+                <th className="text-left px-6 py-4 text-white">NOME</th>
+                <th className="text-left px-6 py-4 text-white">EMAIL</th>
+                <th className="text-left px-6 py-4 text-white">PERFIL</th>
+                <th className="text-left px-6 py-4 text-white">STATUS</th>
+                <th className="text-right px-6 py-4 text-white">AÇÕES</th>
               </tr>
-            )}
+            </thead>
 
-            {!loading &&
-              users.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-200/60 transition">
-                  <td className="px-6 py-4 font-semibold text-gray-800">
-                    {user.firstName} {user.lastName}
-                  </td>
+            <tbody className="divide-y divide-gray-300">
+              {!loading &&
+                users.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-200/60 transition">
+                    <td className="px-6 py-4 font-semibold text-gray-800">
+                      {user.firstName} {user.lastName}
+                    </td>
 
-                  <td className="px-6 py-4 text-gray-600">{user.email}</td>
+                    <td className="px-6 py-4 text-gray-600">{user.email}</td>
 
-                  <td className="px-6 py-4 text-gray-600">
-                    {user.role === "admin" ? "Administrador" : "Editor"}
-                  </td>
+                    <td className="px-6 py-4 text-gray-600">
+                      {user.role === "admin" ? "Administrador" : "Editor"}
+                    </td>
 
-                  <td className="px-6 py-4">
-                    <StatusBadge active={user.isActive} />
-                  </td>
+                    <td className="px-6 py-4">
+                      <StatusBadge active={user.isActive} />
+                    </td>
 
-                  <td className="px-6 py-4 text-right">
-                    {session?.user?.role === "admin" ? (
-                      <div className="inline-flex items-center gap-4">
-                        {/* EDITAR */}
-                        <button
-                          onClick={() => {
-                            setEditingUser(user);
-                            setFormOpen(true);
-                          }}
-                          className="text-gray-600 hover:text-[#a35c42]"
-                          title="Editar usuário"
-                        >
-                          <Pencil size={20} />
-                        </button>
+                    <td className="px-6 py-4 text-right">
+                      {session?.user?.role === "admin" ? (
+                        <div className="inline-flex items-center gap-4">
+                          {/* EDITAR */}
+                          <button
+                            onClick={() => {
+                              setEditingUser(user);
+                              setFormOpen(true);
+                            }}
+                            className="text-gray-600 hover:text-[#a35c42]"
+                            title="Editar usuário"
+                          >
+                            <Pencil size={20} />
+                          </button>
 
-                        {/* RESET SENHA */}
-                        <button
-                          onClick={() => {
-                            setResetUser(user);
-                            setResetOpen(true);
-                          }}
-                          className="text-gray-600 hover:text-[#a35c42]"
-                          title="Redefinir senha"
-                        >
-                          <Key size={20} />
-                        </button>
+                          {/* RESET SENHA */}
+                          <button
+                            onClick={() => {
+                              setResetUser(user);
+                              setResetOpen(true);
+                            }}
+                            className="text-gray-600 hover:text-[#a35c42]"
+                            title="Redefinir senha"
+                          >
+                            <Key size={20} />
+                          </button>
 
-                        {/* TOGGLE */}
-                        <button
-                          onClick={async () => {
-                            try {
-                              const updated = await updateUser(user.id, {
-                                isActive: !user.isActive,
-                              });
+                          {/* TOGGLE */}
+                          <button
+                            onClick={async () => {
+                              try {
+                                const updated = await updateUser(user.id, {
+                                  isActive: !user.isActive,
+                                });
 
-                              setUsers((prev) =>
-                                prev.map((u) =>
-                                  u.id === user.id ? updated : u
-                                )
-                              );
+                                setUsers((prev) =>
+                                  prev.map((u) =>
+                                    u.id === user.id ? updated : u
+                                  )
+                                );
 
-                              toast.success(
-                                `Usuário ${
-                                  updated.isActive ? "ativado" : "desativado"
-                                }`
-                              );
-                            } catch {
-                              toast.error("Erro ao atualizar status");
-                            }
-                          }}
-                          className={`${
-                            user.isActive
-                              ? "text-green-600 hover:text-red-700"
-                              : "text-red-600 hover:text-green-700"
-                          }`}
-                          title="Ativar / Desativar"
-                        >
-                          <BsToggleOn
-                            size={25}
-                            className={
-                              user.isActive ? "" : "rotate-180 transition"
-                            }
-                          />
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="text-gray-400 italic">Sem ações</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </section>
+                                toast.success(
+                                  `Usuário ${
+                                    updated.isActive ? "ativado" : "desativado"
+                                  }`
+                                );
+                              } catch {
+                                toast.error("Erro ao atualizar status");
+                              }
+                            }}
+                            className={`${
+                              user.isActive
+                                ? "text-green-600 hover:text-red-700"
+                                : "text-red-600 hover:text-green-700"
+                            }`}
+                            title="Ativar / Desativar"
+                          >
+                            <BsToggleOn
+                              size={25}
+                              className={
+                                user.isActive ? "" : "rotate-180 transition"
+                              }
+                            />
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 italic">Sem ações</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </section>
+      )}
 
       {/* MODAL CRIAR / EDITAR */}
       <UserFormModal

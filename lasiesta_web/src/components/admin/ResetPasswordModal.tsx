@@ -3,6 +3,7 @@ import { User } from "../../services/users.service";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
+import LoaderComp from "../ui/loaderComp";
 import React, { useState } from "react";
 
 type Props = {
@@ -43,25 +44,35 @@ export default function ResetPasswordModal({
           Nova senha para <strong>{user.email}</strong>
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <PrimaryInput
-            label="Nova senha"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          <div className="flex justify-end gap-3 pt-4">
-            <GrayButton text="Cancelar" onClick={onClose} maxWidth="max-w-fit" />
-            <BrownButton
-              type="submit"
-              disabled={loading}
-              maxWidth="max-w-fit"
-              text={loading ? "Salvando..." : "Redefinir"}
-            />
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <LoaderComp text={"Redefinindo senha..."} />
           </div>
-        </form>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <PrimaryInput
+              label="Nova senha"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+            <div className="flex justify-end gap-3 pt-4">
+              <GrayButton
+                text="Cancelar"
+                onClick={onClose}
+                maxWidth="max-w-fit"
+              />
+              <BrownButton
+                type="submit"
+                disabled={loading}
+                maxWidth="max-w-fit"
+                text={loading ? "Salvando..." : "Redefinir"}
+              />
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

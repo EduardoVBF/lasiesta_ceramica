@@ -7,6 +7,7 @@ import PrimarySwitch from "../ui/primarySwitch";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
+import LoaderComp from "../ui/loaderComp";
 import { Info } from "lucide-react";
 
 type Props = {
@@ -95,74 +96,79 @@ export default function UserFormModal({
             </ul>
           </ColoredTextBox>
         )}
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <PrimaryInput
-            label="Nome"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-          <PrimaryInput
-            label="Sobrenome"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-          <PrimaryInput
-            label="Email"
-            value={email}
-            disabled={!!initialData}
-            onChange={(e) => {
-              if (!initialData) {
-                setEmail(e.target.value);
-              }
-            }}
-            type="email"
-            required
-          />
-
-          {!initialData && (
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <LoaderComp text={"Salvando usuário..."} />
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <PrimaryInput
-              label="Senha"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              label="Nome"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               required
             />
-          )}
-
-          <PrimarySelect
-            label="Perfil"
-            value={role}
-            required
-            onChange={(e) => setRole(e.target.value as "admin" | "editor")}
-            options={[
-              { value: "admin", label: "Administrador" },
-              { value: "editor", label: "Editor" },
-            ]}
-          />
-
-          <PrimarySwitch
-            label="Usuário ativo"
-            checked={isActive}
-            onChange={setIsActive}
-          />
-
-          <div className="flex justify-end gap-3 pt-4">
-            <GrayButton
-              text="Cancelar"
-              onClick={onClose}
-              maxWidth="max-w-fit"
+            <PrimaryInput
+              label="Sobrenome"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
             />
-            <BrownButton
-              type="submit"
-              disabled={loading}
-              maxWidth="max-w-fit"
-              text={loading ? "Salvando..." : "Salvar"}
+            <PrimaryInput
+              label="Email"
+              value={email}
+              disabled={!!initialData}
+              onChange={(e) => {
+                if (!initialData) {
+                  setEmail(e.target.value);
+                }
+              }}
+              type="email"
+              required
             />
-          </div>
-        </form>
+
+            {!initialData && (
+              <PrimaryInput
+                label="Senha"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            )}
+
+            <PrimarySelect
+              label="Perfil"
+              value={role}
+              required
+              onChange={(e) => setRole(e.target.value as "admin" | "editor")}
+              options={[
+                { value: "admin", label: "Administrador" },
+                { value: "editor", label: "Editor" },
+              ]}
+            />
+
+            <PrimarySwitch
+              label="Usuário ativo"
+              checked={isActive}
+              onChange={setIsActive}
+            />
+
+            <div className="flex justify-end gap-3 pt-4">
+              <GrayButton
+                text="Cancelar"
+                onClick={onClose}
+                maxWidth="max-w-fit"
+              />
+              <BrownButton
+                type="submit"
+                disabled={loading}
+                maxWidth="max-w-fit"
+                text={loading ? "Salvando..." : "Salvar"}
+              />
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

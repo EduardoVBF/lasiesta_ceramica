@@ -8,6 +8,7 @@ import BackgroundImage from "@/components/layout/backgroundImage";
 import BannerFormModal from "@/components/admin/bannerFormModal";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
 import BannerCard from "@/components/admin/bannerCard";
+import LoaderComp from "@/components/ui/loaderComp";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
@@ -32,10 +33,6 @@ export default function AdminBannersPage() {
       )
       .finally(() => setLoading(false));
   }, []);
-
-  if (loading) {
-    return <p className="text-gray-500">Carregando banners...</p>;
-  }
 
   return (
     <>
@@ -85,16 +82,24 @@ export default function AdminBannersPage() {
           </ColoredTextBox>
         )}
 
-        {/* LISTAGEM */}
-        <section className="grid grid-cols-1 gap-6 z-10">
-          {banners.map((banner) => (
-            <BannerCard
-              key={banner.id}
-              banner={banner}
-              onEdit={() => setEditingBanner(banner)}
+        {loading ? (
+          <div className="flex justify-center items-center z-10">
+            <LoaderComp
+              text={"Carregando banners..."}
+              classname="min-h-[500px]"
             />
-          ))}
-        </section>
+          </div>
+        ) : (
+          <section className="grid grid-cols-1 gap-6 z-10">
+            {banners.map((banner) => (
+              <BannerCard
+                key={banner.id}
+                banner={banner}
+                onEdit={() => setEditingBanner(banner)}
+              />
+            ))}
+          </section>
+        )}
 
         {/* MODAL */}
         <BannerFormModal
