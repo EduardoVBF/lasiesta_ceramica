@@ -24,7 +24,7 @@ export const createProductSchema = z
 
     // promoção
     isSale: z.boolean().optional(),
-    salePrice: z.number().positive().optional(),
+    salePrice: z.number().positive().optional().nullable(),
 
     shortDescription: z.string().optional(),
     longDescription: z.string().optional(),
@@ -77,7 +77,7 @@ export const updateProductSchema = z
     price: z.number().positive().optional(),
 
     isSale: z.boolean().optional(),
-    salePrice: z.number().positive().optional(),
+    salePrice: z.number().positive().nullable().optional(),
 
     shortDescription: z.string().optional(),
     longDescription: z.string().optional(),

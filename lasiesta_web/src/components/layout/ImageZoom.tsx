@@ -12,6 +12,7 @@ interface ImageZoomProps {
   height?: number;
   className?: string;
   zoom?: boolean;
+  fill?: boolean;
 }
 
 export default function ImageZoom({
@@ -21,6 +22,7 @@ export default function ImageZoom({
   height = 200,
   className,
   zoom = false,
+  fill = false,
 }: ImageZoomProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -50,8 +52,9 @@ export default function ImageZoom({
         <Image
           src={src}
           alt={alt}
-          width={width}
-          height={height}
+          width={fill ? undefined : width}
+          height={fill ? undefined : height}
+          fill={fill}
           className="rounded-lg object-cover"
         />
       </div>
