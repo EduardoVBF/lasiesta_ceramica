@@ -108,7 +108,7 @@ export default function HomePage() {
 
         {/* Coleções - CORREÇÃO DO GRID AQUI */}
         <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
-          {!loadingCategories ? (
+          {loadingCategories ? (
             <LoaderComp />
           ) : (
             <div
