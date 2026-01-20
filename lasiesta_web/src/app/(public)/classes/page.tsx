@@ -3,10 +3,12 @@ import { getActivePlans, Plan } from "../../../services/plans.service";
 import HeaderWithBanner from "@/components/layout/headerWithBanner";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import PlansCard from "@/components/cards/plansCard";
+import LoaderComp from "@/components/ui/loaderComp";
 import React, { useState, useEffect } from "react";
 import Footer from "@/components/layout/footer";
 
 export default function Classes() {
+  const [loading, setLoading] = useState<boolean>(true);
   const [plans, setPlans] = useState<Plan[]>([]);
 
   useEffect(() => {
@@ -14,6 +16,7 @@ export default function Classes() {
       try {
         const data = await getActivePlans();
         setPlans(data as Plan[]);
+        setLoading(false);
       } catch (error) {
         console.error("Erro ao buscar planos:", error);
       }
@@ -34,9 +37,13 @@ export default function Classes() {
           opacity={20}
         />
 
-        {plans.map((plan, index) => (
-          <PlansCard key={plan.id} plan={plan} reverse={index % 2 === 0} />
-        ))}
+        {loading ? (
+          <LoaderComp text="Carregando planos e aulas..." classname="min-h-[400px]" />
+        ) : (
+          plans.map((plan, index) => (
+            <PlansCard key={plan.id} plan={plan} reverse={index % 2 === 0} />
+          ))
+        )}
       </section>
 
       <Footer />

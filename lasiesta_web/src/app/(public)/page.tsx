@@ -9,6 +9,7 @@ import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import CarouselComponent from "@/components/layout/carousel";
 import BrownButton from "@/components/ui/brownButtom";
+import LoaderComp from "@/components/ui/loaderComp";
 import React, { useState, useEffect } from "react";
 import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
@@ -17,20 +18,28 @@ import Link from "next/link";
 
 export default function HomePage() {
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [featuredPlans, setFeaturedPlans] = useState<Plan[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
         // Busca Planos
         const plansData = await getActivePlans();
-        const plans = plansData.filter((plan: Plan) => plan.isFeatured && plan.isActive);
+        const plans = plansData.filter(
+          (plan: Plan) => plan.isFeatured && plan.isActive
+        );
         setFeaturedPlans(plans);
+        setLoadingPlans(false);
 
         // Busca Categorias
         const catsData = await getActiveCategories();
-        const categories = catsData.filter((cat: Category) => cat.isFeatured && cat.isActive);
+        const categories = catsData.filter(
+          (cat: Category) => cat.isFeatured && cat.isActive
+        );
         setFeaturedCategories(categories);
+        setLoadingCategories(false);
       } catch (error) {
         console.error("Erro ao carregar dados da Home:", error);
       }
@@ -99,18 +108,23 @@ export default function HomePage() {
 
         {/* Coleções - CORREÇÃO DO GRID AQUI */}
         <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
-          <div
-            className="grid gap-4 my-4"
-            style={{
-              gridTemplateColumns: featuredCategories.length > 0 
-                ? `repeat(${featuredCategories.length}, minmax(0, 1fr))` 
-                : 'repeat(1, minmax(0, 1fr))'
-            }}
-          >
-            {featuredCategories.map((cat) => (
-              <FeaturedCategoryCard cat={cat} key={cat.id} />
-            ))}
-          </div>
+          {!loadingCategories ? (
+            <LoaderComp />
+          ) : (
+            <div
+              className="grid gap-4 my-4"
+              style={{
+                gridTemplateColumns:
+                  featuredCategories.length > 0
+                    ? `repeat(${featuredCategories.length}, minmax(0, 1fr))`
+                    : "repeat(1, minmax(0, 1fr))",
+              }}
+            >
+              {featuredCategories.map((cat) => (
+                <FeaturedCategoryCard cat={cat} key={cat.id} />
+              ))}
+            </div>
+          )}
 
           <div className="mt-8 relative z-20">
             <Link href="/products">
@@ -126,18 +140,23 @@ export default function HomePage() {
           <h1 className="text-4xl font-semibold text-center mb-12">
             Cursos e Experiências
           </h1>
-          <div
-            className="grid gap-6"
-            style={{
-                gridTemplateColumns: featuredPlans.length > 0 
-                  ? `repeat(${featuredPlans.length}, minmax(0, 1fr))` 
-                  : 'repeat(1, minmax(0, 1fr))'
+          {loadingPlans ? (
+            <LoaderComp classname="min-h-[300px]" />
+          ) : (
+            <div
+              className="grid gap-6"
+              style={{
+                gridTemplateColumns:
+                  featuredPlans.length > 0
+                    ? `repeat(${featuredPlans.length}, minmax(0, 1fr))`
+                    : "repeat(1, minmax(0, 1fr))",
               }}
-          >
-            {featuredPlans.map((plan, index) => (
-              <FeaturedPlanCard plan={plan} index={index} key={index} />
-            ))}
-          </div>
+            >
+              {featuredPlans.map((plan, index) => (
+                <FeaturedPlanCard plan={plan} index={index} key={index} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

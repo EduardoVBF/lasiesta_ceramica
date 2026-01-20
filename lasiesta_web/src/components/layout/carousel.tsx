@@ -74,7 +74,7 @@ export default function CarouselComponent() {
       </div>
 
       {loading ? (
-        <LoaderComp text="Carregando Carrossel..." />
+        <LoaderComp text="Carregando Carrossel..." classname="min-h-[400px]"/>
       ) : (
         <div className="relative w-full h-[300px] sm:h-[400px] xl:h-[550px] 2xl:h-[650px] overflow-hidden shadow-lg">
           {/* Embla viewport */}

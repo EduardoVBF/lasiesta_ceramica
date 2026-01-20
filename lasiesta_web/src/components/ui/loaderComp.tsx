@@ -5,6 +5,7 @@ import React from "react";
 type LoaderCompProps = {
   color?: string;
   classname?: string;
+  classnameLoader?: string;
   size?: number;
   text?: string | null;
   children?: React.ReactNode;
@@ -12,16 +13,17 @@ type LoaderCompProps = {
 
 export default function LoaderComp({
   color = "#A0522D",
-  classname = "m-2",
+  classname = "",
+  classnameLoader = "m-2",
   size = 20,
   text = "Carregando...",
   children,
 }: LoaderCompProps) {
   return (
-    <div className="flex flex-col items-center justify-center relative w-full h-[300px] sm:h-[400px] xl:h-[550px] 2xl:h-[650px] overflow-hidden">
+    <div className={`flex flex-col items-center justify-center relative w-full overflow-hidden min-h-[200px] ${classname}`}>
       <BeatLoader
         color={color}
-        className={classname}
+        className={classnameLoader}
         size={size}
         speedMultiplier={1}
       />

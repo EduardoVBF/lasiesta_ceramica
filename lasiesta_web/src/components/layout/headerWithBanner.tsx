@@ -39,12 +39,13 @@ export default function HeaderWithBanner({
 
   return (
     <>
+      <Toaster position="top-center" />
       {loading ? (
         <div className="relative w-full h-64 flex items-center justify-center">
           <div className="absolute top-0 z-20 w-full">
             <Header bgColor="bg-transparent" />
           </div>
-          <LoaderComp text={"Carregando Banner..."}/>
+          <LoaderComp text={"Carregando Banner..."} />
         </div>
       ) : (
         <div className="relative w-full flex flex-col items-center z-20">
