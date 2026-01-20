@@ -2,6 +2,7 @@ import Fastify from "fastify";
 
 import { homeCarouselRoutes } from "./modules/home-carousel/home-carousel.routes";
 import { categoriesRoutes } from "./modules/categories/categories.routes";
+import { productsRoutes } from "./modules/products/products.routes";
 import { bannersRoutes } from "./modules/banners/banners.routes";
 import { plansRoutes } from "./modules/plans/plans.routes";
 import { usersRoutes } from "./modules/users/users.routes";
@@ -22,6 +23,7 @@ app.register(async (app) => {
 
   await app.register(homeCarouselRoutes);
   await app.register(categoriesRoutes);
+  await app.register(productsRoutes);
   await app.register(bannersRoutes);
   await app.register(plansRoutes);
   await app.register(usersRoutes);
