@@ -9,7 +9,7 @@ import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import CarouselComponent from "@/components/layout/carousel";
 import BrownButton from "@/components/ui/brownButtom";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -18,43 +18,29 @@ import Link from "next/link";
 export default function HomePage() {
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]);
   const [featuredPlans, setFeaturedPlans] = useState<Plan[]>([]);
-  const [categoriesLength, setCategoriesLength] = useState(0);
 
   useEffect(() => {
-    async function fetchPlans() {
+    async function fetchData() {
       try {
-        const data = await getActivePlans();
-        const featured = data.filter((plan: Plan) => plan.isFeatured) as Plan[];
-        setFeaturedPlans(featured);
+        // Busca Planos
+        const plansData = await getActivePlans();
+        const plans = plansData.filter((plan: Plan) => plan.isFeatured && plan.isActive);
+        setFeaturedPlans(plans);
+
+        // Busca Categorias
+        const catsData = await getActiveCategories();
+        const categories = catsData.filter((cat: Category) => cat.isFeatured && cat.isActive);
+        setFeaturedCategories(categories);
       } catch (error) {
-        console.error("Erro ao buscar planos:", error);
+        console.error("Erro ao carregar dados da Home:", error);
       }
     }
 
-    fetchPlans();
-  }, []);
-
-  useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const data = await getActiveCategories();
-        setFeaturedCategories(
-          data.filter(
-            (cat: Category) => cat.isFeatured && cat.isActive
-          ) as Category[]
-        );
-        setCategoriesLength(data.length);
-      } catch (error) {
-        console.error("Erro ao buscar categorias:", error);
-      }
-    }
-
-    fetchCategories();
+    fetchData();
   }, []);
 
   return (
     <main className="flex flex-col min-h-screen bg-bege-claro text-marrom-avermelhado overflow-hidden">
-      {/* Carrossel */}
       <CarouselComponent />
 
       <div className="relative w-full">
@@ -67,7 +53,6 @@ export default function HomePage() {
         {/* Manifesto */}
         <section className="relative z-10 py-10 overflow-hidden">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6">
-            {/* Texto */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -77,24 +62,23 @@ export default function HomePage() {
               <h1 className="text-4xl font-semibold text-marrom-avermelhado">
                 Um convite à pausa
               </h1>
-              <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
+              <p className="text-lg leading-relaxed text-marrom-avermelhado/90">
                 Entre o silêncio e o toque do barro, nasce o{" "}
                 <strong>Lasiesta</strong> — um ateliê dedicado à arte da
                 cerâmica manual e à serenidade do processo.
-              </h1>
-              <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
+              </p>
+              <p className="text-lg leading-relaxed text-marrom-avermelhado/90">
                 Aqui, o tempo desacelera. Cada gesto é um diálogo com a matéria,
                 cada peça, uma memória moldada entre respirações. Criar é voltar
                 à presença.
-              </h1>
-              <h1 className="text-lg leading-relaxed text-marrom-avermelhado/90">
+              </p>
+              <p className="text-lg leading-relaxed text-marrom-avermelhado/90">
                 O nome <strong>LaSiesta</strong> vem do espanhol e significa “o
                 descanso depois do almoço” — um lembrete de que o descanso
                 também é parte da criação.
-              </h1>
+              </p>
             </motion.div>
 
-            {/* Imagem */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -113,10 +97,15 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Coleções */}
+        {/* Coleções - CORREÇÃO DO GRID AQUI */}
         <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
           <div
-            className={`grid md:grid-cols-${categoriesLength} gap-4 my-4`}
+            className="grid gap-4 my-4"
+            style={{
+              gridTemplateColumns: featuredCategories.length > 0 
+                ? `repeat(${featuredCategories.length}, minmax(0, 1fr))` 
+                : 'repeat(1, minmax(0, 1fr))'
+            }}
           >
             {featuredCategories.map((cat) => (
               <FeaturedCategoryCard cat={cat} key={cat.id} />
@@ -131,23 +120,23 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* Seção de Cursos */}
+      {/* Seção de Cursos - CORREÇÃO DO GRID AQUI */}
       <section className="bg-marrom-claro py-10 w-full overflow-hidden z-20">
         <div className="max-w-6xl mx-auto px-6">
           <h1 className="text-4xl font-semibold text-center mb-12">
             Cursos e Experiências
           </h1>
           <div
-            className={`grid md:grid-cols-${
-              featuredPlans.filter((plan) => plan.isFeatured && plan.isActive)
-                .length
-            } gap-6`}
+            className="grid gap-6"
+            style={{
+                gridTemplateColumns: featuredPlans.length > 0 
+                  ? `repeat(${featuredPlans.length}, minmax(0, 1fr))` 
+                  : 'repeat(1, minmax(0, 1fr))'
+              }}
           >
-            {featuredPlans
-              .filter((plan) => plan.isFeatured && plan.isActive)
-              .map((plan, index) => (
-                <FeaturedPlanCard plan={plan} index={index} key={index} />
-              ))}
+            {featuredPlans.map((plan, index) => (
+              <FeaturedPlanCard plan={plan} index={index} key={index} />
+            ))}
           </div>
         </div>
       </section>
@@ -160,7 +149,6 @@ export default function HomePage() {
           opacity={15}
         />
 
-        {/* Conteúdo */}
         <div className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6 py-16">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -169,15 +157,15 @@ export default function HomePage() {
             className="space-y-4"
           >
             <h1 className="text-4xl font-semibold">O Ateliê</h1>
-            <h1 className="text-lg leading-relaxed">
+            <p className="text-lg leading-relaxed">
               Entre o barro e o silêncio, um espaço vivo. O Ateliê LaSiesta é o
               coração da nossa criação — um refúgio criativo onde cada gesto
               ganha forma e significado.
-            </h1>
-            <h1 className="text-lg leading-relaxed">
+            </p>
+            <p className="text-lg leading-relaxed">
               Aqui, transformamos matéria em presença. Cada peça nasce de um
               instante, de uma pausa, de um toque que se torna arte.
-            </h1>
+            </p>
             <Link href="/studio">
               <BrownButton text="Conheça o Ateliê" maxWidth="max-w-fit" />
             </Link>
