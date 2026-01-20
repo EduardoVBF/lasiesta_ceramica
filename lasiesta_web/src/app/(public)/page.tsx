@@ -15,16 +15,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
-const categories = [
-  { id: "copos", label: "Copos", image: "/image/IMG_0190.JPG" },
-  { id: "pratos", label: "Pratos", image: "/image/IMG_0036.JPG" },
-  { id: "vasos", label: "Vasos", image: "/image/IMG_0152.JPG" },
-  { id: "canecas", label: "Canecas", image: "/image/IMG_0094.JPG" },
-];
-
 export default function HomePage() {
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]);
   const [featuredPlans, setFeaturedPlans] = useState<Plan[]>([]);
+  const [categoriesLength, setCategoriesLength] = useState(0);
 
   useEffect(() => {
     async function fetchPlans() {
@@ -49,6 +43,7 @@ export default function HomePage() {
             (cat: Category) => cat.isFeatured && cat.isActive
           ) as Category[]
         );
+        setCategoriesLength(data.length);
       } catch (error) {
         console.error("Erro ao buscar categorias:", error);
       }
@@ -121,7 +116,7 @@ export default function HomePage() {
         {/* Coleções */}
         <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
           <div
-            className={`grid md:grid-cols-${featuredCategories.length} gap-4 my-4`}
+            className={`grid md:grid-cols-${categoriesLength} gap-4 my-4`}
           >
             {featuredCategories.map((cat) => (
               <FeaturedCategoryCard cat={cat} key={cat.id} />
