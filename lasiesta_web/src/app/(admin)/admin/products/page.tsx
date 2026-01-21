@@ -221,17 +221,19 @@ export default function AdminProductsPage() {
             ))}
           </div>
 
-          {products.map((product) => (
-            <AdminProductCard
-              key={product.id}
-              product={product}
-              onEdit={() => {
-                setEditingProduct(product);
-                setIsModalOpen(true);
-              }}
-              onToggle={() => handleToggle(product)}
-            />
-          ))}
+          <div className="grid grid-cols-2 gap-4">
+            {products.map((product) => (
+              <AdminProductCard
+                key={product.id}
+                product={product}
+                onEdit={() => {
+                  setEditingProduct(product);
+                  setIsModalOpen(true);
+                }}
+                onToggle={() => handleToggle(product)}
+              />
+            ))}
+          </div>
 
           {products.length === 0 && (
             <div className="text-center py-16 text-gray-500">

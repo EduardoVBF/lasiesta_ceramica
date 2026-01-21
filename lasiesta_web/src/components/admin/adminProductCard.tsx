@@ -1,10 +1,10 @@
 "use client";
-import { Pencil, SquareArrowOutUpRight } from "lucide-react";
 import { Product } from "../../services/products.service";
 import StatusBadge from "../ui/statusBadge";
 import ImageZoom from "../layout/ImageZoom";
 import { BsToggleOn } from "react-icons/bs";
 import { motion } from "framer-motion";
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
@@ -26,7 +26,7 @@ export default function AdminProductCard({ product, onEdit, onToggle }: Props) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="flex flex-col md:flex-row gap-4 bg-white rounded-2xl shadow p-2"
+      className="flex flex-col md:flex-row gap-4 bg-white rounded-2xl shadow p-2 hover:scale-[1.02] transition-transform"
     >
       {/* IMAGE */}
       <div className="relative w-40 h-40 aspect-square rounded-xl overflow-hidden bg-gray-100">
@@ -44,15 +44,19 @@ export default function AdminProductCard({ product, onEdit, onToggle }: Props) {
           <div>
             <Link
               href={`/admin/products/${product.id}`}
-              className="flex items-center gap-1 text-gray-800 hover:hover:text-[#a35c42] transition cursor-pointer"
+              className="text-gray-800 hover:hover:text-[#a35c42] transition cursor-pointer"
             >
-              <h3 className="text-lg font-semibold">{product.name}</h3>
-              <SquareArrowOutUpRight size={16} className="inline-block ml-1" />
+              <h3 className="text-lg font-semibold line-clamp-3">
+                {product.name}
+              </h3>
             </Link>
 
-            <p className="text-sm text-gray-500">
-              {product.category?.name || "Sem categoria"}
-            </p>
+            <div
+              className="prose prose-sm max-w-none text-gray-600 text-xs line-clamp-2 mb-1"
+              dangerouslySetInnerHTML={{
+                __html: product.shortDescription || "",
+              }}
+            />
           </div>
 
           <div>
@@ -73,7 +77,11 @@ export default function AdminProductCard({ product, onEdit, onToggle }: Props) {
                 </span>
               )}
             </div>
+            {/* BADGES */}
             <div className="flex items-center gap-1 my-1">
+              <span className="bg-[#a35c42] text-white px-2 py-1 rounded-full text-xs font-semibold shadow-md">
+                {product.category?.name || "Sem categoria"}
+              </span>
               <StatusBadge active={product.isActive} />
               {product.isFeatured && (
                 <span className="bg-amber-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-md">
@@ -89,7 +97,7 @@ export default function AdminProductCard({ product, onEdit, onToggle }: Props) {
           <button
             onClick={onEdit}
             title="Editar produto"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:text-[#a35c42] transition"
+            className="inline-flex items-center gap-2 p-1 rounded-full text-sm font-medium text-gray-600 hover:text-[#a35c42] transition"
           >
             <Pencil size={25} />
           </button>
@@ -98,7 +106,7 @@ export default function AdminProductCard({ product, onEdit, onToggle }: Props) {
           <button
             onClick={onToggle}
             title={product.isActive ? "Desativar produto" : "Ativar produto"}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition ${
+            className={`inline-flex items-center gap-2 rounded-xl text-sm font-medium transition ${
               product.isActive
                 ? "text-green-700 hover:text-red-700"
                 : "text-red-700 hover:text-green-700"
