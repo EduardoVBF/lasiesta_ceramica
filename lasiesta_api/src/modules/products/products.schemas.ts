@@ -92,7 +92,8 @@ export const updateProductSchema = z
     orderIndex: z.number().int().positive().optional(),
 
     mainImageBase64: imageSchema.optional(),
-    secondaryImagesBase64: z.array(imageSchema).max(4).optional(),
+    
+    secondaryImagesBase64: z.array(z.string()).max(4).optional(),
 
     categoryId: z.string().uuid().nullable().optional(),
   })

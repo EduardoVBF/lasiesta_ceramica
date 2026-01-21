@@ -189,7 +189,7 @@ export class ProductsService {
       throw new AppError("Produto não encontrado", 404);
     }
 
-    if (data.categoryId !== undefined && data.categoryId !== null) {
+    if (data.categoryId) {
       const categoryExists = await prisma.category.findUnique({
         where: { id: data.categoryId },
       });

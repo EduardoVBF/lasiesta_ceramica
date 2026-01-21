@@ -11,11 +11,8 @@ export async function createProductController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const {
-    mainImageBase64,
-    secondaryImagesBase64,
-    ...productData
-  } = request.body as any;
+  const { mainImageBase64, secondaryImagesBase64, ...productData } =
+    request.body as any;
 
   // upload imagem principal (obrigatória)
   const mainImageUrl = await uploadBase64ToFirebase(
@@ -46,15 +43,8 @@ export async function createProductController(
 /**
  * GET ALL (admin) — search + paginação + categoria
  */
-export async function getAllProductsController(
-  request: FastifyRequest
-) {
-  const {
-    search,
-    page,
-    limit,
-    categoryId,
-  } = request.query as any;
+export async function getAllProductsController(request: FastifyRequest) {
+  const { search, page, limit, categoryId } = request.query as any;
 
   return productsService.getAllProducts({
     search,
@@ -67,16 +57,9 @@ export async function getAllProductsController(
 /**
  * GET ACTIVE (site) — search + paginação + categoria
  */
-export async function getActiveProductsController(
-  request: FastifyRequest
-) {
-  const {
-    search,
-    page,
-    limit,
-    categoryId,
-    categorySlug,
-  } = request.query as any;
+export async function getActiveProductsController(request: FastifyRequest) {
+  const { search, page, limit, categoryId, categorySlug } =
+    request.query as any;
 
   return productsService.getActiveProducts({
     search,
@@ -103,6 +86,11 @@ export async function getProductByIdController(
 /**
  * UPDATE
  */
+
+function isBase64Image(value: string) {
+  return value.startsWith("data:image/");
+}
+
 export async function updateProductController(
   request: FastifyRequest,
   reply: FastifyReply
@@ -113,11 +101,15 @@ export async function updateProductController(
     mainImageBase64,
     secondaryImagesBase64,
     ...productData
-  } = request.body as any;
+  } = request.body as {
+    mainImageBase64?: string;
+    secondaryImagesBase64?: string[];
+  };
 
   let mainImageUrl: string | undefined;
   let secondaryImages: string[] | undefined;
 
+  /* ===== IMAGEM PRINCIPAL ===== */
   if (mainImageBase64) {
     mainImageUrl = await uploadBase64ToFirebase(
       mainImageBase64,
@@ -125,18 +117,24 @@ export async function updateProductController(
     );
   }
 
+  /* ===== IMAGENS SECUNDÁRIAS (ESTADO FINAL) ===== */
   if (secondaryImagesBase64) {
-    secondaryImages = await Promise.all(
-      secondaryImagesBase64.map((base64: string) =>
-        uploadBase64ToFirebase(base64, "products")
-      )
-    );
+    secondaryImages = [];
+
+    for (const image of secondaryImagesBase64) {
+      if (isBase64Image(image)) {
+        const url = await uploadBase64ToFirebase(image, "products");
+        secondaryImages.push(url);
+      } else {
+        secondaryImages.push(image); // já é URL
+      }
+    }
   }
 
   const product = await productsService.updateProduct(id, {
     ...productData,
     ...(mainImageUrl && { mainImageUrl }),
-    ...(secondaryImages && { secondaryImages }),
+    ...(secondaryImagesBase64 && { secondaryImages }),
   });
 
   return reply.send(product);
