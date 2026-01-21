@@ -63,6 +63,11 @@ export async function getAdminProducts(query?: ProductsQuery) {
   return response.data;
 }
 
+export async function getProductById(id: string) {
+  const response = await api.get(`/products/${id}`);
+  return response.data;
+}
+
 export async function createProduct(data: ProductFormData) {
   const response = await api.post("/products", data);
   return response.data;

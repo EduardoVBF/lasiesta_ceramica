@@ -41,7 +41,7 @@ export default function AdminSidebar() {
       {/* NAV */}
       <nav className="flex flex-col gap-2">
         {menuItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = pathname.includes(item.href) && item.href !== "/admin"; 
 
           return (
             <Link

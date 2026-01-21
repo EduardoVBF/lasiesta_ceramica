@@ -1,10 +1,11 @@
 "use client";
+import { Pencil, SquareArrowOutUpRight } from "lucide-react";
 import { Product } from "../../services/products.service";
 import StatusBadge from "../ui/statusBadge";
 import ImageZoom from "../layout/ImageZoom";
 import { BsToggleOn } from "react-icons/bs";
 import { motion } from "framer-motion";
-import { Pencil } from "lucide-react";
+import Link from "next/link";
 
 type Props = {
   product: Product;
@@ -41,9 +42,13 @@ export default function AdminProductCard({ product, onEdit, onToggle }: Props) {
       <div className="flex-1 flex justify-between gap-3">
         <div className="flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">
-              {product.name}
-            </h3>
+            <Link
+              href={`/admin/products/${product.id}`}
+              className="flex items-center gap-1 text-gray-800 hover:hover:text-[#a35c42] transition cursor-pointer"
+            >
+              <h3 className="text-lg font-semibold">{product.name}</h3>
+              <SquareArrowOutUpRight size={16} className="inline-block ml-1" />
+            </Link>
 
             <p className="text-sm text-gray-500">
               {product.category?.name || "Sem categoria"}
