@@ -5,10 +5,12 @@ import {
   getProductByIdController,
   updateProductController,
   deleteProductController,
+  getProductBySlugController,
 } from "./products.controller";
 import {
   createProductSchema,
   productIdSchema,
+  productSlugSchema,
   productsQuerySchema,
   updateProductSchema,
 } from "./products.schemas";
@@ -22,30 +24,29 @@ export async function productsRoutes(app: FastifyInstance) {
   // Público
   // =========================
 
-  app.get(
-    "/products/active",
-    async (request, reply) => {
-      const { query } = await validateRequest(request, {
-        query: productsQuerySchema,
-      });
+  app.get("/products/active", async (request, reply) => {
+    const { query } = await validateRequest(request, {
+      query: productsQuerySchema,
+    });
 
-      return getActiveProductsController(
-        { ...request, query } as any,
-      );
-    }
-  );
+    return getActiveProductsController({ ...request, query } as any);
+  });
 
   app.get("/products/:id", async (request, reply) => {
     const { params } = await validateRequest(request, {
       params: productIdSchema,
     });
 
-    return getProductByIdController(
-      { ...request, params } as any,
-      reply
-    );
+    return getProductByIdController({ ...request, params } as any, reply);
   });
 
+  app.get("/products/slug/:slug", async (request, reply) => {
+    const { params } = await validateRequest(request, {
+      params: productSlugSchema,
+    });
+
+    return getProductBySlugController({ ...request, params } as any, reply);
+  });
   // =========================
   // Admin
   // =========================
@@ -58,9 +59,7 @@ export async function productsRoutes(app: FastifyInstance) {
         query: productsQuerySchema,
       });
 
-      return getAllProductsController(
-        { ...request, query } as any,
-      );
+      return getAllProductsController({ ...request, query } as any);
     }
   );
 
@@ -72,29 +71,25 @@ export async function productsRoutes(app: FastifyInstance) {
         body: createProductSchema,
       });
 
-      return createProductController(
-        { ...request, body } as any,
-        reply
-      );
+      return createProductController({ ...request, body } as any, reply);
     }
   );
 
   app.put(
-  "/products/:id",
-  { preHandler: [authMiddleware, adminOnly] },
-  async (request, reply) => {
-    const { body, params } = await validateRequest(request, {
-      body: updateProductSchema,
-      params: productIdSchema,
-    });
+    "/products/:id",
+    { preHandler: [authMiddleware, adminOnly] },
+    async (request, reply) => {
+      const { body, params } = await validateRequest(request, {
+        body: updateProductSchema,
+        params: productIdSchema,
+      });
 
-    return updateProductController(
-      { ...request, body, params } as any,
-      reply
-    );
-  }
-);
-
+      return updateProductController(
+        { ...request, body, params } as any,
+        reply
+      );
+    }
+  );
 
   app.delete(
     "/products/:id",
@@ -104,10 +99,7 @@ export async function productsRoutes(app: FastifyInstance) {
         params: productIdSchema,
       });
 
-      return deleteProductController(
-        { ...request, params } as any,
-        reply
-      );
+      return deleteProductController({ ...request, params } as any, reply);
     }
   );
 }

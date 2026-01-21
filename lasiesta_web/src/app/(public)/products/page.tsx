@@ -1,53 +1,66 @@
 "use client";
-import ProductsCategoriesNav from "@/components/layout/productsCategoriesNav";
 import HeaderWithBanner from "@/components/layout/headerWithBanner";
-import ProductCard from "@/components/cards/productCard";
-import mockProducts from "@/app/utils/mockProducts";
+import ProductsCategoriesNav from "@/components/layout/productsCategoriesNav";
 import Footer from "@/components/layout/footer";
-import React, { useState } from "react";
+import ProductCard from "@/components/cards/productCard";
+import LoaderComp from "@/components/ui/loaderComp";
 
-const products = mockProducts();
+import { getPublicProducts, Product } from "../../../services/products.service";
+import { getActiveCategories, Category } from "../../../services/categories.service";
 
-const categories = [
-  { id: "all", label: "Todos" },
-  { id: "copos", label: "Copos" },
-  { id: "pratos", label: "Pratos" },
-  { id: "bowls", label: "Bowls" },
-  { id: "tigelas", label: "Tigelas" },
-  { id: "vasos", label: "Vasos" },
-  { id: "canecas", label: "Canecas" },
-  { id: "saboneteiras", label: "Saboneteiras" },
-  { id: "manteigueiras", label: "Manteigueiras" },
-  { id: "bandejas", label: "Bandejas" },
-];
+import { useEffect, useState } from "react";
 
-export default function Products() {
-  const [activeCategory, setActiveCategory] = useState("all");
+export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [loading, setLoading] = useState(true);
 
-  const filteredProducts =
-    activeCategory === "all"
-      ? products
-      : products.filter(
-          (product) => product.categoria.toLowerCase() === activeCategory
-        );
+  useEffect(() => {
+    Promise.all([
+      getPublicProducts({
+        categorySlug: activeCategory !== "all" ? activeCategory : undefined,
+      }),
+      getActiveCategories(),
+    ])
+      .then(([productsRes, categoriesRes]) => {
+        setProducts(productsRes.items);
+        setCategories(categoriesRes);
+      })
+      .finally(() => setLoading(false));
+  }, [activeCategory]);
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-bege-claro overflow-hidden">
       <HeaderWithBanner page="PRODUCTS" textColor="text-white" />
 
-      {/* Tabs Navigation */}
       <ProductsCategoriesNav
-        categories={categories}
+        categories={[
+          { id: "all", label: "Todos" },
+          ...categories.map((c) => ({
+            id: c.slug,
+            label: c.name,
+          })),
+        ]}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
       />
 
-      {/* Grid de Produtos */}
-      <section className="w-full max-w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-20">
-        {filteredProducts.map((product, index) => (
-          <ProductCard key={product.id} product={product} index={index} />
-        ))}
-      </section>
+      {loading ? (
+        <div className="py-20">
+          <LoaderComp text="Carregando produtos..." />
+        </div>
+      ) : (
+        <section className="w-full max-w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-20">
+          {products.map((product, index) => (
+            <ProductCard key={product.id} product={product} index={index} />
+          ))}
+        </section>
+      )}
+
+      {!loading && products.length === 0 && (
+        <p className="text-gray-500 mb-20">Nenhum produto encontrado.</p>
+      )}
 
       <Footer />
     </main>

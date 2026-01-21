@@ -84,6 +84,19 @@ export async function getProductByIdController(
 }
 
 /**
+ * GET BY SLUG
+ */
+export async function getProductBySlugController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { slug } = request.params as { slug: string };
+
+  const product = await productsService.getProductBySlug(slug);
+  return reply.send(product);
+}
+
+/**
  * UPDATE
  */
 

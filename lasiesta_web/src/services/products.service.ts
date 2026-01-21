@@ -1,28 +1,28 @@
 import { api } from "./api";
 
 export type Product = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  shortDescription?: string | null;
+  longDescription?: string | null;
+  material?: string | null;
+  dimensions?: string | null;
+  colors?: string[];
+  isActive: boolean;
+  isFeatured: boolean;
+  isSale?: boolean;
+  salePrice?: number | null;
+  category?: {
     id: string;
     name: string;
-    slug: string;
-    price: number;
-    shortDescription?: string | null;
-    longDescription?: string | null;
-    material?: string | null;
-    dimensions?: string | null;
-    colors?: string[];
-    isActive: boolean;
-    isFeatured: boolean;
-    isSale?: boolean;
-    salePrice?: number | null;
-    category?: {
-      id: string;
-      name: string;
-    } | null;
-    categoryId?: string | null;
-    mainImageUrl?: string | null;
-    secondaryImages?: string[];
-    createdAt: string;
-    updatedAt: string;
+  } | null;
+  categoryId?: string | null;
+  mainImageUrl?: string | null;
+  secondaryImages?: string[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type ProductsQuery = {
@@ -30,6 +30,8 @@ export type ProductsQuery = {
   categoryId?: string;
   page?: number;
   limit?: number;
+  categorySlug?: string;
+  slug?: string;
 };
 
 export type ProductFormData = {
@@ -63,8 +65,18 @@ export async function getAdminProducts(query?: ProductsQuery) {
   return response.data;
 }
 
+export async function getPublicProducts(query?: ProductsQuery) {
+  const response = await api.get("/products/active", { params: query });
+  return response.data;
+}
+
 export async function getProductById(id: string) {
   const response = await api.get(`/products/${id}`);
+  return response.data;
+}
+
+export async function getProductBySlug(slug: string) {
+  const response = await api.get(`/products/slug/${slug}`);
   return response.data;
 }
 
@@ -78,10 +90,7 @@ export async function updateProduct(id: string, data: ProductFormData) {
   return response.data;
 }
 
-export async function updateProductStatus(
-  id: string,
-  isActive: boolean
-) {
+export async function updateProductStatus(id: string, isActive: boolean) {
   const response = await api.put(`/products/${id}`, {
     isActive,
   });

@@ -171,6 +171,18 @@ export class ProductsService {
     return product;
   }
 
+  /** GET BY SLUG */
+  async getProductBySlug(slug: string) {
+    const product = await prisma.product.findFirst({
+      where: { slug, isActive: true },
+      include: { category: true },
+    });
+    if (!product) {
+      throw new AppError("Produto não encontrado", 404);
+    }
+    return product;
+  }
+
   /**
    * UPDATE
    */

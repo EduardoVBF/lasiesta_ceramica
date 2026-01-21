@@ -29,6 +29,7 @@ export default function AdminProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>();
   const [loading, setLoading] = useState(true);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const [saving, setSaving] = useState(false);
   const [infoVisible, setInfoVisible] = useState(false);
 
@@ -57,6 +58,7 @@ export default function AdminProductsPage() {
       getAdminCategories(),
     ])
       .then(([productsRes, categoriesRes]) => {
+        setLoadingProducts(true);
         let items = productsRes.items;
 
         // filtro de destaque é FRONT, não API
@@ -73,7 +75,10 @@ export default function AdminProductsPage() {
         setTotalPages(productsRes.meta.totalPages);
       })
       .catch((err) => toast.error(err.response?.data?.message || err.message))
-      .finally(() => setLoading(false));
+      .finally(() => { {
+        setLoading(false);
+        setLoadingProducts(false);
+      }});
   }, [isModalOpen, toggleLoading, search, page, limit, categoryFilter]);
 
   async function handleToggle(product: Product) {
@@ -257,17 +262,25 @@ export default function AdminProductsPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {products.map((product) => (
-              <AdminProductCard
-                key={product.id}
-                product={product}
-                onEdit={() => {
-                  setEditingProduct(product);
-                  setIsModalOpen(true);
-                }}
-                onToggle={() => handleToggle(product)}
-              />
-            ))}
+            {loadingProducts ? (
+              <div className="col-span-2 flex justify-center items-center">
+                <LoaderComp text="Atualizando catálogo..." />
+              </div>
+            ) : (
+              <>
+                {products.map((product) => (
+                  <AdminProductCard
+                    key={product.id}
+                    product={product}
+                    onEdit={() => {
+                      setEditingProduct(product);
+                      setIsModalOpen(true);
+                    }}
+                    onToggle={() => handleToggle(product)}
+                  />
+                ))}
+              </>
+            )}
           </div>
 
           {/* PAGINATION */}

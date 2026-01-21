@@ -114,6 +114,10 @@ export const productIdSchema = z.object({
   id: z.uuid("ID do produto inválido"),
 });
 
+export const productSlugSchema = z.object({
+  slug: z.string().min(1, "Slug do produto é obrigatório"),
+});
+
 export const productsQuerySchema = z.object({
   search: z.string().optional(),
 

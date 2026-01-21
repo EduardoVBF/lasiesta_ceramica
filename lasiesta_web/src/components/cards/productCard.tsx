@@ -3,22 +3,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Product } from "../../services/products.service";
 
-type Color = { name: string; hex?: string };
-
-type Product = {
-  id: number;
-  nome: string;
-  slug?: string;
-  image?: string;
-  material?: string;
-  preco: number;
-  categoria?: string;
-  cores?: Color[];
-  tamanhos?: string[];
-  emEstoque?: boolean;
-  destaque?: boolean;
-};
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", {
@@ -51,8 +37,8 @@ export default function ProductCard({
           className="absolute inset-0 overflow-hidden"
         >
           <Image
-            src={product.image ?? "/image/IMG_0023.JPG"}
-            alt={product.nome}
+            src={product.mainImageUrl ?? "/image/IMG_0023.JPG"}
+            alt={product.name}
             width={800}
             height={800}
             className="object-cover w-full h-full transition-transform duration-700"
@@ -61,7 +47,7 @@ export default function ProductCard({
         </motion.div>
 
         {/* Destaque */}
-        {product.destaque && (
+        {product.isFeatured && (
           <span className="absolute left-4 top-4 bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
             Destaque
           </span>
@@ -75,74 +61,23 @@ export default function ProductCard({
             id={`product-${product.id}-title`}
             className="text-base text-marrom-avermelhado font-bold leading-tight truncate line-clamp-1"
           >
-            {product.nome}
+            {product.name}
           </h3>
           <p className="text-xs text-marrom-avermelhado mt-1">
             {product.material}
           </p>
           <span className="block text-2xl font-extrabold">
-            {formatBRL(product.preco)}
+            {formatBRL(product.price)}
           </span>
 
           {/* Categoria + estoque */}
           <div className="mt-3 flex items-center gap-1">
-            {product.categoria && (
+            {product.category && (
               <span className="text-xs bg-marrom-avermelhado px-2 py-1 rounded-md">
-                {product.categoria}
+                {product.category.name}
               </span>
             )}
-            <span
-              className={`text-xs px-2 py-1 rounded-md ${
-                !product.emEstoque ? "bg-green-700/40" : "bg-red-700/30"
-              }`}
-            >
-              {!product.emEstoque ? "Em estoque" : "Esgotado"}
-            </span>
           </div>
-        </div>
-
-        {/* Variantes: cores / tamanhos */}
-        <div className="flex flex-col gap-2 mt-2">
-          {product.cores && product.cores.length > 0 && (
-            <>
-              <div className="flex items-center gap-2">
-                {product.cores.map((c, i) => (
-                  <motion.button
-                    key={i}
-                    title={c.name}
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`relative w-7 h-7 rounded-full border-2 overflow-hidden shadow-sm transition-all duration-200 border-[#f8f5f1]`}
-                    style={{ backgroundColor: c.hex ?? "#ccc" }}
-                    aria-label={`Cor ${c.name}`}
-                  >
-                    <span
-                      style={{
-                        boxShadow:
-                          c.hex?.toLowerCase() === "#ffffff" ||
-                          c.hex?.toLowerCase() === "#f5f5dc"
-                            ? "inset 0 0 0 1px rgba(0,0,0,0.25)"
-                            : "none",
-                      }}
-                    />
-                  </motion.button>
-                ))}
-              </div>
-            </>
-          )}
-
-          {product.tamanhos && product.tamanhos.length > 0 && (
-            <div className="flex items-center gap-2">
-              {product.tamanhos.map((t, i) => (
-                <span
-                  key={i}
-                  className="text-xs px-2 py-1 rounded-md bg-white/10"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Botão de ação */}
@@ -152,7 +87,7 @@ export default function ProductCard({
             className="w-full"
             aria-label="Detalhes do produto"
           >
-            <Link href={`/products/${product.id}`} className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#a1a692] text-white font-semibold shadow hover:bg-[#5e6254] transition cursor-pointer">
+            <Link href={`/products/${product.slug}`} className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#a1a692] text-white font-semibold shadow hover:bg-[#5e6254] transition cursor-pointer">
               Detalhes
             </Link>
           </motion.button>
