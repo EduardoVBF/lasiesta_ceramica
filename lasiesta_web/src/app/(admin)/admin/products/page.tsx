@@ -21,7 +21,6 @@ import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
 import { AxiosError } from "axios";
-import { get } from "http";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);

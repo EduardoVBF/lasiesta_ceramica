@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import ImageZoom from "../layout/ImageZoom";
 
 interface ImageInputProps {
   value?: string | null; // imageUrl (edição)
@@ -17,10 +16,11 @@ export default function ImageInput({
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // quando vem imagem da edição
   useEffect(() => {
     if (value) {
       setPreview(value);
+    } else {
+      setPreview(null);
     }
   }, [value]);
 
@@ -32,6 +32,10 @@ export default function ImageInput({
       const base64 = reader.result as string;
       setPreview(base64);
       onChange(base64);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -57,7 +61,7 @@ export default function ImageInput({
         "
       >
         {preview ? (
-          <ImageZoom
+          <Image
             src={preview}
             alt="Imagem selecionada"
             width={192}
