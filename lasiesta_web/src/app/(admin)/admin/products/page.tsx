@@ -15,6 +15,8 @@ import ProductFormModal from "@/components/admin/productFormModal";
 import AdminProductCard from "@/components/admin/adminProductCard";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
+import Pagination from "@/components/ui/paginationComp";
+import SearchInput from "@/components/ui/searchInput";
 import BrownButton from "@/components/ui/brownButtom";
 import LoaderComp from "@/components/ui/loaderComp";
 import React, { useEffect, useState } from "react";
@@ -34,17 +36,45 @@ export default function AdminProductsPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [toggleLoading, setToggleLoading] = useState(false);
 
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
+
   useEffect(() => {
     if (toggleLoading) return;
 
-    Promise.all([getAdminProducts(), getAdminCategories()])
+    Promise.all([
+      getAdminProducts({
+        search,
+        page,
+        limit,
+        categoryId:
+          categoryFilter !== "promo" && categoryFilter !== "featured"
+            ? categoryFilter
+            : undefined,
+      }),
+      getAdminCategories(),
+    ])
       .then(([productsRes, categoriesRes]) => {
-        setProducts(productsRes.items);
+        let items = productsRes.items;
+
+        // filtro de destaque é FRONT, não API
+        if (categoryFilter === "featured") {
+          items = items.filter((p: Product) => p.isFeatured);
+        }
+
+        if (categoryFilter === "promo") {
+          items = items.filter((p: Product) => p.isSale);
+        }
+
+        setProducts(items);
         setCategories(categoriesRes);
+        setTotalPages(productsRes.meta.totalPages);
       })
       .catch((err) => toast.error(err.response?.data?.message || err.message))
       .finally(() => setLoading(false));
-  }, [isModalOpen, toggleLoading]);
+  }, [isModalOpen, toggleLoading, search, page, limit, categoryFilter]);
 
   async function handleToggle(product: Product) {
     try {
@@ -106,26 +136,10 @@ export default function AdminProductsPage() {
     }
   }
 
-  async function handleCategoryFilter(categoryId?: string) {
-    setLoading(true);
+  function handleCategoryFilter(categoryId?: string) {
+    setSearch("");
+    setPage(1);
     setCategoryFilter(categoryId);
-
-    try {
-      if (categoryId === "featured") {
-        const res = await getAdminProducts({
-        });
-        const featuredRes = res.items.filter((item: Product) => item.isFeatured);
-        setProducts(featuredRes);
-        return;
-      } else {
-        const res = await getAdminProducts({
-          categoryId,
-        });
-        setProducts(res.items);
-      }
-    } finally {
-      setLoading(false);
-    }
   }
 
   return (
@@ -183,7 +197,7 @@ export default function AdminProductsPage() {
       ) : (
         <section className="grid grid-cols-1 gap-4 z-10">
           {/* FILTRO DE CATEGORIAS */}
-          <div className="flex gap-2 flex-wrap mb-4 z-10">
+          <div className="flex gap-2 flex-wrap z-10">
             <button
               onClick={() => handleCategoryFilter(undefined)}
               className={`px-4 py-1 rounded-full text-sm ${
@@ -206,6 +220,17 @@ export default function AdminProductsPage() {
               Destaque
             </button>
 
+            <button
+              onClick={() => handleCategoryFilter("promo")}
+              className={`px-4 py-1 rounded-full text-sm ${
+                categoryFilter === "promo"
+                  ? "bg-[#a35c42] text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              Promoção
+            </button>
+
             {categories.map((cat) => (
               <button
                 key={cat.id}
@@ -221,6 +246,16 @@ export default function AdminProductsPage() {
             ))}
           </div>
 
+          {/* SEARCH INPUT */}
+          <div className="z-10">
+            <SearchInput
+              value={search}
+              placeholder="Buscar produtos..."
+              onChange={setSearch}
+              onClear={() => setSearch("")}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             {products.map((product) => (
               <AdminProductCard
@@ -234,6 +269,13 @@ export default function AdminProductsPage() {
               />
             ))}
           </div>
+
+          {/* PAGINATION */}
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
 
           {products.length === 0 && (
             <div className="text-center py-16 text-gray-500">
