@@ -5,17 +5,19 @@ type Props = {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  className?: string;
 };
 
 export default function Pagination({
   page,
   totalPages,
   onPageChange,
+  className,
 }: Props) {
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-6">
+    <div className={`flex items-center justify-center gap-2 ${className}`}>
       <button
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}

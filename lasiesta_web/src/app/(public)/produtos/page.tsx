@@ -4,9 +4,14 @@ import ProductsCategoriesNav from "@/components/layout/productsCategoriesNav";
 import Footer from "@/components/layout/footer";
 import ProductCard from "@/components/cards/productCard";
 import LoaderComp from "@/components/ui/loaderComp";
+import Pagination from "@/components/ui/paginationComp";
+import SearchInput from "@/components/ui/searchInput";
 
 import { getPublicProducts, Product } from "../../../services/products.service";
-import { getActiveCategories, Category } from "../../../services/categories.service";
+import {
+  getActiveCategories,
+  Category,
+} from "../../../services/categories.service";
 
 import { useEffect, useState } from "react";
 
@@ -14,21 +19,56 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("all");
+
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 12;
+  const [totalPages, setTotalPages] = useState(1);
+
   const [loading, setLoading] = useState(true);
 
+  /* categorias */
   useEffect(() => {
-    Promise.all([
-      getPublicProducts({
-        categorySlug: activeCategory !== "all" ? activeCategory : undefined,
-      }),
-      getActiveCategories(),
-    ])
-      .then(([productsRes, categoriesRes]) => {
-        setProducts(productsRes.items);
-        setCategories(categoriesRes);
+    getActiveCategories().then(setCategories);
+  }, []);
+
+  /* produtos */
+  useEffect(() => {
+    setLoading(true);
+
+    getPublicProducts({
+      search,
+      page,
+      limit,
+      categorySlug:
+        activeCategory !== "all" &&
+        activeCategory !== "featured" &&
+        activeCategory !== "sale"
+          ? activeCategory
+          : undefined,
+    })
+      .then((res) => {
+        let items = res.items;
+
+        if (activeCategory === "featured") {
+          items = items.filter((p: Product) => p.isFeatured);
+        }
+
+        if (activeCategory === "sale") {
+          items = items.filter((p: Product) => p.isSale);
+        }
+
+        setProducts(items);
+        setTotalPages(res.meta.totalPages);
       })
       .finally(() => setLoading(false));
-  }, [activeCategory]);
+  }, [search, page, limit, activeCategory]);
+
+  function handleCategoryChange(category: string) {
+    setActiveCategory(category);
+    setSearch("");
+    setPage(1);
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-bege-claro overflow-hidden">
@@ -37,25 +77,52 @@ export default function ProductsPage() {
       <ProductsCategoriesNav
         categories={[
           { id: "all", label: "Todos" },
+          { id: "featured", label: "Destaques" },
+          { id: "sale", label: "Promoções" },
           ...categories.map((c) => ({
             id: c.slug,
             label: c.name,
           })),
         ]}
         activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
+        setActiveCategory={handleCategoryChange}
       />
+
+      {/* SEARCH */}
+      <div className="w-full max-w-[90%] mb-4">
+        <SearchInput
+          value={search}
+          placeholder="Buscar produtos..."
+          onChange={(value) => {
+            setSearch(value);
+            setPage(1);
+          }}
+          onClear={() => {
+            setSearch("");
+            setPage(1);
+          }}
+        />
+      </div>
 
       {loading ? (
         <div className="py-20">
           <LoaderComp text="Carregando produtos..." />
         </div>
       ) : (
-        <section className="w-full max-w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-20">
-          {products.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
-          ))}
-        </section>
+        <>
+          <section className="w-full max-w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-8">
+            {products.map((product, index) => (
+              <ProductCard key={product.id} product={product} index={index} />
+            ))}
+          </section>
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            className="mb-8"
+          />
+        </>
       )}
 
       {!loading && products.length === 0 && (

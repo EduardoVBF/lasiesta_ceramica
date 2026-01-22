@@ -16,7 +16,7 @@ export default function ProductsCategoriesNav({
   setActiveCategory,
 }: ProductsCategoriesNavProps) {
   return (
-    <div className="w-full max-w-[90%] mb-8 overflow-hidden">
+    <div className="w-full max-w-[90%] mb-4 overflow-hidden">
       <div className="flex overflow-x-auto justify-start gap-x-1 px-1">
         {categories.map((category) => (
           <button

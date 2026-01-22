@@ -55,7 +55,7 @@ export default function ImageZoom({
           width={fill ? undefined : width}
           height={fill ? undefined : height}
           fill={fill}
-          className="rounded-lg object-cover"
+          className="object-cover"
         />
       </div>
 

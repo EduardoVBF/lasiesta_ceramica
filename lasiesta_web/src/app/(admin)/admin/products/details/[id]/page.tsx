@@ -201,7 +201,7 @@ export default function AdminProductDetailPage() {
           </button>
           {/* VIEW */}
           <Link
-            href={`/products/${product.slug}`}
+            href={`/produtos/detalhe/${product.slug}`}
             target="_blank"
             className="inline-flex"
           >
