@@ -7,6 +7,7 @@ import { RiDiscountPercentFill } from "react-icons/ri";
 import ImageZoom from "../layout/ImageZoom";
 import { FaStar } from "react-icons/fa6";
 import { RxDimensions } from "react-icons/rx";
+import { GiPorcelainVase } from "react-icons/gi";
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", {
@@ -35,7 +36,7 @@ export default function ProductCard({
       <div className="relative w-full aspect-square bg-[#f3ece4] flex-none">
         <motion.div
           whileHover={{ scale: 1.03 }}
-          className="absolute inset-0 overflow-hidden"
+          className="h-[19.5rem] inset-0 overflow-hidden"
         >
           <ImageZoom
             src={product.mainImageUrl ?? "/image/IMG_0023.JPG"}
@@ -75,7 +76,7 @@ export default function ProductCard({
       </div>
 
       {/* CONTENT */}
-      <div className="px-3 pt-2 pb-3 bg-[#bf7a6b8b] text-[#f8f5f1] flex flex-col justify-between gap-4 flex-1">
+      <div className="px-3 pt-3 bg-[#bf7a6b8b] text-[#f8f5f1] flex flex-col justify-between gap-1 flex-1">
         <div className="flex flex-col justify-between flex-1">
           <div>
             <h1
@@ -83,29 +84,41 @@ export default function ProductCard({
               className="text-lg text-marrom-avermelhado font-bold leading-tight line-clamp-2"
             >
               {product.name}
+              {product.name}
+              {product.name}
             </h1>
             <div
-              className="prose prose-sm max-w-none text-gray-600 text-xs line-clamp-2 my-1"
+              className="prose prose-sm max-w-none text-gray-600 text-xs line-clamp-3 my-1"
               dangerouslySetInnerHTML={{
                 __html: product.shortDescription || "",
               }}
             />
-            <div className="mt-2">
-              <RxDimensions
-                className="inline-block mr-1 text-gray-600 text-xs"
-                title="Dimensões"
-                size={16}
-              />
-              <p className="inline-block text-gray-600 text-xs">
-                {product.dimensions}
-              </p>
-            </div>
+            {/* <div className="mt-2 flex flex-col gap-1">
+              <div className="flex items-center gap-1 mb-1 text-xs text-gray-600">
+                <RxDimensions
+                  className="inline-block mr-1"
+                  title="Dimensões"
+                  size={16}
+                />
+                <p className="inline-block">{product.dimensions}</p>
+              </div>
+              {product.material && (
+                <div className="flex items-center gap-1 text-xs text-gray-600">
+                  <GiPorcelainVase size={16} />
+                  <span>{product.material}</span>
+                </div>
+              )}
+            </div> */}
           </div>
+        </div>
 
+        <div className="mb-3">
           {/* PRICE */}
-          <div className="mt-2">
+          <div className="my-1">
             {product.price == 0 ? (
-              <span className="text-sm font-bold text-white">* Preço sob consulta</span>
+              <span className="text-sm font-bold text-white">
+                * Preço sob consulta
+              </span>
             ) : product.isSale && product.salePrice ? (
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold line-through text-white">
@@ -121,21 +134,20 @@ export default function ProductCard({
               </span>
             )}
           </div>
-        </div>
-
-        {/* Botão de ação */}
-        <motion.button
-          whileTap={{ scale: 0.98 }}
-          className="w-full mt-auto"
-          aria-label="Detalhes do produto"
-        >
-          <Link
-            href={`/produtos/detalhe/${product.slug}`}
-            className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#a1a692] text-white font-semibold shadow hover:bg-[#5e6254] transition cursor-pointer"
+          {/* Botão de ação */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="w-full"
+            aria-label="Detalhes do produto"
           >
-            Detalhes
-          </Link>
-        </motion.button>
+            <Link
+              href={`/produtos/detalhe/${product.slug}`}
+              className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#777d65] text-white font-semibold shadow hover:bg-[#575f43] transition cursor-pointer"
+            >
+              Detalhes
+            </Link>
+          </motion.button>
+        </div>
       </div>
     </motion.article>
   );

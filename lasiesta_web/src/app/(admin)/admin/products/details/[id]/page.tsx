@@ -240,7 +240,7 @@ export default function AdminProductDetailPage() {
 
             <div
               className={`flex gap-2 flex-wrap justify-${
-                images.length > 4 ? "center" : "start"
+                images.length > 4 ? "between" : "start"
               }`}
             >
               {images.map((img, i) => (
