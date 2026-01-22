@@ -31,6 +31,14 @@ export async function productsRoutes(app: FastifyInstance) {
 
     return getActiveProductsController({ ...request, query } as any);
   });
+  
+  app.get("/products/slug/:slug", async (request, reply) => {
+    const { params } = await validateRequest(request, {
+      params: productSlugSchema,
+    });
+
+    return getProductBySlugController({ ...request, params } as any, reply);
+  });
 
   app.get("/products/:id", async (request, reply) => {
     const { params } = await validateRequest(request, {
@@ -40,13 +48,6 @@ export async function productsRoutes(app: FastifyInstance) {
     return getProductByIdController({ ...request, params } as any, reply);
   });
 
-  app.get("/products/slug/:slug", async (request, reply) => {
-    const { params } = await validateRequest(request, {
-      params: productSlugSchema,
-    });
-
-    return getProductBySlugController({ ...request, params } as any, reply);
-  });
   // =========================
   // Admin
   // =========================

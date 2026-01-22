@@ -6,7 +6,10 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import LoaderComp from "@/components/ui/loaderComp";
 
-import { getProductBySlug, Product } from "../../../../services/products.service";
+import {
+  getProductBySlug,
+  Product,
+} from "../../../../../services/products.service";
 
 import { useParams } from "next/navigation";
 import { ArrowBigLeft } from "lucide-react";
@@ -32,7 +35,7 @@ export default function ProductDetailPage() {
     async function load() {
       try {
         const data = await getProductBySlug(slug);
-        console.log("data", data)
+        console.log("data", data);
         setProduct(data);
         setSelectedImage(data.mainImageUrl || null);
       } catch {

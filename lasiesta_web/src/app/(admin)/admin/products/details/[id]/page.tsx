@@ -6,7 +6,7 @@ import {
   getProductById,
   updateProduct,
   updateProductStatus,
-} from "../../../../../services/products.service";
+} from "../../../../../../services/products.service";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import { useParams, useRouter } from "next/navigation";
 import StatusBadge from "@/components/ui/statusBadge";
@@ -21,7 +21,7 @@ import ProductFormModal from "@/components/admin/productFormModal";
 import {
   Category,
   getAdminCategories,
-} from "../../../../../services/categories.service";
+} from "../../../../../../services/categories.service";
 import { FaStar } from "react-icons/fa6";
 import { LuScreenShare } from "react-icons/lu";
 import { BsToggleOn } from "react-icons/bs";
@@ -32,6 +32,8 @@ function formatBRL(value: number) {
     currency: "BRL",
   });
 }
+
+export const dynamic = "force-dynamic";
 
 export default function AdminProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -47,6 +49,7 @@ export default function AdminProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [toggleLoading, setToggleLoading] = useState(false);
 
+  console.log("OIIIIIIIIIII");
   async function handleSubmitProduct(data: ProductFormData) {
     try {
       setSaving(true);
@@ -120,6 +123,7 @@ export default function AdminProductDetailPage() {
     async function load() {
       try {
         const data = await getProductById(id);
+        console.log(data);
         setProduct(data);
         setSelectedImage(data.mainImageUrl);
       } catch (err) {

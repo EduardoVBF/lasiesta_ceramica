@@ -43,7 +43,7 @@ export default function AdminProductCard({ product, onEdit, onToggle }: Props) {
         <div className="flex flex-col justify-between">
           <div>
             <Link
-              href={`/admin/products/${product.id}`}
+              href={`/admin/products/details/${product.id}`}
               className="text-gray-800 hover:hover:text-[#a35c42] transition cursor-pointer"
             >
               <h3 className="text-lg font-semibold line-clamp-3">

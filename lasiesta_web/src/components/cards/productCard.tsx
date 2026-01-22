@@ -5,7 +5,6 @@ import Link from "next/link";
 import React from "react";
 import { Product } from "../../services/products.service";
 
-
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", {
     style: "currency",
@@ -20,7 +19,6 @@ export default function ProductCard({
   product: Product;
   index?: number;
 }) {
-
   return (
     <motion.article
       initial={{ opacity: 0, y: 24, scale: 0.98 }}
@@ -66,9 +64,24 @@ export default function ProductCard({
           <p className="text-xs text-marrom-avermelhado mt-1">
             {product.material}
           </p>
-          <span className="block text-2xl font-extrabold">
-            {formatBRL(product.price)}
-          </span>
+
+          {/* PRICE */}
+          <div className="mt-2">
+            {product.isSale && product.salePrice ? (
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold line-through text-white">
+                  {formatBRL(Number(product.price))}
+                </span>
+                <span className="text-lg font-bold text-red-600">
+                  {formatBRL(Number(product.salePrice))}
+                </span>
+              </div>
+            ) : (
+              <span className="text-lg font-bold text-white">
+                {formatBRL(Number(product.price))}
+              </span>
+            )}
+          </div>
 
           {/* Categoria + estoque */}
           <div className="mt-3 flex items-center gap-1">
@@ -87,7 +100,10 @@ export default function ProductCard({
             className="w-full"
             aria-label="Detalhes do produto"
           >
-            <Link href={`/products/${product.slug}`} className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#a1a692] text-white font-semibold shadow hover:bg-[#5e6254] transition cursor-pointer">
+            <Link
+              href={`/produtos/detalhe/${product.slug}`}
+              className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#a1a692] text-white font-semibold shadow hover:bg-[#5e6254] transition cursor-pointer"
+            >
               Detalhes
             </Link>
           </motion.button>
