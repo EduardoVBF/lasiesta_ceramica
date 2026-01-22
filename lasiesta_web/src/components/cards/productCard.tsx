@@ -6,8 +6,8 @@ import { Product } from "../../services/products.service";
 import { RiDiscountPercentFill } from "react-icons/ri";
 import ImageZoom from "../layout/ImageZoom";
 import { FaStar } from "react-icons/fa6";
-import { RxDimensions } from "react-icons/rx";
-import { GiPorcelainVase } from "react-icons/gi";
+// import { RxDimensions } from "react-icons/rx";
+// import { GiPorcelainVase } from "react-icons/gi";
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", {
@@ -83,8 +83,6 @@ export default function ProductCard({
               id={`product-${product.id}-title`}
               className="text-lg text-marrom-avermelhado font-bold leading-tight line-clamp-2"
             >
-              {product.name}
-              {product.name}
               {product.name}
             </h1>
             <div
