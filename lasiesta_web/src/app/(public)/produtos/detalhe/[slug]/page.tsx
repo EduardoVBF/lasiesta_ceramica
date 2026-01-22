@@ -1,21 +1,28 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast";
+import { AxiosError } from "axios";
+
 import BackgroundImage from "@/components/layout/backgroundImage";
-import NotFoundCard from "@/components/ui/notFoundCard";
-import BrownButton from "@/components/ui/brownButtom";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import LoaderComp from "@/components/ui/loaderComp";
+import ImageZoom from "@/components/layout/ImageZoom";
 
 import {
   getProductBySlug,
   Product,
 } from "../../../../../services/products.service";
 
-import { useParams } from "next/navigation";
-import { ArrowBigLeft } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { FaStar } from "react-icons/fa6";
+import { GiPorcelainVase } from "react-icons/gi";
+import { FaTruck } from "react-icons/fa";
+import { RiDiscountPercentFill } from "react-icons/ri";
+import { RxDimensions } from "react-icons/rx";
+import Header from "@/components/layout/header";
+import BrownButton from "@/components/ui/brownButtom";
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", {
@@ -24,7 +31,7 @@ function formatBRL(value: number) {
   });
 }
 
-export default function ProductDetailPage() {
+export default function PublicProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -35,11 +42,14 @@ export default function ProductDetailPage() {
     async function load() {
       try {
         const data = await getProductBySlug(slug);
-        console.log("data", data);
         setProduct(data);
-        setSelectedImage(data.mainImageUrl || null);
-      } catch {
-        setProduct(null);
+        setSelectedImage(data.mainImageUrl);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          toast.error(err.response?.data?.message || "Produto não encontrado");
+        } else {
+          toast.error("Erro ao carregar produto");
+        }
       } finally {
         setLoading(false);
       }
@@ -48,93 +58,78 @@ export default function ProductDetailPage() {
     if (slug) load();
   }, [slug]);
 
-  if (loading) {
-    return (
-      <>
-        <Header bgColor="bg-[#a35c42c7]" />
-        <div className="min-h-[500px] flex items-center justify-center">
-          <LoaderComp text="Carregando produto..." />
-        </div>
-        <Footer />
-      </>
-    );
-  }
+  if (loading) return <LoaderComp text="Carregando produto..." />;
+  if (!product) return null;
 
-  if (!product || !product.isActive) {
-    return (
-      <>
-        <Header bgColor="bg-[#a35c42c7]" />
-        <div className="min-h-[500px] flex items-center justify-center bg-[#e2b19f8e]">
-          <NotFoundCard
-            message="Produto não encontrado."
-            hasButton
-            buttonText="Voltar"
-            buttonSrc="/products"
-          />
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  const images = [
-    product.mainImageUrl,
-    ...(product.secondaryImages ?? []),
-  ].filter(Boolean) as string[];
+  const images = [product.mainImageUrl, ...(product.secondaryImages ?? [])];
 
   return (
-    <>
-      <Header bgColor="bg-[#a35c42c7]" />
+    <main className="relative">
+      <Header bgColor="bg-transparent" />
+      <Toaster />
 
-      <main className="px-6 md:px-12 flex flex-col items-center bg-marrom-claro relative min-h-screen">
+      <BackgroundImage
+        src="/image/organic2.jpg"
+        alt="Textura de fundo"
+        opacity={10}
+      />
+
+      <section className="max-w-7xl mx-auto p-2 relative z-10">
         {/* VOLTAR */}
         <Link
-          href="/products"
-          className="bg-white/40 hover:bg-white/50 px-2 w-fit rounded-b-lg flex pb-1 items-center gap-1 self-start pt-3 cursor-pointer z-10"
+          href="/produtos"
+          className="inline-block mb-4 text-sm text-gray-600 hover:text-[#a35c42]"
         >
-          <ArrowBigLeft size={18} />
-          <p className="text-sm font-semibold">Produtos</p>
+          ← Voltar para produtos
         </Link>
 
-        <BackgroundImage
-          src="/image/organic2.jpg"
-          alt="Textura de fundo do ateliê"
-          opacity={10}
-        />
-
-        {/* CARD */}
-        <div className="w-[90%] bg-[#def3de60] shadow-lg rounded-2xl overflow-hidden flex flex-col md:flex-row md:gap-10 p-4 z-10 my-5">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* GALERIA */}
-          <div className="w-full flex flex-col md:flex-row gap-4 md:gap-6">
-            <div className="flex-1 relative">
+          <div className="w-full lg:w-[480px] flex flex-col gap-4 pr-4 border-r-2">
+            <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gray-100">
               {selectedImage && (
-                <Image
+                <ImageZoom
                   src={selectedImage}
                   alt={product.name}
-                  width={500}
-                  height={500}
-                  className="w-full h-full object-cover aspect-square rounded-xl shadow-md"
+                  className="object-cover w-full h-full"
+                  zoom
+                  fill
+                />
+              )}
+
+              {product.isFeatured && (
+                <FaStar
+                  size={32}
+                  title="Destaque"
+                  className="absolute top-2 left-2 bg-amber-600 text-white p-1 rounded-full shadow"
+                />
+              )}
+
+              {product.isSale && (
+                <RiDiscountPercentFill
+                  size={40}
+                  title="Promoção"
+                  className="absolute top-2 right-2 bg-marrom-avermelhado text-white rounded-full p-1 shadow"
                 />
               )}
             </div>
 
-            <div className="flex md:flex-col w-full md:w-fit p-2 overflow-x-auto gap-3 justify-center mt-4 md:mt-0">
-              {images.map((img, index) => (
+            {/* THUMBS */}
+            <div className="flex gap-2 flex-wrap">
+              {images.map((img, i) => (
                 <button
-                  key={index}
-                  onClick={() => setSelectedImage(img)}
-                  className={`rounded-xl overflow-hidden transition-all min-w-[90px] min-h-[90px] ${
-                    selectedImage === img
-                      ? "ring-2 ring-[#a35c42] ring-offset-2"
-                      : ""
+                  key={i}
+                  onClick={() => setSelectedImage(img as string)}
+                  className={`relative w-20 h-20 rounded-lg overflow-hidden cursor-pointer ${
+                    selectedImage === img ? "outline-2 outline-offset-2 outline-[#a35c42]" : ""
                   }`}
                 >
                   <Image
-                    src={img}
-                    alt={`Imagem ${index + 1}`}
-                    width={90}
-                    height={90}
-                    className="object-cover w-[90px] h-[90px]"
+                    src={img as string}
+                    alt={`Imagem ${i + 1}`}
+                    width={80}
+                    height={80}
+                    className="object-cover w-full h-full"
                   />
                 </button>
               ))}
@@ -142,57 +137,123 @@ export default function ProductDetailPage() {
           </div>
 
           {/* INFO */}
-          <div className="w-full flex flex-col justify-between py-4 text-gray-800">
+          <div className="flex-1 flex flex-col gap-5">
             <div>
-              <h1 className="text-xl lg:text-3xl font-bold mb-2 text-marrom-avermelhado">
+              <h1 className="text-3xl font-bold text-[#a35c42]">
                 {product.name}
               </h1>
 
-              <div className="flex gap-2 text-xs mb-4">
-                {product.category && (
-                  <span className="bg-marrom-avermelhado px-2 py-1 rounded-md text-white">
-                    {product.category.name}
+              {product.category && (
+                <span className="inline-block mt-2 bg-[#a35c42] text-white px-3 py-1 rounded-full text-xs font-semibold">
+                  {product.category.name}
+                </span>
+              )}
+            </div>
+
+            {/* PREÇO */}
+            <div className="text-2xl font-bold">
+              {product.price === 0 ? (
+                <span className="text-gray-700">Preço sob consulta</span>
+              ) : product.isSale && product.salePrice ? (
+                <div className="flex items-center gap-3">
+                  <span className="line-through text-gray-400">
+                    {formatBRL(Number(product.price))}
                   </span>
-                )}
-                {product.material && (
-                  <span className="bg-verde-escuro px-2 py-1 rounded-md text-white">
-                    {product.material}
+                  <span className="text-red-600">
+                    {formatBRL(Number(product.salePrice))}
                   </span>
-                )}
+                </div>
+              ) : (
+                <span>{formatBRL(Number(product.price))}</span>
+              )}
+              <div className="flex items-end gap-2">
+                <FaTruck size={18} />
+                <p className="text-xs text-gray-600 font-light">
+                  Frete não incluso, entre em contato para mais informações
+                </p>
               </div>
+            </div>
 
+            {/* DESCRIÇÕES */}
+            {product.shortDescription && (
               <div
-                className="prose prose-sm max-w-none text-gray-800"
+                className="prose prose-sm max-w-none text-gray-700"
                 dangerouslySetInnerHTML={{
-                  __html: product.longDescription || "",
+                  __html: product.shortDescription,
                 }}
               />
-            </div>
+            )}
 
-            <div className="flex flex-col gap-3 mt-6">
-              <p className="text-3xl font-semibold text-marrom-avermelhado">
-                {product.isSale && product.salePrice
-                  ? formatBRL(product.salePrice)
-                  : formatBRL(product.price)}
-              </p>
-
-              <BrownButton
-                text="Quero comprar!"
-                onClick={() => {
-                  window.open(
-                    `https://wa.me/5516991401921?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(
-                      product.name
-                    )}`,
-                    "_blank"
-                  );
+            {product.longDescription && (
+              <div
+                className="prose max-w-none text-gray-800"
+                dangerouslySetInnerHTML={{
+                  __html: product.longDescription,
                 }}
               />
+            )}
+
+            {/* DETALHES */}
+            <div className="grid grid-cols-1 gap-4 text-sm">
+              {product.material && (
+                <div className="flex items-center gap-1">
+                  <GiPorcelainVase size={25} />
+                  <span className="text-gray-800">{product.material}</span>
+                </div>
+              )}
+
+              {product.dimensions && (
+                <div className="flex items-center gap-2">
+                  <RxDimensions size={22} />
+                  <span className="text-gray-800">{product.dimensions}</span>
+                </div>
+              )}
             </div>
+
+            {/* CORES */}
+            {product.colors && product.colors.length > 0 && (
+              <div>
+                <div className="flex flex-col mb-2">
+                  <p className="font-semibold">Cores disponíveis:</p>
+                  <p className="text-xs text-gray-600">
+                    *consulte para mais cores
+                  </p>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {product.colors.map((c) => (
+                    <span
+                      key={c}
+                      className="px-3 py-1 rounded-full bg-gray-500 text-sm text-white"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* CTA */}
+            {/* <div className="mt-6">
+              <a
+                href={`https://wa.me/55XXXXXXXXXX?text=${encodeURIComponent(
+                  `Olá! Tenho interesse no produto: ${product.name}`
+                )}`}
+                target="_blank"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#a35c42] text-white font-semibold hover:bg-[#7a4331] transition"
+              >
+                Solicitar orçamento
+              </a>
+            </div> */}
+            <Link
+              href={`https://wa.me/55XXXXXXXXXX?text=${encodeURIComponent(
+                `Olá! Tenho interesse no produto: ${product.name}`
+              )}`}
+            >
+              <BrownButton text="Tenho interesse" maxWidth="max-w-fit" />
+            </Link>
           </div>
         </div>
-      </main>
-
-      <Footer />
-    </>
+      </section>
+    </main>
   );
 }

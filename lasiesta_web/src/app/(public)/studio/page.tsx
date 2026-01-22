@@ -84,7 +84,7 @@ export default function Studio() {
         </div>
 
         {/* BLOCO 3 — Processo criativo (texto acima + 4 imagens lado a lado) */}
-        <div className="space-y-6 mx-10">
+        <div className="space-y-6 mx-10 z-20">
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -96,11 +96,12 @@ export default function Studio() {
             intuitivo, que une matéria e emoção em equilíbrio.
           </motion.p>
 
-          <div className="grid grig-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 z-10">
+          <div className="grid grig-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 z-20">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              className="z-20"
             >
               <Image
                 src="/image/IMG_0349.JPG"
@@ -114,6 +115,7 @@ export default function Studio() {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
+              className="z-20"
             >
               <Image
                 src="/image/IMG_0128.JPG"
@@ -127,6 +129,7 @@ export default function Studio() {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
+              className="z-20"
             >
               <Image
                 src="/image/IMG_0285.JPG"
@@ -140,6 +143,7 @@ export default function Studio() {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
+              className="z-20"
             >
               <Image
                 src="/image/IMG_0216.JPG"

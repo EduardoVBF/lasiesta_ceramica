@@ -127,8 +127,8 @@ export default function HomePage() {
           )}
 
           <div className="mt-8 relative z-20">
-            <Link href="/products">
-              <BrownButton text="Ver Todas as Peças" maxWidth="max-w-fit" />
+            <Link href="/produtos">
+              <BrownButton text="Ver todos os produtos" maxWidth="max-w-fit" />
             </Link>
           </div>
         </section>
