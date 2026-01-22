@@ -62,7 +62,11 @@ export default function AdminProductCard({ product, onEdit, onToggle }: Props) {
           <div>
             {/* PRICE */}
             <div className="mt-2">
-              {product.isSale && product.salePrice ? (
+              {product.price == 0 ? (
+                <span className="text-sm font-bold text-gray-800">
+                  * Preço sob consulta
+                </span>
+              ) : product.isSale && product.salePrice ? (
                 <div className="flex items-center gap-2">
                   <span className="text-sm line-through text-gray-400">
                     {formatBRL(Number(product.price))}

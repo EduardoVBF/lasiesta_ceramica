@@ -20,7 +20,7 @@ export const createProductSchema = z
     name: z.string().min(1, "Nome do produto é obrigatório"),
     slug: z.string().min(1, "Slug do produto é obrigatório"),
 
-    price: z.number().positive("Preço deve ser maior que zero"),
+    price: z.number().nonnegative("Preço do produto é obrigatório"),
 
     // promoção
     isSale: z.boolean().optional(),
@@ -74,7 +74,7 @@ export const updateProductSchema = z
     name: z.string().min(1).optional(),
     slug: z.string().min(1).optional(),
 
-    price: z.number().positive().optional(),
+    price: z.number().nonnegative().optional(),
 
     isSale: z.boolean().optional(),
     salePrice: z.number().positive().nullable().optional(),

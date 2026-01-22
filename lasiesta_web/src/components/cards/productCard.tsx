@@ -104,7 +104,9 @@ export default function ProductCard({
 
           {/* PRICE */}
           <div className="mt-2">
-            {product.isSale && product.salePrice ? (
+            {product.price == 0 ? (
+              <span className="text-sm font-bold text-white">* Preço sob consulta</span>
+            ) : product.isSale && product.salePrice ? (
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold line-through text-white">
                   {formatBRL(Number(product.price))}
