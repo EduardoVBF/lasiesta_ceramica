@@ -23,7 +23,7 @@ export default function Header({ bgColor }: HeaderProps) {
       <div className="hidden md:flex justify-around pb-2 gap-x-1">
         <HeaderButton pathHref="/" label="Início" Icon={House} />
         <HeaderButton pathHref="/classes" label="Aulas" Icon={LibraryBig} />
-        <HeaderButton pathHref="/products" label="Produtos" Icon={Amphora} />
+        <HeaderButton pathHref="/produtos" label="Produtos" Icon={Amphora} />
         <HeaderButton pathHref="/studio" label="O Ateliê" Icon={GiFireBowl} />
       </div>
 
