@@ -7,9 +7,9 @@ import React from "react";
 
 const navLinks = [
   { href: "/", label: "Início", Icon: House },
-  { href: "/classes", label: "Aulas", Icon: LibraryBig },
-  { href: "/products", label: "Produtos", Icon: Amphora },
-  { href: "/studio", label: "O ateliê", Icon: GiFireBowl },
+  { href: "/aulas", label: "Aulas", Icon: LibraryBig },
+  { href: "/produtos", label: "Produtos", Icon: Amphora },
+  { href: "/atelie", label: "O ateliê", Icon: GiFireBowl },
 ];
 
 export default function HeaderMenuMobile({ onClose }: { onClose: () => void }) {

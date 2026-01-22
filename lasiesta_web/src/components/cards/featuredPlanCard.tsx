@@ -70,7 +70,7 @@ export default function FeaturedPlanCard({
               </span>
             </div>
 
-            <Link href={`/classes#${plan.slug}`} className="w-full">
+            <Link href={`/aulas`} className="w-full">
               <BrownButton text="Ver Detalhes" className="w-full" />
             </Link>
           </div>

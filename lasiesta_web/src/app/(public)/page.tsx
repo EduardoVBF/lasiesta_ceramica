@@ -185,7 +185,7 @@ export default function HomePage() {
               Aqui, transformamos matéria em presença. Cada peça nasce de um
               instante, de uma pausa, de um toque que se torna arte.
             </p>
-            <Link href="/studio">
+            <Link href="/atelie">
               <BrownButton text="Conheça o Ateliê" maxWidth="max-w-fit" />
             </Link>
           </motion.div>
