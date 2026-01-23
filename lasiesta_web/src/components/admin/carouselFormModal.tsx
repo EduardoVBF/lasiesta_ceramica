@@ -58,6 +58,16 @@ export default function HomeCarouselFormModal({
 
   if (!open) return null;
 
+  function handleClose() {
+    onClose();
+    setTitle("");
+    setSubtitle("");
+    setLinkUrl("");
+    setIsActive(true);
+    setImageBase64(null);
+    setInfoVisible(false);
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -72,11 +82,18 @@ export default function HomeCarouselFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative bg-white rounded-2xl w-full max-w-lg p-4 shadow-lg max-h-[95dvh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-2xl font-normal text-[#a35c42] mb-3">
+        <button
+          className="absolute top-3 right-3 font-bold text-gray-500 hover:text-red-700 cursor-pointer"
+          onClick={handleClose}
+        >
+          &#10005;
+        </button>
+
+        <div className="flex items-center gap-1 mb-3">
+          <h2 className="text-2xl font-normal text-[#a35c42]">
             {initialData ? "Editar slide" : "Novo slide"}
           </h2>
 
@@ -126,12 +143,12 @@ export default function HomeCarouselFormModal({
               onChange={(e) => setSubtitle(e.target.value)}
             />
 
-            <PrimaryInput
+            {/* <PrimaryInput
               label="Link"
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
               placeholder="/produtos"
-            />
+            /> */}
 
             <PrimarySwitch
               label="Banner ativo"
@@ -142,7 +159,7 @@ export default function HomeCarouselFormModal({
             <div className="flex justify-end gap-3 pt-4">
               <GrayButton
                 text="Cancelar"
-                onClick={onClose}
+                onClick={handleClose}
                 maxWidth="max-w-fit"
               />
 

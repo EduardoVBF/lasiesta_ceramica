@@ -25,6 +25,11 @@ export default function ResetPasswordModal({
 
   if (!open || !user) return null;
 
+  function handleClose() {
+    onClose();
+    setPassword("");
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     onSubmit(password);
@@ -33,9 +38,16 @@ export default function ResetPasswordModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative bg-white rounded-2xl w-full max-w-md p-4 shadow-lg">
+        <button
+          className="absolute top-3 right-3 font-bold text-gray-500 hover:text-red-700 cursor-pointer"
+          onClick={handleClose}
+        >
+          &#10005;
+        </button>
+
         <h2 className="text-2xl font-normal text-[#a35c42] mb-2">
           Redefinir senha
         </h2>
@@ -61,7 +73,7 @@ export default function ResetPasswordModal({
             <div className="flex justify-end gap-3 pt-4">
               <GrayButton
                 text="Cancelar"
-                onClick={onClose}
+                onClick={handleClose}
                 maxWidth="max-w-fit"
               />
               <BrownButton

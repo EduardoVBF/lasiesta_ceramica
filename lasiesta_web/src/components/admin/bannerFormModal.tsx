@@ -1,11 +1,13 @@
 "use client";
 import { Banner } from "../../services/banner.service";
 import React, { useEffect, useState } from "react";
+import ColoredTextBox from "../ui/coloredTextBox";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
 import LoaderComp from "../ui/loaderComp";
 import ImageInput from "./imageInput";
+import { Info } from "lucide-react";
 
 type BannerFormData = {
   title?: string | null;
@@ -35,6 +37,17 @@ export default function BannerFormModal({
   const [linkUrl, setLinkUrl] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [infoVisible, setInfoVisible] = useState(false);
+
+  function handleClose() {
+    onClose();
+    setTitle("");
+    setSubtitle("");
+    setLinkUrl("");
+    setIsActive(true);
+    setImageBase64(null);
+    setInfoVisible(false);
+  }
 
   useEffect(() => {
     if (initialData) {
@@ -75,16 +88,49 @@ export default function BannerFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative bg-white rounded-2xl w-full max-w-lg max-h-[95dvh] overflow-auto p-4 shadow-lg">
-        <h2 className="text-2xl font-normal text-[#a35c42] mb-2">
-          Editar Banner
-        </h2>
+        <button
+          className="absolute top-3 right-3 font-bold text-gray-500 hover:text-red-700 cursor-pointer"
+          onClick={handleClose}
+        >
+          &#10005;
+        </button>
+
+        <div className="flex items-center gap-1 mb-1">
+          <h2 className="text-2xl font-normal text-[#a35c42]  ">
+            Editar Banner
+          </h2>
+
+          <Info
+            size={20}
+            className={`cursor-pointer ${
+              infoVisible
+                ? "text-blue-500 hover:text-gray-500"
+                : "text-gray-500 hover:text-blue-500"
+            }`}
+            onClick={() => setInfoVisible((prev) => !prev)}
+          />
+        </div>
 
         <p className="text-gray-600 mb-4 text-sm">
-          Página: <span className="font-medium">{handlePageName(initialData?.page ?? "")}</span>
+          Página:{" "}
+          <span className="font-medium">
+            {handlePageName(initialData?.page ?? "")}
+          </span>
         </p>
+
+        {/* INFO BOX */}
+        {infoVisible && (
+          <ColoredTextBox type="info" className="mb-3">
+            <ul className="list-disc pl-4 space-y-1 text-sm">
+              <li>Cada banner deve ter uma imagem, título e subtítulo.</li>
+              <li>Certifique-se de que o banner esteja ativo para ser exibido.</li>
+              <li>Cada banner corresponde a uma página específica do site.</li>
+            </ul>
+          </ColoredTextBox>
+        )}
 
         {loading ? (
           <div className="flex justify-center items-center">
@@ -127,7 +173,7 @@ export default function BannerFormModal({
             <div className="flex justify-end gap-3 pt-4">
               <GrayButton
                 text="Cancelar"
-                onClick={onClose}
+                onClick={handleClose}
                 maxWidth="max-w-fit"
               />
               <BrownButton

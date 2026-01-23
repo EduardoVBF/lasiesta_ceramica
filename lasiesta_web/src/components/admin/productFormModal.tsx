@@ -128,6 +128,12 @@ export default function ProductFormModal({
     setSecondaryImages([]);
   }
 
+  function handleClose() {
+    onClose();
+    reset();
+    setInfoVisible(false);
+  }
+
   /* ================= COLORS ================= */
   function addColor() {
     if (!colorInput.trim()) return;
@@ -170,11 +176,17 @@ export default function ProductFormModal({
   /* ================= RENDER ================= */
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative bg-white rounded-2xl w-full max-w-3xl max-h-[95dvh] overflow-auto p-4">
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-4">
+        <button
+          className="absolute top-3 right-3 font-bold text-gray-500 hover:text-red-700 cursor-pointer"
+          onClick={handleClose}
+        >
+          &#10005;
+        </button>
+
+        <div className="flex items-center gap-1 mb-4">
           <h2 className="text-2xl text-[#a35c42]">
             {initialData ? "Editar produto" : "Novo produto"}
           </h2>

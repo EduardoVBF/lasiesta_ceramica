@@ -86,18 +86,29 @@ export default function CategoryFormModal({
     setName("");
     setSlug("");
     setIsActive(true);
+    setIsFeatured(false);
+    setImageBase64(null);
+    setInfoVisible(false);
     onClose();
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Modal */}
       <div className="relative bg-white rounded-2xl w-full max-w-lg p-4 shadow-lg">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-normal text-[#a35c42] mb-1">
+        {/* botao de fechar */}
+        <button
+          className="absolute top-3 right-3 font-bold text-gray-500 hover:text-red-700 cursor-pointer"
+          onClick={handleClose}
+        >
+          &#10005;
+        </button>
+
+        <div className="flex items-center gap-1 mb-1">
+          <h2 className="text-2xl font-normal text-[#a35c42]">
             {initialData ? "Editar categoria" : "Nova categoria"}
           </h2>
           <Info
