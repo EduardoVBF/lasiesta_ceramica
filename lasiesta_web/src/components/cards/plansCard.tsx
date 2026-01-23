@@ -1,9 +1,10 @@
 "use client";
+import BrownButton from "@/components/ui/brownButtom";
+import { Plan } from "../../services/plans.service";
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
 import Image from "next/image";
-import BrownButton from "@/components/ui/brownButtom";
-import { Plan } from "../../services/plans.service";
+import Link from "next/link";
 
 interface PlanSectionProps {
   plan: Plan;
@@ -14,7 +15,6 @@ export default function PlanSection({
   plan,
   reverse = false,
 }: PlanSectionProps) {
-  const whatsappUrl = `https://wa.me/5516991401921?text=Olá! Tenho interesse no ${plan.name}`;
 
   return (
     <section id={plan.slug} className="py-0 px-4 z-20">
@@ -64,10 +64,14 @@ export default function PlanSection({
                 /{plan.durationLabel}
               </span>
             </div>
-            <BrownButton
-              text="Tenho Interesse"
-              onClick={() => window.open(whatsappUrl, "_blank")}
-            />
+            <Link
+              href={`https://wa.me/5516991401921?text=${encodeURIComponent(
+                `Olá! Tenho interesse no plano: ${plan.name}`
+              )}`}
+              target="_blank"
+            >
+              <BrownButton text="Tenho interesse" maxWidth="max-w-full" />
+            </Link>
           </div>
         </div>
       </div>

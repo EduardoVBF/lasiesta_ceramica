@@ -240,22 +240,11 @@ export default function PublicProductDetailPage() {
               )}
             </div>
 
-            {/* CTA */}
-            {/* <div className="mt-6">
-              <a
-                href={`https://wa.me/55XXXXXXXXXX?text=${encodeURIComponent(
-                  `Olá! Tenho interesse no produto: ${product.name}`
-                )}`}
-                target="_blank"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#a35c42] text-white font-semibold hover:bg-[#7a4331] transition"
-              >
-                Solicitar orçamento
-              </a>
-            </div> */}
             <Link
-              href={`https://wa.me/55XXXXXXXXXX?text=${encodeURIComponent(
+              href={`https://wa.me/5516991401921?text=${encodeURIComponent(
                 `Olá! Tenho interesse no produto: ${product.name}`
               )}`}
+              target="_blank"
               className="self-baseline-last"
             >
               <BrownButton text="Tenho interesse" maxWidth="max-w-fit" />
