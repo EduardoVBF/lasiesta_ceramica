@@ -78,7 +78,7 @@ export class ProductsService {
         where,
         skip,
         take: limit,
-        orderBy: [{ category: { name: "asc" } }, { name: "asc" }],
+        orderBy: [{isActive: "desc"}, { category: { name: "asc" } }, { name: "asc" }],
         include: { category: true },
       }),
       prisma.product.count({ where }),
