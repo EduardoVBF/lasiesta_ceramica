@@ -161,7 +161,7 @@ export default function CategoryFormModal({
               onChange={(e) => setSlug(e.target.value)}
               placeholder="ex: copos"
               required
-              disabled
+              disabled={!!initialData}
             />
 
             <div className="flex items-center justify-start gap-5">

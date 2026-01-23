@@ -96,17 +96,15 @@ export default function ProductFormModal({
   }, [initialData, open]);
 
   useEffect(() => {
-    if (!initialData) {
-      setSlug(
-        name
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/(^-|-$)/g, "")
-      );
-    }
-  }, [name, initialData]);
+    setSlug(
+      name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+    );
+  }, [name]);
 
   if (!open) return null;
 

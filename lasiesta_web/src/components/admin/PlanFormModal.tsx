@@ -38,11 +38,22 @@ export default function PlanFormModal({
   const [isFeatured, setIsFeatured] = useState(false);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
 
-  // gerar slug automaticamente
+  // gerar slug automaticamentes
+  useEffect(() => {
+    setSlug(
+      name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+    );
+  }, [name]);
+
   useEffect(() => {
     if (initialData) {
       setName(initialData.name);
-      setSlug(initialData.slug); // 👈 valor fixo
+      setSlug(initialData.slug);
       setPrice(initialData.price !== null ? String(initialData.price) : "");
       setDurationLabel(initialData.durationLabel ?? "");
       setShortDescription(initialData.shortDescription ?? "");
@@ -52,7 +63,7 @@ export default function PlanFormModal({
       setImageBase64(null);
     } else {
       setName("");
-      setSlug(""); // 👈 será preenchido automaticamente
+      setSlug("");
       setPrice("");
       setDurationLabel("");
       setShortDescription("");
@@ -63,22 +74,7 @@ export default function PlanFormModal({
     }
   }, [initialData, open]);
 
-  useEffect(() => {
-    if (!initialData) {
-      setSlug(generateSlug(name));
-    }
-  }, [name, initialData]);
-
   if (!open) return null;
-
-  function generateSlug(value: string) {
-    return value
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

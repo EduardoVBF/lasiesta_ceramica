@@ -75,10 +75,12 @@ export default function AdminProductsPage() {
         setTotalPages(productsRes.meta.totalPages);
       })
       .catch((err) => toast.error(err.response?.data?.message || err.message))
-      .finally(() => { {
-        setLoading(false);
-        setLoadingProducts(false);
-      }});
+      .finally(() => {
+        {
+          setLoading(false);
+          setLoadingProducts(false);
+        }
+      });
   }, [isModalOpen, toggleLoading, search, page, limit, categoryFilter]);
 
   async function handleToggle(product: Product) {
@@ -240,16 +242,27 @@ export default function AdminProductsPage() {
               <button
                 key={cat.id}
                 onClick={() => handleCategoryFilter(cat.id)}
-                className={`px-4 py-1 rounded-full text-sm ${
+                className={`relative px-4 py-1 rounded-full text-sm ${
                   categoryFilter === cat.id
                     ? "bg-[#a35c42] text-white"
                     : "bg-gray-200 text-gray-700"
                 }`}
               >
-                {cat.name}
+                {!cat.isActive && (
+                  <div className="absolute rounded-full w-2 h-2 top-0 right-0 bg-red-500"></div>
+                )}
+                <p>{cat.name}</p>
               </button>
             ))}
           </div>
+
+          {categories.find(
+            (cat) => cat.id === categoryFilter && !cat.isActive
+          ) && (
+            <ColoredTextBox type="warning" className="z-10">
+              ⚠ Esta categoria está inativa.
+            </ColoredTextBox>
+          )}
 
           {/* SEARCH INPUT */}
           <div className="z-10">
