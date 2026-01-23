@@ -260,7 +260,8 @@ export default function AdminProductsPage() {
             (cat) => cat.id === categoryFilter && !cat.isActive
           ) && (
             <ColoredTextBox type="warning" className="z-10">
-              ⚠ Esta categoria está inativa.
+              ⚠ Esta categoria está inativa. Os produtos nela não aparecerão no
+              site.
             </ColoredTextBox>
           )}
 
