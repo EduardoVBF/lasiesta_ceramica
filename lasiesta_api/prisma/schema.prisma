@@ -73,7 +73,6 @@ model Product {
 
   // constraints finais
   @@unique([slug, categoryId])
-  @@unique([categoryId, orderIndex])
   @@index([categoryId])
   @@index([isActive])
   @@index([isFeatured])
