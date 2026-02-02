@@ -1,38 +1,57 @@
 "use client";
-import HeaderWithBanner from "@/components/layout/headerWithBanner";
-import ProductsCategoriesNav from "@/components/layout/productsCategoriesNav";
-import Footer from "@/components/layout/footer";
-import ProductCard from "@/components/cards/productCard";
-import LoaderComp from "@/components/ui/loaderComp";
-import Pagination from "@/components/ui/paginationComp";
-import SearchInput from "@/components/ui/searchInput";
-
-import { getPublicProducts, Product } from "../../../services/products.service";
 import {
   getActiveCategories,
   Category,
 } from "../../../services/categories.service";
-
+import { getPublicProducts, Product } from "../../../services/products.service";
+import ProductsCategoriesNav from "@/components/layout/productsCategoriesNav";
+import HeaderWithBanner from "@/components/layout/headerWithBanner";
+import { useRouter, useSearchParams } from "next/navigation";
+import ProductCard from "@/components/cards/productCard";
+import Pagination from "@/components/ui/paginationComp";
+import SearchInput from "@/components/ui/searchInput";
+import LoaderComp from "@/components/ui/loaderComp";
+import Footer from "@/components/layout/footer";
 import { useEffect, useState } from "react";
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  //  URL PARAMS INICIAIS
+  const initialCategory = searchParams.get("category") ?? "all";
+  const initialSearch = searchParams.get("search") ?? "";
+  const initialPage = Number(searchParams.get("page") ?? 1);
+
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const limit = 12;
+  const [products, setProducts] = useState<Product[]>([]);
+  const [search, setSearch] = useState(initialSearch);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [page, setPage] = useState(initialPage);
   const [loading, setLoading] = useState(true);
+  const limit = 12;
 
-  /* categorias */
+  function updateURL(params: Record<string, string | null>) {
+    const newParams = new URLSearchParams(searchParams.toString());
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (!value || value === "all") {
+        newParams.delete(key);
+      } else {
+        newParams.set(key, value);
+      }
+    });
+
+    router.push(`?${newParams.toString()}`, { scroll: false });
+  }
+
+  //  LOAD CATEGORIES
   useEffect(() => {
     getActiveCategories().then(setCategories);
   }, []);
 
-  /* produtos */
+  //  LOAD PRODUCTS
   useEffect(() => {
     setLoading(true);
 
@@ -64,10 +83,35 @@ export default function ProductsPage() {
       .finally(() => setLoading(false));
   }, [search, page, limit, activeCategory]);
 
+  //  HANDLERS
   function handleCategoryChange(category: string) {
     setActiveCategory(category);
     setSearch("");
     setPage(1);
+
+    updateURL({
+      category,
+      search: null,
+      page: "1",
+    });
+  }
+
+  function handleSearchChange(value: string) {
+    setSearch(value);
+    setPage(1);
+
+    updateURL({
+      search: value || null,
+      page: "1",
+    });
+  }
+
+  function handlePageChange(newPage: number) {
+    setPage(newPage);
+
+    updateURL({
+      page: String(newPage),
+    });
   }
 
   return (
@@ -93,14 +137,8 @@ export default function ProductsPage() {
         <SearchInput
           value={search}
           placeholder="Buscar produtos..."
-          onChange={(value) => {
-            setSearch(value);
-            setPage(1);
-          }}
-          onClear={() => {
-            setSearch("");
-            setPage(1);
-          }}
+          onChange={handleSearchChange}
+          onClear={() => handleSearchChange("")}
         />
       </div>
 
@@ -119,7 +157,7 @@ export default function ProductsPage() {
           <Pagination
             page={page}
             totalPages={totalPages}
-            onPageChange={setPage}
+            onPageChange={handlePageChange}
             className="mb-8"
           />
         </>
