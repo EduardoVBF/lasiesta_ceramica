@@ -6,11 +6,13 @@ interface ImageInputProps {
   value?: string | null; // imageUrl (edição)
   onChange: (base64: string | null) => void;
   placeholderImage?: string;
+  error?: string;
 }
 
 export default function ImageInput({
   value,
   onChange,
+  error,
   placeholderImage = "/image/placeholder-image.png",
 }: ImageInputProps) {
   const [preview, setPreview] = useState<string | null>(null);
@@ -49,7 +51,8 @@ export default function ImageInput({
       {/* preview clicável */}
       <div
         onClick={openFilePicker}
-        className="
+        className={`
+          ${error ? "border-red-500" : "border-gray-300 hover:border-[#a35c42]"}
           w-48 h-48
           border-2 rounded-lg
           overflow-hidden
@@ -58,7 +61,7 @@ export default function ImageInput({
           cursor-pointer
           hover:opacity-90
           transition
-        "
+        `}
       >
         {preview ? (
           <Image
@@ -86,6 +89,11 @@ export default function ImageInput({
         onChange={(e) => handleFileChange(e.target.files?.[0])}
         className="hidden"
       />
+      {error && (
+        <div className="flex items-center justify-center">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
     </div>
   );
 }

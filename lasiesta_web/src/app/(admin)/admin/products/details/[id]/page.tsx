@@ -49,7 +49,6 @@ export default function AdminProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [toggleLoading, setToggleLoading] = useState(false);
 
-  console.log("OIIIIIIIIIII");
   async function handleSubmitProduct(data: ProductFormData) {
     try {
       setSaving(true);
@@ -123,7 +122,6 @@ export default function AdminProductDetailPage() {
     async function load() {
       try {
         const data = await getProductById(id);
-        console.log(data);
         setProduct(data);
         setSelectedImage(data.mainImageUrl);
       } catch (err) {

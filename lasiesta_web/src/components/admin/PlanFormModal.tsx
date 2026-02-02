@@ -194,6 +194,7 @@ export default function PlanFormModal({
               <ImageInput
                 value={initialData?.imageUrl || null}
                 onChange={setImageBase64}
+                error={errors.imageBase64}
               />
             </div>
 

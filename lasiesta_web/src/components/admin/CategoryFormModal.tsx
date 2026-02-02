@@ -1,4 +1,5 @@
 "use client";
+import { translateApiErrors } from "../../utils/translateApiError";
 import React, { useEffect, useState } from "react";
 import ColoredTextBox from "../ui/coloredTextBox";
 import PrimarySwitch from "../ui/primarySwitch";
@@ -6,8 +7,10 @@ import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import LoaderComp from "../ui/loaderComp";
 import GrayButton from "../ui/grayButtom";
+import { toast } from "react-hot-toast";
 import ImageInput from "./imageInput";
 import { Info } from "lucide-react";
+import { AxiosError } from "axios";
 
 interface CategoryFormData {
   name: string;
@@ -34,6 +37,7 @@ export default function CategoryFormModal({
   onSubmit,
 }: Props) {
   const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [infoVisible, setInfoVisible] = useState(false);
   const [isFeatured, setIsFeatured] = useState(false);
   const [isActive, setIsActive] = useState(true);
@@ -48,7 +52,7 @@ export default function CategoryFormModal({
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "")
+        .replace(/(^-|-$)/g, ""),
     );
   }, [name]);
 
@@ -70,16 +74,35 @@ export default function CategoryFormModal({
 
   if (!open) return null;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSubmit({
-      name,
-      slug,
-      isActive,
-      isFeatured,
-      ...(imageBase64 && { imageBase64 }),
-    });
-    // handleClose();
+    setErrors({});
+
+    try {
+      await onSubmit({
+        name,
+        slug,
+        isActive,
+        isFeatured,
+        ...(imageBase64 && { imageBase64 }),
+      });
+    } catch (err) {
+      if (!(err instanceof AxiosError)) {
+        toast.error("Erro ao salvar a categoria");
+        return;
+      } else {
+        if (!err.response || !err.response.data) {
+          toast.error("Erro ao salvar a categoria");
+          return;
+        }
+        const { fieldErrors, toastMessage } = translateApiErrors(
+          err.response.data,
+        );
+
+        setErrors(fieldErrors);
+        toast.error(toastMessage || "Erro ao salvar a categoria");
+      }
+    }
   }
 
   function handleClose() {
@@ -90,6 +113,7 @@ export default function CategoryFormModal({
     setImageBase64(null);
     setInfoVisible(false);
     onClose();
+    setErrors({});
   }
 
   return (
@@ -155,6 +179,7 @@ export default function CategoryFormModal({
               <ImageInput
                 value={initialData?.imageUrl || null}
                 onChange={setImageBase64}
+                error={errors.imageBase64}
               />
             </div>
 
@@ -164,6 +189,7 @@ export default function CategoryFormModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="Ex: Copos"
               required
+              error={errors.name}
             />
 
             <PrimaryInput
@@ -173,6 +199,7 @@ export default function CategoryFormModal({
               placeholder="ex: copos"
               required
               disabled={!!initialData}
+              error={errors.slug}
             />
 
             <div className="flex items-center justify-start gap-5">
@@ -180,11 +207,13 @@ export default function CategoryFormModal({
                 label="Categoria ativa"
                 checked={isActive}
                 onChange={setIsActive}
+                error={errors.isActive}
               />
               <PrimarySwitch
                 label="Categoria em destaque"
                 checked={isFeatured}
                 onChange={setIsFeatured}
+                error={errors.isFeatured}
               />
             </div>
 

@@ -316,15 +316,7 @@ export default function AdminCategoriesPage() {
                 } com sucesso!`
               );
             } catch (err) {
-              if (err instanceof AxiosError) {
-                toast.error(
-                  err.response?.data?.error ||
-                    err.response?.data?.message ||
-                    err.message
-                );
-              } else {
-                toast.error("Erro inesperado ao salvar categoria");
-              }
+              throw err;
             } finally {
               setCreating(false);
             }

@@ -27,7 +27,6 @@ export default function PrimaryInput({
 }: PrimaryInputProps) {
   const isPassword = type === "password";
   const [showPassword, setShowPassword] = useState(false);
-  console.log("ERROR", error);
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
       <div>

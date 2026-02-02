@@ -1,4 +1,5 @@
 "use client";
+import { translateApiErrors } from "../../utils/translateApiError";
 import { Banner } from "../../services/banner.service";
 import React, { useEffect, useState } from "react";
 import ColoredTextBox from "../ui/coloredTextBox";
@@ -6,8 +7,10 @@ import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
 import LoaderComp from "../ui/loaderComp";
+import { toast } from "react-hot-toast";
 import ImageInput from "./imageInput";
 import { Info } from "lucide-react";
+import { AxiosError } from "axios";
 
 type BannerFormData = {
   title?: string | null;
@@ -38,6 +41,7 @@ export default function BannerFormModal({
   const [isActive, setIsActive] = useState(true);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [infoVisible, setInfoVisible] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   function handleClose() {
     onClose();
@@ -47,6 +51,7 @@ export default function BannerFormModal({
     setIsActive(true);
     setImageBase64(null);
     setInfoVisible(false);
+    setErrors({});
   }
 
   useEffect(() => {
@@ -56,21 +61,40 @@ export default function BannerFormModal({
       setLinkUrl(initialData.linkUrl ?? "");
       setIsActive(initialData.isActive);
       setImageBase64(null);
+      setErrors({});
     }
   }, [initialData, open]);
 
   if (!open) return null;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErrors({});
 
-    onSubmit({
-      title: title || null,
-      subtitle: subtitle || null,
-      linkUrl: linkUrl || null,
-      isActive,
-      ...(imageBase64 && { imageBase64 }),
-    });
+    try {
+      await onSubmit({
+        title: title || null,
+        subtitle: subtitle || null,
+        linkUrl: linkUrl || null,
+        isActive,
+        ...(imageBase64 && { imageBase64 }),
+      });
+    } catch (err) {
+      if (!(err instanceof AxiosError)) {
+        toast.error("Erro ao salvar o banner");
+        return;
+      } else {
+        if (!err.response || !err.response.data) {
+          toast.error("Erro ao salvar o banner");
+          return;
+        }
+        const { fieldErrors, toastMessage } = translateApiErrors(
+          err.response.data,
+        );
+        setErrors(fieldErrors);
+        toast.error(toastMessage || "Erro ao salvar o banner");
+      }
+    }
   }
 
   function handlePageName(page: string) {
@@ -126,7 +150,9 @@ export default function BannerFormModal({
           <ColoredTextBox type="info" className="mb-3">
             <ul className="list-disc pl-4 space-y-1 text-sm">
               <li>Cada banner deve ter uma imagem, título e subtítulo.</li>
-              <li>Certifique-se de que o banner esteja ativo para ser exibido.</li>
+              <li>
+                Certifique-se de que o banner esteja ativo para ser exibido.
+              </li>
               <li>Cada banner corresponde a uma página específica do site.</li>
             </ul>
           </ColoredTextBox>
@@ -142,6 +168,7 @@ export default function BannerFormModal({
               <ImageInput
                 value={initialData?.imageUrl || null}
                 onChange={setImageBase64}
+                error={errors.imageBase64}
               />
             </div>
 
@@ -149,12 +176,14 @@ export default function BannerFormModal({
               label="Título"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              error={errors.title}
             />
 
             <PrimaryInput
               label="Subtítulo"
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
+              error={errors.subtitle}
             />
 
             {/* <PrimaryInput

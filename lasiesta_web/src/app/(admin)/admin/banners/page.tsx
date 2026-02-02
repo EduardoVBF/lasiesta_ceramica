@@ -12,7 +12,6 @@ import LoaderComp from "@/components/ui/loaderComp";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
-import { AxiosError } from "axios";
 
 export default function AdminBannersPage() {
   const [infoVisible, setInfoVisible] = useState(false);
@@ -28,8 +27,8 @@ export default function AdminBannersPage() {
         toast.error(
           `Erro ao carregar banners: ${
             err.response?.data?.error || err.message
-          }`
-        )
+          }`,
+        ),
       )
       .finally(() => setLoading(false));
   }, []);
@@ -116,21 +115,13 @@ export default function AdminBannersPage() {
               const updated = await updateBanner(editingBanner.id, data);
 
               setBanners((prev) =>
-                prev.map((b) => (b.id === updated.id ? updated : b))
+                prev.map((b) => (b.id === updated.id ? updated : b)),
               );
 
               toast.success("Banner atualizado com sucesso!");
               setEditingBanner(null);
             } catch (err) {
-              if (err instanceof AxiosError) {
-                toast.error(
-                  err.response?.data?.error ||
-                    err.response?.data?.message ||
-                    err.message
-                );
-              } else {
-                toast.error("Erro inesperado ao salvar banner");
-              }
+              throw err;
             } finally {
               setSaving(false);
             }
