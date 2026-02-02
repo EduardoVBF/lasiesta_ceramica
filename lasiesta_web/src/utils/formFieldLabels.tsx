@@ -16,4 +16,11 @@ export const FIELD_LABELS: Record<string, string> = {
   lastName: "Sobrenome",
   email: "Email",
   role: "Função",
+  material: "Material",
+  colors: "Cores",
+  dimensions: "Dimensões",
+  mainImageBase64: "Imagem principal",
+  categoryId: "Categoria",
+  isSale: "Promoção",
+  salePrice: "Preço promocional",
 };

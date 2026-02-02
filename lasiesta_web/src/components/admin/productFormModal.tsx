@@ -1,4 +1,5 @@
 "use client";
+import { translateApiErrors } from "../../utils/translateApiError";
 import { ProductFormData } from "../../services/products.service";
 import { Category } from "../../services/categories.service";
 import PrimaryRichText from "../ui/primaryRichText";
@@ -10,8 +11,10 @@ import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
 import LoaderComp from "../ui/loaderComp";
-import ImageInput from "./imageInput";
+import { toast } from "react-hot-toast";
 import { Info, X } from "lucide-react";
+import ImageInput from "./imageInput";
+import { AxiosError } from "axios";
 
 type Props = {
   open: boolean;
@@ -65,6 +68,8 @@ export default function ProductFormModal({
 
   const [secondaryImages, setSecondaryImages] = useState<SecondaryImage[]>([]);
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   /* ================= INIT ================= */
   useEffect(() => {
     if (initialData) {
@@ -88,7 +93,7 @@ export default function ProductFormModal({
       setSecondaryImages(
         (initialData.secondaryImages ?? []).map((url) => ({
           value: url,
-        }))
+        })),
       );
     } else {
       reset();
@@ -102,7 +107,7 @@ export default function ProductFormModal({
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "")
+        .replace(/(^-|-$)/g, ""),
     );
   }, [name]);
 
@@ -126,12 +131,14 @@ export default function ProductFormModal({
     setMainImageUrl(null);
     setMainImageBase64(null);
     setSecondaryImages([]);
+    setErrors({});
   }
 
   function handleClose() {
     onClose();
     reset();
     setInfoVisible(false);
+    setErrors({});
   }
 
   /* ================= COLORS ================= */
@@ -147,30 +154,49 @@ export default function ProductFormModal({
   }
 
   /* ================= SUBMIT ================= */
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErrors({});
 
     const secondaryImagesBase64 = secondaryImages
       .filter((img) => img.value !== null)
       .map((img) => img.value!);
 
-    onSubmit({
-      name,
-      slug,
-      price: Number(price),
-      shortDescription: shortDescription || null,
-      longDescription: longDescription || null,
-      material: material || null,
-      dimensions: dimensions || null,
-      colors,
-      categoryId,
-      isActive,
-      isFeatured,
-      isSale,
-      ...(isSale && { salePrice: Number(salePrice) }),
-      ...(mainImageBase64 && { mainImageBase64 }),
-      ...(secondaryImagesBase64.length && { secondaryImagesBase64 }),
-    });
+    try {
+      await onSubmit({
+        name,
+        slug,
+        price: Number(price),
+        shortDescription: shortDescription || null,
+        longDescription: longDescription || null,
+        material: material || null,
+        dimensions: dimensions || null,
+        colors,
+        categoryId,
+        isActive,
+        isFeatured,
+        isSale,
+        ...(isSale && { salePrice: Number(salePrice) }),
+        ...(mainImageBase64 && { mainImageBase64 }),
+        ...(secondaryImagesBase64.length && { secondaryImagesBase64 }),
+      });
+    } catch (err) {
+      if (!(err instanceof AxiosError)) {
+        toast.error("Erro ao salvar o plano");
+        return;
+      } else {
+        if (!err.response || !err.response.data) {
+          toast.error("Erro ao salvar o plano");
+          return;
+        }
+        const { fieldErrors, toastMessage } = translateApiErrors(
+          err.response.data,
+        );
+
+        setErrors(fieldErrors);
+        toast.error(toastMessage || "Erro ao salvar o plano");
+      }
+    }
   }
 
   /* ================= RENDER ================= */
@@ -240,12 +266,15 @@ export default function ProductFormModal({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  error={errors.name}
                 />
                 <PrimaryInput
                   label="Slug"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   disabled={!!initialData}
+                  required
+                  error={errors.slug}
                 />
                 <PrimaryInput
                   label="Preço"
@@ -253,6 +282,7 @@ export default function ProductFormModal({
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   required
+                  error={errors.price}
                 />
 
                 <PrimarySelect
@@ -263,6 +293,7 @@ export default function ProductFormModal({
                     { value: "", label: "Sem categoria" },
                     ...categories.map((c) => ({ value: c.id, label: c.name })),
                   ]}
+                  error={errors.categoryId}
                 />
 
                 <div className="flex gap-6">
@@ -270,16 +301,19 @@ export default function ProductFormModal({
                     label="Ativo"
                     checked={isActive}
                     onChange={setIsActive}
+                    error={errors.isActive}
                   />
                   <PrimarySwitch
                     label="Destaque"
                     checked={isFeatured}
                     onChange={setIsFeatured}
+                    error={errors.isFeatured}
                   />
                   <PrimarySwitch
                     label="Promoção"
                     checked={isSale}
                     onChange={setIsSale}
+                    error={errors.isSale}
                   />
                 </div>
 
@@ -289,6 +323,8 @@ export default function ProductFormModal({
                     type="number"
                     value={salePrice}
                     onChange={(e) => setSalePrice(e.target.value)}
+                    required={isSale}
+                    error={errors.salePrice}
                   />
                 )}
               </>
@@ -301,21 +337,25 @@ export default function ProductFormModal({
                   label="Descrição curta"
                   value={shortDescription}
                   onChange={setShortDescription}
+                  error={errors.shortDescription}
                 />
                 <PrimaryRichText
                   label="Descrição longa"
                   value={longDescription}
                   onChange={setLongDescription}
+                  error={errors.longDescription}
                 />
                 <PrimaryInput
                   label="Material"
                   value={material}
                   onChange={(e) => setMaterial(e.target.value)}
+                  error={errors.material}
                 />
                 <PrimaryInput
                   label="Dimensões"
                   value={dimensions}
                   onChange={(e) => setDimensions(e.target.value)}
+                  error={errors.dimensions}
                 />
               </>
             )}
@@ -327,6 +367,7 @@ export default function ProductFormModal({
                 <ImageInput
                   value={mainImageUrl}
                   onChange={setMainImageBase64}
+                  error={errors.mainImageBase64}
                 />
 
                 <p className="text-sm font-medium mt-4">Imagens secundárias</p>
@@ -335,13 +376,14 @@ export default function ProductFormModal({
                     <div key={i} className="relative">
                       <ImageInput
                         value={img.value}
+                        error={errors.secondaryImagesBase64}
                         onChange={(base64) =>
                           setSecondaryImages((prev) =>
                             prev.map((p, index) =>
                               index === i
                                 ? { type: "base64", value: base64! }
-                                : p
-                            )
+                                : p,
+                            ),
                           )
                         }
                       />
@@ -349,7 +391,7 @@ export default function ProductFormModal({
                         type="button"
                         onClick={() =>
                           setSecondaryImages((prev) =>
-                            prev.filter((_, index) => index !== i)
+                            prev.filter((_, index) => index !== i),
                           )
                         }
                         className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1"
@@ -397,6 +439,7 @@ export default function ProductFormModal({
                       label="Nova cor"
                       value={colorInput}
                       onChange={(e) => setColorInput(e.target.value)}
+                      error={errors.colors}
                     />
                     <BrownButton
                       type="button"

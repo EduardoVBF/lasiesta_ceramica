@@ -89,11 +89,11 @@ export default function AdminProductsPage() {
       const updated = await updateProductStatus(product.id, !product.isActive);
 
       setProducts((prev) =>
-        prev.map((p) => (p.id === updated.id ? updated : p))
+        prev.map((p) => (p.id === updated.id ? updated : p)),
       );
 
       toast.success(
-        `Produto ${updated.isActive ? "ativado" : "desativado"} com sucesso!`
+        `Produto ${updated.isActive ? "ativado" : "desativado"} com sucesso!`,
       );
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -114,7 +114,7 @@ export default function AdminProductsPage() {
         const updated = await updateProduct(editingProduct.id, data);
 
         setProducts((prev) =>
-          prev.map((p) => (p.id === updated.id ? updated : p))
+          prev.map((p) => (p.id === updated.id ? updated : p)),
         );
 
         toast.success("Produto atualizado com sucesso!");
@@ -129,15 +129,7 @@ export default function AdminProductsPage() {
       setIsModalOpen(false);
       setEditingProduct(null);
     } catch (err) {
-      if (err instanceof AxiosError) {
-        toast.error(
-          err.response?.data?.error ||
-            err.response?.data?.message ||
-            err.message
-        );
-      } else {
-        toast.error("Erro inesperado ao salvar produto");
-      }
+      throw err;
     } finally {
       setSaving(false);
     }
@@ -257,7 +249,7 @@ export default function AdminProductsPage() {
           </div>
 
           {categories.find(
-            (cat) => cat.id === categoryFilter && !cat.isActive
+            (cat) => cat.id === categoryFilter && !cat.isActive,
           ) && (
             <ColoredTextBox type="warning" className="z-10">
               ⚠ Esta categoria está inativa. Os produtos nela não aparecerão no
