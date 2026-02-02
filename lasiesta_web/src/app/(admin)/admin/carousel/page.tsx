@@ -300,15 +300,7 @@ export default function AdminHomeCarouselPage() {
             setCreating(false);
             setEditingItem(null);
           } catch (err) {
-            if (err instanceof AxiosError) {
-              toast.error(
-                err.response?.data?.error ||
-                  err.response?.data?.message ||
-                  err.message
-              );
-            } else {
-              toast.error("Erro inesperado ao salvar slide");
-            }
+            throw err;
           } finally {
             setSaving(false);
           }

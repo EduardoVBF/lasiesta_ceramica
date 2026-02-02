@@ -1,4 +1,5 @@
 "use client";
+import { translateApiErrors } from "../../utils/translateApiError";
 import { User } from "../../services/users.service";
 import React, { useEffect, useState } from "react";
 import ColoredTextBox from "../ui/coloredTextBox";
@@ -8,6 +9,8 @@ import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
 import LoaderComp from "../ui/loaderComp";
+import { toast } from "react-hot-toast";
+import { AxiosError } from "axios";
 import { Info } from "lucide-react";
 
 type Props = {
@@ -25,13 +28,14 @@ export default function UserFormModal({
   onClose,
   onSubmit,
 }: Props) {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [role, setRole] = useState<"admin" | "editor">("editor");
   const [infoVisible, setInfoVisible] = useState(false);
+  const [isActive, setIsActive] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"admin" | "editor">("editor");
-  const [isActive, setIsActive] = useState(true);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (initialData) {
@@ -62,19 +66,39 @@ export default function UserFormModal({
     setRole("editor");
     setIsActive(true);
     setInfoVisible(false);
+    setErrors({});
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErrors({});
 
-    onSubmit({
-      firstName,
-      lastName,
-      email,
-      role,
-      isActive,
-      ...(initialData ? {} : { password }),
-    });
+    try {
+      await onSubmit({
+        firstName,
+        lastName,
+        email,
+        role,
+        isActive,
+        ...(initialData ? {} : { password }),
+      });
+    } catch (err) {
+      if (!(err instanceof AxiosError)) {
+        toast.error("Erro ao salvar o plano");
+        return;
+      } else {
+        if (!err.response || !err.response.data) {
+          toast.error("Erro ao salvar o plano");
+          return;
+        }
+        const { fieldErrors, toastMessage } = translateApiErrors(
+          err.response.data,
+        );
+
+        setErrors(fieldErrors);
+        toast.error(toastMessage || "Erro ao salvar o plano");
+      } 
+    }
   }
 
   return (
@@ -125,12 +149,14 @@ export default function UserFormModal({
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
+              error={errors.firstName}
             />
             <PrimaryInput
               label="Sobrenome"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
+              error={errors.lastName}
             />
             <PrimaryInput
               label="Email"
@@ -143,6 +169,7 @@ export default function UserFormModal({
               }}
               type="email"
               required
+              error={errors.email}
             />
 
             {!initialData && (
@@ -152,6 +179,7 @@ export default function UserFormModal({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                error={errors.password}
               />
             )}
 
@@ -164,12 +192,14 @@ export default function UserFormModal({
                 { value: "admin", label: "Administrador" },
                 { value: "editor", label: "Editor" },
               ]}
+              error={errors.role}
             />
 
             <PrimarySwitch
               label="Usuário ativo"
               checked={isActive}
               onChange={setIsActive}
+              error={errors.isActive}
             />
 
             <div className="flex justify-end gap-3 pt-4">

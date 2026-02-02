@@ -1,10 +1,13 @@
 "use client";
+import { translateApiErrors } from "../../utils/translateApiError";
 import { User } from "../../services/users.service";
 import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
 import LoaderComp from "../ui/loaderComp";
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
+import { AxiosError } from "axios";
 
 type Props = {
   open: boolean;
@@ -21,6 +24,7 @@ export default function ResetPasswordModal({
   onClose,
   onSubmit,
 }: Props) {
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [password, setPassword] = useState("");
 
   if (!open || !user) return null;
@@ -28,12 +32,34 @@ export default function ResetPasswordModal({
   function handleClose() {
     onClose();
     setPassword("");
+    setErrors({});
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSubmit(password);
-    setPassword("");
+    setErrors({});
+
+    try {
+      await onSubmit(password);
+    } catch (err) {
+      if (!(err instanceof AxiosError)) {
+        toast.error("Erro ao redefinir senha");
+        return;
+      } else {
+        if (!err.response || !err.response.data) {
+          toast.error("Erro ao redefinir senha");
+          return;
+        }
+        const { fieldErrors, toastMessage } = translateApiErrors(
+          err.response.data,
+        );
+
+        setErrors(fieldErrors);
+        toast.error(toastMessage || "Erro ao redefinir senha");
+      }
+    } finally {
+      setPassword("");
+    }
   }
 
   return (
@@ -68,6 +94,7 @@ export default function ResetPasswordModal({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              error={errors.newPassword}
             />
 
             <div className="flex justify-end gap-3 pt-4">

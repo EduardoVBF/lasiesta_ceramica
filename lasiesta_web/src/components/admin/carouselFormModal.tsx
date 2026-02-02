@@ -1,4 +1,5 @@
 "use client";
+import { translateApiErrors } from "../../utils/translateApiError";
 import { HomeCarouselItem } from "../../services/carousel.service";
 import React, { useEffect, useState } from "react";
 import ColoredTextBox from "../ui/coloredTextBox";
@@ -7,8 +8,10 @@ import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
 import LoaderComp from "../ui/loaderComp";
+import { toast } from "react-hot-toast";
 import ImageInput from "./imageInput";
 import { Info } from "lucide-react";
+import { AxiosError } from "axios";
 
 type HomeCarouselFormData = {
   title?: string | null;
@@ -33,12 +36,13 @@ export default function HomeCarouselFormModal({
   onClose,
   onSubmit,
 }: Props) {
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [linkUrl, setLinkUrl] = useState("");
   const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [infoVisible, setInfoVisible] = useState(false);
   const [isActive, setIsActive] = useState(true);
+  const [subtitle, setSubtitle] = useState("");
+  const [linkUrl, setLinkUrl] = useState("");
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
     if (initialData) {
@@ -53,6 +57,7 @@ export default function HomeCarouselFormModal({
       setLinkUrl("");
       setImageBase64(null);
       setIsActive(true);
+      setErrors({});
     }
   }, [initialData, open]);
 
@@ -66,18 +71,38 @@ export default function HomeCarouselFormModal({
     setIsActive(true);
     setImageBase64(null);
     setInfoVisible(false);
+    setErrors({});
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErrors({});
 
-    onSubmit({
-      title: title || null,
-      subtitle: subtitle || null,
-      linkUrl: linkUrl || null,
-      isActive: isActive,
-      ...(imageBase64 && { imageBase64 }),
-    });
+    try {
+      await onSubmit({
+        title: title || null,
+        subtitle: subtitle || null,
+        linkUrl: linkUrl || null,
+        isActive: isActive,
+        ...(imageBase64 && { imageBase64 }),
+      });
+    } catch (err) {
+      if (!(err instanceof AxiosError)) {
+        toast.error("Erro ao salvar o slide");
+        return;
+      } else {
+        if (!err.response || !err.response.data) {
+          toast.error("Erro ao salvar o slide");
+          return;
+        }
+        const { fieldErrors, toastMessage } = translateApiErrors(
+          err.response.data,
+        );
+
+        setErrors(fieldErrors);
+        toast.error(toastMessage || "Erro ao salvar o slide");
+      }
+    }
   }
 
   return (
@@ -128,6 +153,7 @@ export default function HomeCarouselFormModal({
               <ImageInput
                 value={initialData?.imageUrl || null}
                 onChange={setImageBase64}
+                error={errors.imageBase64}
               />
             </div>
 
@@ -135,12 +161,14 @@ export default function HomeCarouselFormModal({
               label="Título"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              error={errors.title}
             />
 
             <PrimaryInput
               label="Subtítulo"
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
+              error={errors.subtitle}
             />
 
             {/* <PrimaryInput
@@ -154,6 +182,7 @@ export default function HomeCarouselFormModal({
               label="Banner ativo"
               checked={isActive}
               onChange={setIsActive}
+              error={errors.isActive}
             />
 
             <div className="flex justify-end gap-3 pt-4">

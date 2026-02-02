@@ -172,14 +172,14 @@ export default function AdminUsersPage() {
 
                                 setUsers((prev) =>
                                   prev.map((u) =>
-                                    u.id === user.id ? updated : u
-                                  )
+                                    u.id === user.id ? updated : u,
+                                  ),
                                 );
 
                                 toast.success(
                                   `Usuário ${
                                     updated.isActive ? "ativado" : "desativado"
-                                  }`
+                                  }`,
                                 );
                               } catch {
                                 toast.error("Erro ao atualizar status");
@@ -227,10 +227,10 @@ export default function AdminUsersPage() {
             if (editingUser) {
               const updated = await updateUser(
                 editingUser.id,
-                data as UpdateUserPayload
+                data as UpdateUserPayload,
               );
               setUsers((prev) =>
-                prev.map((u) => (u.id === updated.id ? updated : u))
+                prev.map((u) => (u.id === updated.id ? updated : u)),
               );
               toast.success("Usuário atualizado");
             } else {
@@ -242,15 +242,7 @@ export default function AdminUsersPage() {
             setFormOpen(false);
             setEditingUser(null);
           } catch (err) {
-            if (err instanceof AxiosError) {
-              toast.error(
-                err.response?.data?.error ||
-                  err.response?.data?.message ||
-                  err.message
-              );
-            } else {
-              toast.error("Erro inesperado ao salvar usuário");
-            }
+            throw err;
           } finally {
             setSaving(false);
           }
@@ -275,15 +267,7 @@ export default function AdminUsersPage() {
             setResetOpen(false);
             setResetUser(null);
           } catch (err) {
-            if (err instanceof AxiosError) {
-              toast.error(
-                err.response?.data?.error ||
-                  err.response?.data?.message ||
-                  err.message
-              );
-            } else {
-              toast.error("Erro inesperado ao redefinir senha");
-            }
+            throw err;
           } finally {
             setSaving(false);
           }

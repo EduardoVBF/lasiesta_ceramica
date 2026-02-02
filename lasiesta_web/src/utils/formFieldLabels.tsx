@@ -11,4 +11,9 @@ export const FIELD_LABELS: Record<string, string> = {
   shortDescription: "Descrição curta",
   longDescription: "Descrição longa",
   imageBase64: "Imagem",
+  newPassword: "Nova senha",
+  firstName: "Nome",
+  lastName: "Sobrenome",
+  email: "Email",
+  role: "Função",
 };
