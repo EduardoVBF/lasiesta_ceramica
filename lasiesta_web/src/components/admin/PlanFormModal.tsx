@@ -1,4 +1,5 @@
 "use client";
+import { translateApiErrors } from "../../utils/translateApiError";
 import { PlanFormData } from "../../services/plans.service";
 import PrimaryRichText from "../ui/primaryRichText";
 import React, { useEffect, useState } from "react";
@@ -8,15 +9,17 @@ import PrimaryInput from "../ui/primaryInput";
 import BrownButton from "../ui/brownButtom";
 import GrayButton from "../ui/grayButtom";
 import LoaderComp from "../ui/loaderComp";
+import { toast } from "react-hot-toast";
 import ImageInput from "./imageInput";
 import { Info } from "lucide-react";
+import { AxiosError } from "axios";
 
 type Props = {
   open: boolean;
   loading: boolean;
   initialData?: PlanFormData | null;
   onClose: () => void;
-  onSubmit: (data: PlanFormData) => void;
+  onSubmit: (data: PlanFormData) => Promise<void>;
 };
 
 export default function PlanFormModal({
@@ -26,17 +29,17 @@ export default function PlanFormModal({
   onClose,
   onSubmit,
 }: Props) {
-  const [infoVisible, setInfoVisible] = useState(false);
-
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [price, setPrice] = useState<string>("");
-  const [durationLabel, setDurationLabel] = useState("");
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [shortDescription, setShortDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [durationLabel, setDurationLabel] = useState("");
+  const [infoVisible, setInfoVisible] = useState(false);
   const [isFeatured, setIsFeatured] = useState(false);
-  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [price, setPrice] = useState<string>("");
+  const [isActive, setIsActive] = useState(true);
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
 
   // gerar slug automaticamentes
   useEffect(() => {
@@ -46,7 +49,7 @@ export default function PlanFormModal({
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "")
+        .replace(/(^-|-$)/g, ""),
     );
   }, [name]);
 
@@ -76,20 +79,39 @@ export default function PlanFormModal({
 
   if (!open) return null;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErrors({});
 
-    onSubmit({
-      name,
-      slug,
-      price: price ? Number(price) : null,
-      durationLabel: durationLabel || null,
-      shortDescription: shortDescription || null,
-      longDescription: longDescription || null,
-      isActive,
-      isFeatured,
-      ...(imageBase64 && { imageBase64 }), // 👈 chave mágica
-    });
+    try {
+      await onSubmit({
+        name,
+        slug,
+        price: price ? Number(price) : null,
+        durationLabel: durationLabel || null,
+        shortDescription: shortDescription || null,
+        longDescription: longDescription || null,
+        isActive,
+        isFeatured,
+        ...(imageBase64 && { imageBase64 }),
+      });
+    } catch (err) {
+      if (!(err instanceof AxiosError)) {
+        toast.error("Erro ao salvar o plano");
+        return;
+      } else {
+        if (!err.response || !err.response.data) {
+          toast.error("Erro ao salvar o plano");
+          return;
+        }
+        const { fieldErrors, toastMessage } = translateApiErrors(
+          err.response.data,
+        );
+
+        setErrors(fieldErrors);
+        toast.error(toastMessage || "Erro ao salvar o plano");
+      }
+    }
   }
 
   function handleClose() {
@@ -104,6 +126,7 @@ export default function PlanFormModal({
     setIsFeatured(false);
     setImageBase64(null);
     setInfoVisible(false);
+    setErrors({});
   }
 
   return (
@@ -180,6 +203,7 @@ export default function PlanFormModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="Ex: Workshop de cerâmica"
               required
+              error={errors.name}
             />
 
             <PrimaryInput
@@ -189,6 +213,7 @@ export default function PlanFormModal({
               placeholder="ex: workshop-ceramica"
               required
               disabled={!!initialData}
+              error={errors.slug}
             />
 
             <PrimaryInput
@@ -197,6 +222,7 @@ export default function PlanFormModal({
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="Ex: 150"
+              error={errors.price}
             />
 
             <PrimaryInput
@@ -204,6 +230,7 @@ export default function PlanFormModal({
               value={durationLabel}
               onChange={(e) => setDurationLabel(e.target.value)}
               placeholder="Ex: mês, workshop, 4 aulas"
+              error={errors.durationLabel}
             />
 
             <PrimaryRichText
@@ -211,6 +238,7 @@ export default function PlanFormModal({
               value={shortDescription}
               onChange={setShortDescription}
               placeholder="Resumo curto do plano"
+              error={errors.shortDescription}
             />
 
             <PrimaryRichText
@@ -218,6 +246,7 @@ export default function PlanFormModal({
               value={longDescription}
               onChange={setLongDescription}
               placeholder="Descrição completa do plano ou aula"
+              error={errors.longDescription}
             />
 
             <div className="flex items-center justify-start gap-5">

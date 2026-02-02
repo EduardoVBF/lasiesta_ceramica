@@ -30,8 +30,8 @@ export default function AdminPlansPage() {
       .then(setPlans)
       .catch((err) =>
         toast.error(
-          `Erro ao carregar planos: ${err.response?.data?.error || err.message}`
-        )
+          `Erro ao carregar planos: ${err.response?.data?.error || err.message}`,
+        ),
       )
       .finally(() => setLoading(false));
   }, []);
@@ -101,7 +101,10 @@ export default function AdminPlansPage() {
 
         {loading ? (
           <div className="flex justify-center items-center z-10">
-            <LoaderComp text={"Carregando planos e aulas..."} classname="min-h-[500px]" />
+            <LoaderComp
+              text={"Carregando planos e aulas..."}
+              classname="min-h-[500px]"
+            />
           </div>
         ) : (
           <section className="grid grid-cols-1 gap-6 z-10">
@@ -119,24 +122,24 @@ export default function AdminPlansPage() {
                     try {
                       const updated = await updatePlanStatus(
                         plan.id,
-                        !plan.isActive
+                        !plan.isActive,
                       );
 
                       setPlans((prev) =>
-                        prev.map((p) => (p.id === updated.id ? updated : p))
+                        prev.map((p) => (p.id === updated.id ? updated : p)),
                       );
 
                       toast.success(
                         `Plano ${
                           updated.isActive ? "ativado" : "desativado"
-                        } com sucesso!`
+                        } com sucesso!`,
                       );
                     } catch (err) {
                       if (err instanceof AxiosError) {
                         toast.error(
                           err.response?.data?.error ||
                             err.response?.data?.message ||
-                            err.message
+                            err.message,
                         );
                       } else {
                         toast.error("Erro inesperado ao salvar plano");
@@ -165,22 +168,24 @@ export default function AdminPlansPage() {
                         try {
                           const updated = await updatePlanStatus(
                             plan.id,
-                            !plan.isActive
+                            !plan.isActive,
                           );
                           setPlans((prev) =>
-                            prev.map((p) => (p.id === updated.id ? updated : p))
+                            prev.map((p) =>
+                              p.id === updated.id ? updated : p,
+                            ),
                           );
                           toast.success(
                             `Plano ${
                               updated.isActive ? "ativado" : "desativado"
-                            } com sucesso!`
+                            } com sucesso!`,
                           );
                         } catch (err) {
                           if (err instanceof AxiosError) {
                             toast.error(
                               err.response?.data?.error ||
                                 err.response?.data?.message ||
-                                err.message
+                                err.message,
                             );
                           } else {
                             toast.error("Erro inesperado ao salvar plano");
@@ -239,7 +244,7 @@ export default function AdminPlansPage() {
                 const updated = await updatePlan(editingPlan.id, data);
 
                 setPlans((prev) =>
-                  prev.map((p) => (p.id === updated.id ? updated : p))
+                  prev.map((p) => (p.id === updated.id ? updated : p)),
                 );
 
                 toast.success("Plano atualizado com sucesso!");
@@ -253,15 +258,7 @@ export default function AdminPlansPage() {
               setIsModalOpen(false);
               setEditingPlan(null);
             } catch (err) {
-              if (err instanceof AxiosError) {
-                toast.error(
-                  err.response?.data?.error ||
-                    err.response?.data?.message ||
-                    err.message
-                );
-              } else {
-                toast.error("Erro inesperado ao salvar plano");
-              }
+              throw err;
             } finally {
               setSaving(false);
             }

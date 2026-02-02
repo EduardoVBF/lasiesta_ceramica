@@ -18,20 +18,21 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  error?: string;
 };
 
 export default function PrimaryRichText({
   label,
   value,
   onChange,
+  error,
   placeholder,
 }: Props) {
   const editor = useEditor({
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder:
-          placeholder || "Digite o conteúdo aqui…",
+        placeholder: placeholder || "Digite o conteúdo aqui…",
         emptyEditorClass:
           "text-[#a35c427e] before:content-[attr(data-placeholder)] before:pointer-events-none before:absolute",
       }),
@@ -82,19 +83,24 @@ export default function PrimaryRichText({
 
   return (
     <div className="flex flex-col gap-1 relative">
-      <label className="text-sm font-medium text-gray-700">
-        {label}
-      </label>
+      <div>
+        <label className="text-sm font-medium text-gray-700">{label}</label>
+        {error && <p className="text-xs text-red-500">{error}</p>}
+      </div>
 
-      <div className="relative rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-[#a35c42]">
+      <div
+        className={`relative rounded-xl overflow-hidden focus-within:ring-2 ${
+          error
+            ? "border-2 border-red-500 focus-within:border focus-within:border-gray-300"
+            : "border border-gray-300"
+        }`}
+      >
         {/* TOOLBAR */}
         <div className="flex items-center gap-1 px-2 py-1 border-b border-gray-200 bg-gray-50">
           <Button
             title="Negrito"
             active={editor.isActive("bold")}
-            onClick={() =>
-              editor.chain().focus().toggleBold().run()
-            }
+            onClick={() => editor.chain().focus().toggleBold().run()}
           >
             <Bold size={16} />
           </Button>
@@ -102,9 +108,7 @@ export default function PrimaryRichText({
           <Button
             title="Itálico"
             active={editor.isActive("italic")}
-            onClick={() =>
-              editor.chain().focus().toggleItalic().run()
-            }
+            onClick={() => editor.chain().focus().toggleItalic().run()}
           >
             <Italic size={16} />
           </Button>
@@ -113,11 +117,7 @@ export default function PrimaryRichText({
             title="Título"
             active={editor.isActive("heading", { level: 2 })}
             onClick={() =>
-              editor
-                .chain()
-                .focus()
-                .toggleHeading({ level: 2 })
-                .run()
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
           >
             <Heading2 size={16} />
@@ -126,9 +126,7 @@ export default function PrimaryRichText({
           <Button
             title="Lista"
             active={editor.isActive("bulletList")}
-            onClick={() =>
-              editor.chain().focus().toggleBulletList().run()
-            }
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
           >
             <List size={16} />
           </Button>
@@ -136,13 +134,7 @@ export default function PrimaryRichText({
           <Button
             title="Lista numerada"
             active={editor.isActive("orderedList")}
-            onClick={() =>
-              editor
-                .chain()
-                .focus()
-                .toggleOrderedList()
-                .run()
-            }
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
           >
             <ListOrdered size={16} />
           </Button>
@@ -150,12 +142,7 @@ export default function PrimaryRichText({
           <Button
             title="Limpar formatação"
             onClick={() =>
-              editor
-                .chain()
-                .focus()
-                .clearNodes()
-                .unsetAllMarks()
-                .run()
+              editor.chain().focus().clearNodes().unsetAllMarks().run()
             }
           >
             <Eraser size={16} />

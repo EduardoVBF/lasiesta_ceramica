@@ -7,10 +7,11 @@ interface PrimaryInputProps {
   type?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
   placeholder?: string;
   required?: boolean;
-  className?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 export default function PrimaryInput({
@@ -21,14 +22,18 @@ export default function PrimaryInput({
   placeholder = "",
   required = false,
   className = "",
+  error,
   disabled = false,
 }: PrimaryInputProps) {
   const isPassword = type === "password";
   const [showPassword, setShowPassword] = useState(false);
-
+  console.log("ERROR", error);
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <div>
+        <label className="text-sm font-medium text-gray-700">{label}</label>
+        {error && <p className="text-xs text-red-500">{error}</p>}
+      </div>
 
       <div className="relative">
         <input
@@ -38,10 +43,14 @@ export default function PrimaryInput({
           placeholder={placeholder}
           required={required}
           disabled={disabled}
-          className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg
-            focus:outline-none focus:ring-2 focus:ring-[#a35c42] transition
+          className={`w-full px-4 py-2 pr-10 rounded-lg
+            focus:outline-none focus:ring-2 transition
             disabled:bg-gray-100 disabled:cursor-not-allowed
-            ${disabled ? "bg-gray-100" : "bg-white"}`}
+            ${disabled ? "bg-gray-100" : "bg-white"} ${
+              error
+                ? "border-2 border-red-500 focus:border focus:border-gray-300"
+                : "border border-gray-300 focus:ring-[#a35c42]"
+            }`}
         />
 
         {isPassword && !disabled && (
