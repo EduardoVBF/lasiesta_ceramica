@@ -6,6 +6,7 @@ import { GiFireBowl } from "react-icons/gi";
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface HeaderProps {
   bgColor: string;
@@ -14,10 +15,16 @@ interface HeaderProps {
 export default function Header({ bgColor }: HeaderProps) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-
   return (
     <header className={`w-full flex justify-between ${bgColor} px-6`}>
-      <Image src="/image/lasiesta_icon.png" alt="Logo" width={60} height={60} />
+      <Link href="/">
+        <Image
+          src="/image/lasiesta_icon.png"
+          alt="Logo"
+          width={60}
+          height={60}
+        />
+      </Link>
 
       {/* Menu para dispositivos maiores */}
       <div className="hidden md:flex justify-around pb-2 gap-x-1">
