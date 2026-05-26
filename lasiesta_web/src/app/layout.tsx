@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Poppins, Roboto_Mono } from "next/font/google";
-import { SessionProvider } from 'next-auth/react';
 import { Providers } from "./providers";
 import "./globals.css";
 
