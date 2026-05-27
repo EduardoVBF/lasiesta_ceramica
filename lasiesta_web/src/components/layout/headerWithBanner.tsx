@@ -41,7 +41,7 @@ export default function HeaderWithBanner({
     <>
       <Toaster position="top-center" />
       {loading ? (
-        <div className="relative w-full h-64 flex items-center justify-center">
+        <div className="relative w-full h-[400px] flex items-center justify-center">
           <div className="absolute top-0 z-20 w-full">
             <Header bgColor="bg-transparent" />
           </div>
