@@ -72,7 +72,9 @@ export async function getAdminProducts(query?: ProductsQuery) {
   return response.data;
 }
 
-export async function getPublicProducts(query?: ProductsQuery) : Promise<PublicProductsResponse> {
+export async function getPublicProducts(
+  query?: ProductsQuery,
+): Promise<PublicProductsResponse> {
   const response = await api.get("/products/active", { params: query });
   return response.data;
 }

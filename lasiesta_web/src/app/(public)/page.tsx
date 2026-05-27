@@ -1,52 +1,35 @@
 "use client";
-import {
-  Category,
-  getActiveCategories,
-} from "../../services/categories.service";
+import FeaturedCategoriesGridSkeleton from "@/components/skeletons/featuredCategoriesGridSkeleton";
+import FeaturedPlansGridSkeleton from "@/components/skeletons/featuredPlansGridSkeleton";
+import { useActiveCategories } from "../../hooks/queries/useActiveCategories";
 import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
-import { getActivePlans, Plan } from "../../services/plans.service";
+import { useActivePlans } from "../../hooks/queries/useActivePlans";
 import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import CarouselComponent from "@/components/layout/carousel";
 import BrownButton from "@/components/ui/brownButtom";
-import LoaderComp from "@/components/ui/loaderComp";
-import React, { useState, useEffect } from "react";
 import Footer from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function HomePage() {
-  const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [featuredPlans, setFeaturedPlans] = useState<Plan[]>([]);
-  const [loadingPlans, setLoadingPlans] = useState(true);
+  const plansQuery = useActivePlans();
+  const categoriesQuery = useActiveCategories();
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // Busca Planos
-        const plansData = await getActivePlans();
-        const plans = plansData.filter(
-          (plan: Plan) => plan.isFeatured && plan.isActive
-        );
-        setFeaturedPlans(plans);
-        setLoadingPlans(false);
+  const featuredPlans = (plansQuery.data ?? []).filter(
+    (plan) => plan.isFeatured && plan.isActive,
+  );
 
-        // Busca Categorias
-        const catsData = await getActiveCategories();
-        const categories = catsData.filter(
-          (cat: Category) => cat.isFeatured && cat.isActive
-        );
-        setFeaturedCategories(categories);
-        setLoadingCategories(false);
-      } catch (error) {
-        console.error("Erro ao carregar dados da Home:", error);
-      }
-    }
+  const featuredCategories = (categoriesQuery.data ?? []).filter(
+    (cat) => cat.isFeatured && cat.isActive,
+  );
 
-    fetchData();
-  }, []);
+  const loadingPlans = plansQuery.isLoading;
+  const loadingCategories = categoriesQuery.isLoading;
+
+  const plansError = plansQuery.isError;
+  const categoriesError = categoriesQuery.isError;
 
   return (
     <main className="flex flex-col min-h-screen bg-bege-claro text-marrom-avermelhado overflow-hidden">
@@ -108,8 +91,12 @@ export default function HomePage() {
 
         {/* Coleções */}
         <section className="relative z-10 py-10 max-w-6xl mx-auto px-6 text-center overflow-hidden">
-          {loadingCategories ? (
-            <LoaderComp />
+          {categoriesError ? (
+            <p className="text-red-500">
+              Não foi possível carregar as coleções.
+            </p>
+          ) : loadingCategories ? (
+            <FeaturedCategoriesGridSkeleton />
           ) : (
             <div
               className="grid gap-4 my-4"
@@ -140,8 +127,12 @@ export default function HomePage() {
           <h1 className="text-4xl font-semibold text-center mb-12">
             Cursos e Experiências
           </h1>
-          {loadingPlans ? (
-            <LoaderComp classname="min-h-[300px]" />
+          {plansError ? (
+            <p className="text-red-500 text-center">
+              Não foi possível carregar os cursos e experiências.
+            </p>
+          ) : loadingPlans ? (
+            <FeaturedPlansGridSkeleton />
           ) : (
             <div
               className="grid gap-6"

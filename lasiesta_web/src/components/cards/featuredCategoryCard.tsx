@@ -8,10 +8,10 @@ interface FeaturedCategoryCardProps {
 }
 
 export default function FeaturedCategoryCard({
-  cat: { id, name, imageUrl },
+  cat: { id, name, imageUrl, slug },
 }: FeaturedCategoryCardProps) {
   return (
-    <Link href={`/produtos/?category=${name.toLowerCase()}&page=1`} target="_blank">
+    <Link href={`/produtos?category=${slug}&page=1`}>
       <motion.div
         key={id}
         initial={{ opacity: 0, y: 40 }}
