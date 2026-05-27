@@ -10,3 +10,7 @@ export const productKeys = {
 export const categoryKeys = {
   activeList: ["activeCategories"] as const,
 };
+
+export const planKeys = {
+  activeList: ["activePlans"] as const,
+};

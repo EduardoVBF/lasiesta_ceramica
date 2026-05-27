@@ -1,29 +1,17 @@
 "use client";
-import { getActivePlans, Plan } from "../../../services/plans.service";
+import PlansExtendedCardSkeleton from "@/components/skeletons/plansExtendedCardSkeleton";
+import { useActivePlans } from "../../../hooks/queries/useActivePlans";
 import HeaderWithBanner from "@/components/layout/headerWithBanner";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import PlansCard from "@/components/cards/plansCard";
-import LoaderComp from "@/components/ui/loaderComp";
-import React, { useState, useEffect } from "react";
 import Footer from "@/components/layout/footer";
 
 export default function Classes() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const plansQuery = useActivePlans();
 
-  useEffect(() => {
-    async function fetchPlans() {
-      try {
-        const data = await getActivePlans();
-        setPlans(data as Plan[]);
-        setLoading(false);
-      } catch (error) {
-        console.error("Erro ao buscar planos:", error);
-      }
-    }
-
-    fetchPlans();
-  }, []);
+  const plans = plansQuery.data ?? [];
+  const loading = plansQuery.isLoading;
+  const plansError = plansQuery.isError;
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-bege-claro overflow-x-hidden">
@@ -37,8 +25,12 @@ export default function Classes() {
           opacity={20}
         />
 
-        {loading ? (
-          <LoaderComp text="Carregando planos e aulas..." classname="min-h-[400px]" />
+        {plansError ? (
+          <p className="text-red-500 text-center">
+            Não foi possível carregar os planos e aulas.
+          </p>
+        ) : loading ? (
+          <PlansExtendedCardSkeleton />
         ) : (
           plans.map((plan, index) => (
             <PlansCard key={plan.id} plan={plan} reverse={index % 2 === 0} />
