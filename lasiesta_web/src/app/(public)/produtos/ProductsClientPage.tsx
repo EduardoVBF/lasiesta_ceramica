@@ -1,33 +1,18 @@
 "use client";
-import {
-  getActiveCategories,
-  Category,
-} from "../../../services/categories.service";
+import { useActiveCategories } from "../../../hooks/queries/useActiveCategories";
 import CategoriesNavSkeleton from "@/components/skeletons/categoriesNavSkeleton";
-import { getPublicProducts, Product } from "../../../services/products.service";
 import ProductsCategoriesNav from "@/components/layout/productsCategoriesNav";
+import { usePublicProducts } from "../../../hooks/queries/usePublicProducts";
 import ProductGridSkeleton from "@/components/skeletons/productGridSkeleton";
 import HeaderWithBanner from "@/components/layout/headerWithBanner";
+import { Category } from "../../../services/categories.service";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Product } from "../../../services/products.service";
 import ProductCard from "@/components/cards/productCard";
 import Pagination from "@/components/ui/paginationComp";
 import SearchInput from "@/components/ui/searchInput";
-import { useQuery } from "@tanstack/react-query";
 import Footer from "@/components/layout/footer";
 import { useState } from "react";
-
-const productKeys = {
-  publicList: (params: {
-    search?: string;
-    page?: number;
-    limit?: number;
-    activeCategory?: string;
-  }) => ["publicProducts", params] as const,
-};
-
-const categoryKeys = {
-  activeList: ["activeCategories"] as const,
-};
 
 export default function ProductsClientPage() {
   const router = useRouter();
@@ -43,46 +28,13 @@ export default function ProductsClientPage() {
   const [page, setPage] = useState(initialPage);
   const limit = 12;
 
-  const categoriesQuery = useQuery({
-    queryKey: categoryKeys.activeList,
-    queryFn: getActiveCategories,
-  });
+  const categoriesQuery = useActiveCategories();
 
-  const productsQuery = useQuery({
-    queryKey: productKeys.publicList({
-      search,
-      page,
-      limit,
-      activeCategory,
-    }),
-    queryFn: async () => {
-      const res = await getPublicProducts({
-        search,
-        page,
-        limit,
-        categorySlug:
-          activeCategory !== "all" &&
-          activeCategory !== "featured" &&
-          activeCategory !== "sale"
-            ? activeCategory
-            : undefined,
-      });
-
-      let items = res.items;
-
-      if (activeCategory === "featured") {
-        items = items.filter((p: Product) => p.isFeatured);
-      }
-
-      if (activeCategory === "sale") {
-        items = items.filter((p: Product) => p.isSale);
-      }
-
-      return {
-        items,
-        totalPages: res.meta.totalPages,
-      };
-    },
+  const productsQuery = usePublicProducts({
+    search,
+    page,
+    limit,
+    activeCategory,
   });
 
   const categories = categoriesQuery.data ?? [];
