@@ -60,12 +60,19 @@ export type ProductFormData = {
   secondaryImages?: string[];
 };
 
+export type PublicProductsResponse = {
+  items: Product[];
+  meta: {
+    totalPages: number;
+  };
+};
+
 export async function getAdminProducts(query?: ProductsQuery) {
   const response = await api.get("/products", { params: query });
   return response.data;
 }
 
-export async function getPublicProducts(query?: ProductsQuery) {
+export async function getPublicProducts(query?: ProductsQuery) : Promise<PublicProductsResponse> {
   const response = await api.get("/products/active", { params: query });
   return response.data;
 }

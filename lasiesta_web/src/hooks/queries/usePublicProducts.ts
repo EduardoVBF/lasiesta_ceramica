@@ -1,5 +1,5 @@
 import { getPublicProducts, Product } from "../../services/products.service";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { productKeys } from "./queryKeys";
 
 type UsePublicProductsParams = {
@@ -42,5 +42,6 @@ export function usePublicProducts(params: UsePublicProductsParams) {
         totalPages: res.meta.totalPages,
       };
     },
+    placeholderData: keepPreviousData,
   });
 }

@@ -21,7 +21,7 @@ export async function getAdminCategories() {
   return response.data;
 }
 
-export async function getActiveCategories() {
+export async function getActiveCategories(): Promise<Category[]> {
   const response = await api.get("/categories/active");
   return response.data;
 }
