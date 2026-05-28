@@ -1,11 +1,14 @@
 // PUBLIC
 export const productKeys = {
+  all: ["publicProducts"] as const,
   publicList: (params: {
     search?: string;
     page?: number;
     limit?: number;
     activeCategory?: string;
-  }) => ["publicProducts", params] as const,
+  }) => ["publicProducts", "list", params] as const,
+
+  publicDetail: (slug: string) => ["publicProduct", "detail", slug] as const,
 };
 
 export const categoryKeys = {
@@ -48,4 +51,15 @@ export const adminCarouselKeys = {
 export const adminUserKeys = {
   all: ["adminUsers"] as const,
   list: () => [...adminUserKeys.all, "list"] as const,
+};
+
+export const adminProductKeys = {
+  all: ["adminProducts"] as const,
+  list: (params: {
+    search?: string;
+    page?: number;
+    limit?: number;
+    categoryFilter?: string;
+  }) => [...adminProductKeys.all, "list", params] as const,
+  detail: (id: string) => [...adminProductKeys.all, "detail", id] as const,
 };

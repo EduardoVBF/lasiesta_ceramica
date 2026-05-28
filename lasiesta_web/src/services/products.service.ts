@@ -60,47 +60,59 @@ export type ProductFormData = {
   secondaryImages?: string[];
 };
 
-export type PublicProductsResponse = {
+export type ProductsResponse = {
   items: Product[];
   meta: {
     totalPages: number;
   };
 };
 
-export async function getAdminProducts(query?: ProductsQuery) {
-  const response = await api.get("/products", { params: query });
+export async function getAdminProducts(
+  query?: ProductsQuery,
+): Promise<ProductsResponse> {
+  const response = await api.get<ProductsResponse>("/products", {
+    params: query,
+  });
   return response.data;
 }
 
 export async function getPublicProducts(
   query?: ProductsQuery,
-): Promise<PublicProductsResponse> {
-  const response = await api.get("/products/active", { params: query });
+): Promise<ProductsResponse> {
+  const response = await api.get<ProductsResponse>("/products/active", {
+    params: query,
+  });
   return response.data;
 }
 
-export async function getProductById(id: string) {
-  const response = await api.get(`/products/${id}`);
+export async function getProductById(id: string): Promise<Product> {
+  const response = await api.get<Product>(`/products/${id}`);
   return response.data;
 }
 
-export async function getProductBySlug(slug: string) {
-  const response = await api.get(`/products/slug/${slug}`);
+export async function getProductBySlug(slug: string): Promise<Product> {
+  const response = await api.get<Product>(`/products/slug/${slug}`);
   return response.data;
 }
 
-export async function createProduct(data: ProductFormData) {
-  const response = await api.post("/products", data);
+export async function createProduct(data: ProductFormData): Promise<Product> {
+  const response = await api.post<Product>("/products", data);
   return response.data;
 }
 
-export async function updateProduct(id: string, data: ProductFormData) {
-  const response = await api.put(`/products/${id}`, data);
+export async function updateProduct(
+  id: string,
+  data: ProductFormData,
+): Promise<Product> {
+  const response = await api.put<Product>(`/products/${id}`, data);
   return response.data;
 }
 
-export async function updateProductStatus(id: string, isActive: boolean) {
-  const response = await api.put(`/products/${id}`, {
+export async function updateProductStatus(
+  id: string,
+  isActive: boolean,
+): Promise<Product> {
+  const response = await api.put<Product>(`/products/${id}`, {
     isActive,
   });
 
