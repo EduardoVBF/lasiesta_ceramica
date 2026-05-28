@@ -1,47 +1,71 @@
 "use client";
 import {
-  getAdminUsers,
-  createUser,
-  updateUser,
-  resetUserPassword,
-  User,
-  CreateUserPayload,
-  UpdateUserPayload,
-} from "../../../../services/users.service";
+  useCreateUserMutation,
+  useResetUserPasswordMutation,
+  useUpdateUserMutation,
+  useUpdateUserStatusMutation,
+} from "../../../../hooks/mutations/useUserMutations";
+import { User, CreateUserPayload } from "../../../../services/users.service";
+import UsersTableSkeleton from "@/components/skeletons/usersTableSkeleton";
+import { useAdminUsers } from "../../../../hooks/queries/useAdminUsers";
 import ResetPasswordModal from "@/components/admin/ResetPasswordModal";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import UserFormModal from "@/components/admin/UserFormModal";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
 import BrownButton from "@/components/ui/brownButtom";
 import StatusBadge from "@/components/ui/statusBadge";
-import LoaderComp from "@/components/ui/loaderComp";
 import toast, { Toaster } from "react-hot-toast";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { BsToggleOn } from "react-icons/bs";
 import { Pencil, Key, Info } from "lucide-react";
-import { AxiosError } from "axios";
+import { useSession } from "next-auth/react";
+import { BsToggleOn } from "react-icons/bs";
+import { useState } from "react";
 
 export default function AdminUsersPage() {
-  const [infoVisible, setInfoVisible] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const usersQuery = useAdminUsers();
 
+  const createUserMutation = useCreateUserMutation();
+  const updateUserMutation = useUpdateUserMutation();
+  const updateUserStatusMutation = useUpdateUserStatusMutation();
+  const resetUserPasswordMutation = useResetUserPasswordMutation();
+
+  const users = usersQuery.data ?? [];
+  const loading = usersQuery.isLoading;
+  const usersError = usersQuery.isError;
+
+  const savingUser =
+    createUserMutation.isPending || updateUserMutation.isPending;
+
+  const resettingPassword = resetUserPasswordMutation.isPending;
+
+  const togglingUserId = updateUserStatusMutation.variables?.id;
+
+  const [infoVisible, setInfoVisible] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [resetUser, setResetUser] = useState<User | null>(null);
 
   const [formOpen, setFormOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
-  const [saving, setSaving] = useState(false);
 
   const { data: session } = useSession();
 
-  useEffect(() => {
-    getAdminUsers()
-      .then(setUsers)
-      .catch(() => toast.error("Erro ao carregar usuários"))
-      .finally(() => setLoading(false));
-  }, []);
+  function handleToggleUser(user: User) {
+    updateUserStatusMutation.mutate(
+      {
+        id: user.id,
+        isActive: !user.isActive,
+      },
+      {
+        onSuccess: (updated) => {
+          toast.success(
+            `Usuário ${updated.isActive ? "ativado" : "desativado"}`,
+          );
+        },
+        onError: () => {
+          toast.error("Erro ao atualizar status");
+        },
+      },
+    );
+  }
 
   return (
     <div className="flex flex-col">
@@ -95,13 +119,12 @@ export default function AdminUsersPage() {
         </ColoredTextBox>
       )}
 
-      {loading ? (
-        <div className="flex justify-center items-center z-10">
-          <LoaderComp
-            text={"Carregando usuários..."}
-            classname="min-h-[500px]"
-          />
-        </div>
+      {usersError ? (
+        <ColoredTextBox className="my-2 z-10 w-fit" type="error">
+          Erro ao carregar usuários. Tente novamente mais tarde.
+        </ColoredTextBox>
+      ) : loading ? (
+        <UsersTableSkeleton />
       ) : users.length == 0 ? (
         <p className="text-gray-600 italic z-10">Nenhum usuário encontrado.</p>
       ) : (
@@ -119,93 +142,92 @@ export default function AdminUsersPage() {
 
             <tbody className="divide-y divide-gray-300">
               {!loading &&
-                users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-200/60 transition">
-                    <td className="px-6 py-4 font-semibold text-gray-800">
-                      {user.firstName} {user.lastName}
-                    </td>
+                users.map((user) => {
+                  const isToggling =
+                    updateUserStatusMutation.isPending &&
+                    togglingUserId === user.id;
+                  return (
+                    <tr
+                      key={user.id}
+                      className="hover:bg-gray-200/60 transition"
+                    >
+                      <td className="px-6 py-4 font-semibold text-gray-800">
+                        {user.firstName} {user.lastName}
+                      </td>
 
-                    <td className="px-6 py-4 text-gray-600">{user.email}</td>
+                      <td className="px-6 py-4 text-gray-600">{user.email}</td>
 
-                    <td className="px-6 py-4 text-gray-600">
-                      {user.role === "admin" ? "Administrador" : "Editor"}
-                    </td>
+                      <td className="px-6 py-4 text-gray-600">
+                        {user.role === "admin" ? "Administrador" : "Editor"}
+                      </td>
 
-                    <td className="px-6 py-4">
-                      <StatusBadge active={user.isActive} />
-                    </td>
+                      <td className="px-6 py-4">
+                        <StatusBadge active={user.isActive} />
+                      </td>
 
-                    <td className="px-6 py-4 text-right">
-                      {session?.user?.role === "admin" ? (
-                        <div className="inline-flex items-center gap-4">
-                          {/* EDITAR */}
-                          <button
-                            onClick={() => {
-                              setEditingUser(user);
-                              setFormOpen(true);
-                            }}
-                            className="text-gray-600 hover:text-[#a35c42]"
-                            title="Editar usuário"
-                          >
-                            <Pencil size={20} />
-                          </button>
+                      <td className="px-6 py-4 text-right">
+                        {session?.user?.role === "admin" ? (
+                          <div className="inline-flex items-center gap-4">
+                            {/* EDITAR */}
+                            <button
+                              onClick={() => {
+                                setEditingUser(user);
+                                setFormOpen(true);
+                              }}
+                              className="text-gray-600 hover:text-[#a35c42]"
+                              title="Editar usuário"
+                            >
+                              <Pencil size={20} />
+                            </button>
 
-                          {/* RESET SENHA */}
-                          <button
-                            onClick={() => {
-                              setResetUser(user);
-                              setResetOpen(true);
-                            }}
-                            className="text-gray-600 hover:text-[#a35c42]"
-                            title="Redefinir senha"
-                          >
-                            <Key size={20} />
-                          </button>
+                            {/* RESET SENHA */}
+                            <button
+                              onClick={() => {
+                                setResetUser(user);
+                                setResetOpen(true);
+                              }}
+                              className="text-gray-600 hover:text-[#a35c42]"
+                              title="Redefinir senha"
+                            >
+                              <Key size={20} />
+                            </button>
 
-                          {/* TOGGLE */}
-                          <button
-                            onClick={async () => {
-                              try {
-                                const updated = await updateUser(user.id, {
-                                  isActive: !user.isActive,
-                                });
-
-                                setUsers((prev) =>
-                                  prev.map((u) =>
-                                    u.id === user.id ? updated : u,
-                                  ),
-                                );
-
-                                toast.success(
-                                  `Usuário ${
-                                    updated.isActive ? "ativado" : "desativado"
-                                  }`,
-                                );
-                              } catch {
-                                toast.error("Erro ao atualizar status");
+                            {/* TOGGLE */}
+                            <button
+                              title={
+                                user.isActive
+                                  ? "Desativar usuário"
+                                  : "Ativar usuário"
                               }
-                            }}
-                            className={`${
-                              user.isActive
-                                ? "text-green-600 hover:text-red-700"
-                                : "text-red-600 hover:text-green-700"
-                            }`}
-                            title="Ativar / Desativar"
-                          >
-                            <BsToggleOn
-                              size={25}
-                              className={
-                                user.isActive ? "" : "rotate-180 transition"
-                              }
-                            />
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-gray-400 italic">Sem ações</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                              onClick={() => handleToggleUser(user)}
+                              disabled={isToggling}
+                              className={`${
+                                isToggling
+                                  ? "cursor-not-allowed opacity-50"
+                                  : "cursor-pointer"
+                              } ${
+                                user.isActive
+                                  ? "text-green-600 hover:text-red-700"
+                                  : "text-red-600 hover:text-green-700"
+                              }`}
+                            >
+                              <BsToggleOn
+                                size={25}
+                                className={
+                                  user.isActive ? "" : "rotate-180 transition"
+                                }
+                              />
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 italic">
+                            Sem ações
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </section>
@@ -214,45 +236,35 @@ export default function AdminUsersPage() {
       {/* MODAL CRIAR / EDITAR */}
       <UserFormModal
         open={formOpen}
-        loading={saving}
+        loading={savingUser}
         initialData={editingUser}
         onClose={() => {
           setFormOpen(false);
           setEditingUser(null);
         }}
         onSubmit={async (data) => {
-          try {
-            setSaving(true);
+          if (editingUser) {
+            await updateUserMutation.mutateAsync({
+              id: editingUser.id,
+              data,
+            });
 
-            if (editingUser) {
-              const updated = await updateUser(
-                editingUser.id,
-                data as UpdateUserPayload,
-              );
-              setUsers((prev) =>
-                prev.map((u) => (u.id === updated.id ? updated : u)),
-              );
-              toast.success("Usuário atualizado");
-            } else {
-              const created = await createUser(data as CreateUserPayload);
-              setUsers((prev) => [created, ...prev]);
-              toast.success("Usuário criado");
-            }
+            toast.success("Usuário atualizado");
+          } else {
+            await createUserMutation.mutateAsync(data as CreateUserPayload);
 
-            setFormOpen(false);
-            setEditingUser(null);
-          } catch (err) {
-            throw err;
-          } finally {
-            setSaving(false);
+            toast.success("Usuário criado");
           }
+
+          setFormOpen(false);
+          setEditingUser(null);
         }}
       />
 
       {/* MODAL RESET SENHA */}
       <ResetPasswordModal
         open={resetOpen}
-        loading={saving}
+        loading={resettingPassword}
         user={resetUser}
         onClose={() => {
           setResetOpen(false);
@@ -260,17 +272,15 @@ export default function AdminUsersPage() {
         }}
         onSubmit={async (newPassword) => {
           if (!resetUser) return;
-          try {
-            setSaving(true);
-            await resetUserPassword(resetUser!.id, { newPassword });
-            toast.success("Senha redefinida com sucesso");
-            setResetOpen(false);
-            setResetUser(null);
-          } catch (err) {
-            throw err;
-          } finally {
-            setSaving(false);
-          }
+
+          await resetUserPasswordMutation.mutateAsync({
+            id: resetUser.id,
+            newPassword,
+          });
+
+          toast.success("Senha redefinida com sucesso");
+          setResetOpen(false);
+          setResetUser(null);
         }}
       />
     </div>

@@ -18,7 +18,7 @@ type Props = {
   loading: boolean;
   initialData?: User | null;
   onClose: () => void;
-  onSubmit: (data: Partial<User>) => void;
+  onSubmit: (data: Partial<User>) => Promise<void>;
 };
 
 export default function UserFormModal({
@@ -84,11 +84,11 @@ export default function UserFormModal({
       });
     } catch (err) {
       if (!(err instanceof AxiosError)) {
-        toast.error("Erro ao salvar o plano");
+        toast.error("Erro ao salvar o usuário");
         return;
       } else {
         if (!err.response || !err.response.data) {
-          toast.error("Erro ao salvar o plano");
+          toast.error("Erro ao salvar o usuário");
           return;
         }
         const { fieldErrors, toastMessage } = translateApiErrors(
@@ -96,8 +96,8 @@ export default function UserFormModal({
         );
 
         setErrors(fieldErrors);
-        toast.error(toastMessage || "Erro ao salvar o plano");
-      } 
+        toast.error(toastMessage || "Erro ao salvar o usuário");
+      }
     }
   }
 

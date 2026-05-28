@@ -36,3 +36,8 @@ export const adminCarouselKeys = {
   all: ["adminHomeCarousel"] as const,
   list: () => [...adminCarouselKeys.all, "list"] as const,
 };
+
+export const adminUserKeys = {
+  all: ["adminUsers"] as const,
+  list: () => [...adminUserKeys.all, "list"] as const,
+};

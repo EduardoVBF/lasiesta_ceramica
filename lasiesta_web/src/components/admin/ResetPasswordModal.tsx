@@ -14,7 +14,7 @@ type Props = {
   loading: boolean;
   user: User | null;
   onClose: () => void;
-  onSubmit: (newPassword: string) => void;
+  onSubmit: (newPassword: string) => Promise<void>;
 };
 
 export default function ResetPasswordModal({
