@@ -6,7 +6,7 @@ import {
   updateHomeCarouselItem,
 } from "../../services/carousel.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { adminCarouselKeys } from "../queries/queryKeys";
+import { adminCarouselKeys, carouselKeys } from "../queries/queryKeys";
 
 type UpdateHomeCarouselItemParams = {
   id: string;
@@ -29,6 +29,7 @@ export function useCreateHomeCarouselItemMutation() {
     mutationFn: createHomeCarouselItem,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminCarouselKeys.list() });
+      queryClient.invalidateQueries({ queryKey: carouselKeys.home });
     },
   });
 }
@@ -41,6 +42,7 @@ export function useUpdateHomeCarouselItemMutation() {
       updateHomeCarouselItem(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminCarouselKeys.list() });
+      queryClient.invalidateQueries({ queryKey: carouselKeys.home });
     },
   });
 }
@@ -88,6 +90,8 @@ export function useUpdateHomeCarouselStatusMutation() {
       queryClient.invalidateQueries({
         queryKey: adminCarouselKeys.list(),
       });
+
+      queryClient.invalidateQueries({ queryKey: carouselKeys.home });
     },
   });
 }
@@ -131,9 +135,8 @@ export function useReorderHomeCarouselMutation() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminCarouselKeys.list(),
-      });
+      queryClient.invalidateQueries({ queryKey: adminCarouselKeys.list() });
+      queryClient.invalidateQueries({ queryKey: carouselKeys.home });
     },
   });
 }

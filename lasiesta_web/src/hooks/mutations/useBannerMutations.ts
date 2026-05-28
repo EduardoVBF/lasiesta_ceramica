@@ -1,15 +1,22 @@
+import { updateBanner, BannerFormData } from "../../services/banner.service";
+import { adminBannerKeys, bannerKeys } from "../../hooks/queries/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { adminBannerKeys } from "../../hooks/queries/queryKeys";
-import { updateBanner } from "../../services/banner.service";
+
+type UpdateBannerParams = {
+  id: string;
+  data: BannerFormData;
+};
 
 export function useUpdateBannerMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Parameters<typeof updateBanner>[1] }) =>
-      updateBanner(id, data),
-    onSuccess: () => {
+    mutationFn: ({ id, data }: UpdateBannerParams) => updateBanner(id, data),
+    onSuccess: (updatedBanner) => {
       queryClient.invalidateQueries({ queryKey: adminBannerKeys.list() });
+      queryClient.invalidateQueries({
+        queryKey: bannerKeys.byPage(updatedBanner.page),
+      });
     },
   });
 }

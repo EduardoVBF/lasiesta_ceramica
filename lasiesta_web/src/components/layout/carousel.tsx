@@ -1,31 +1,30 @@
 "use client";
-import {
-  HomeCarouselItem,
-  getHomeCarousel,
-} from "../../services/carousel.service";
-import React, { useEffect, useCallback, useState } from "react";
+import { useHomeCarousel } from "../../hooks/queries/useHomeCarousel";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useCallback, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import toast, { Toaster } from "react-hot-toast";
 import LoaderComp from "../ui/loaderComp";
 import Image from "next/image";
 import Header from "./header";
 
-
 export default function CarouselComponent() {
+  const carouselQuery = useHomeCarousel();
+
+  const items = carouselQuery.data ?? [];
+  const loading = carouselQuery.isLoading;
+  const carouselError = carouselQuery.isError;
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
-  const [items, setItems] = useState<HomeCarouselItem[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const scrollPrev = useCallback(
     () => emblaApi && emblaApi.scrollPrev(),
-    [emblaApi]
+    [emblaApi],
   );
   const scrollNext = useCallback(
     () => emblaApi && emblaApi.scrollNext(),
-    [emblaApi]
+    [emblaApi],
   );
 
   const onSelect = useCallback(() => {
@@ -46,35 +45,21 @@ export default function CarouselComponent() {
     return () => clearInterval(interval);
   }, [emblaApi]);
 
-  useEffect(() => {
-    getHomeCarousel()
-      .then((data) =>
-        setItems(
-          [...data]
-            .sort((a, b) => a.orderIndex - b.orderIndex)
-            .filter((item) => item.isActive)
-        )
-      )
-      .catch((err) =>
-        toast.error(
-          `Erro ao carregar carrossel: ${
-            err.response?.data?.error || err.message
-          }`
-        )
-      )
-      .finally(() => setLoading(false));
-  }, []);
-
   return (
     <div className="relative z-20">
-      <Toaster />
       {/* Header fixo no topo - TRANSPARENTE */}
       <div className="absolute top-0 z-20 w-full">
         <Header bgColor="bg-transparent" />
       </div>
 
-      {loading ? (
-        <LoaderComp text="Carregando Carrossel..." classname="min-h-[400px]"/>
+      {carouselError ? (
+        <div className="min-h-[400px] flex items-center justify-center">
+          <p className="text-gray-500">
+            Não foi possível carregar o carrossel.
+          </p>
+        </div>
+      ) : loading ? (
+        <LoaderComp text="Carregando Carrossel..." classname="min-h-[400px]" />
       ) : (
         <div className="relative w-full h-[300px] sm:h-[400px] xl:h-[550px] 2xl:h-[650px] overflow-hidden shadow-lg">
           {/* Embla viewport */}

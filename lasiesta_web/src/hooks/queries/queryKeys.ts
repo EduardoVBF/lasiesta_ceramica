@@ -16,6 +16,14 @@ export const planKeys = {
   activeList: ["activePlans"] as const,
 };
 
+export const bannerKeys = {
+  byPage: (page: string) => ["banner", page] as const,
+};
+
+export const carouselKeys = {
+  home: ["homeCarousel"] as const,
+};
+
 // PRIVATE
 export const adminCategoryKeys = {
   all: ["adminCategories"] as const,

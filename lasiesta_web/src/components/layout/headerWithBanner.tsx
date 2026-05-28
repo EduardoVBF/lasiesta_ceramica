@@ -1,11 +1,6 @@
 "use client";
-import {
-  getPublicBannerByPage,
-  Banner,
-  BannerPage,
-} from "../../services/banner.service";
-import React, { useState, useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { usePublicBannerByPage } from "../../hooks/queries/usePublicBannerByPage";
+import { BannerPage } from "../../services/banner.service";
 import LoaderComp from "../ui/loaderComp";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -20,26 +15,13 @@ export default function HeaderWithBanner({
   page,
   textColor = "text-white",
 }: HeaderWithBannerProps) {
-  const [bannerData, setBannerData] = useState<Banner | null>(null);
-  const [loading, setLoading] = useState(true);
+  const bannerQuery = usePublicBannerByPage(page);
 
-  useEffect(() => {
-    async function fetchBanner() {
-      try {
-        const banner = await getPublicBannerByPage(page);
-        setBannerData(banner);
-        setLoading(false);
-      } catch {
-        toast.error("Erro ao buscar o banner.");
-      }
-    }
-
-    fetchBanner();
-  }, [page]);
+  const bannerData = bannerQuery.data;
+  const loading = bannerQuery.isLoading;
 
   return (
     <>
-      <Toaster position="top-center" />
       {loading ? (
         <div className="relative w-full h-[400px] flex items-center justify-center">
           <div className="absolute top-0 z-20 w-full">
