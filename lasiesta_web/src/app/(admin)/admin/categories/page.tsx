@@ -1,31 +1,36 @@
 "use client";
-
 import {
-  getAdminCategories,
-  createCategory,
-  updateCategoryStatus,
-  updateCategory,
-  Category,
-} from "../../../../services/categories.service";
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useUpdateCategoryStatusMutation,
+} from "../../../../hooks/mutations/useCategoryMutations";
+import CategoriesTableSkeleton from "@/components/skeletons/categoriesTableSkeleton";
+import { useAdminCategories } from "../../../../hooks/queries/useAdminCategories";
 import CategoryFormModal from "@/components/admin/CategoryFormModal";
+import { Category } from "../../../../services/categories.service";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
 import CategoryRow from "@/components/admin/categoryRow";
 import BrownButton from "@/components/ui/brownButtom";
-import LoaderComp from "@/components/ui/loaderComp";
 import toast, { Toaster } from "react-hot-toast";
-import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 import { AxiosError } from "axios";
+import { useState } from "react";
 
 export default function AdminCategoriesPage() {
+  const createCategoryMutation = useCreateCategoryMutation();
+  const updateCategoryMutation = useUpdateCategoryMutation();
+  const updateCategoryStatusMutation = useUpdateCategoryStatusMutation();
+  const categoriesQuery = useAdminCategories();
+
+  const categories = categoriesQuery.data ?? [];
+  const loading = categoriesQuery.isLoading;
+  const categoriesError = categoriesQuery.isError;
+
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [showInactive, setShowInactive] = useState(true);
   const [infoVisible, setInfoVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const activeCategories = categories
     .filter((c) => c.isActive)
@@ -35,18 +40,9 @@ export default function AdminCategoriesPage() {
     .filter((c) => !c.isActive)
     .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 
-  useEffect(() => {
-    getAdminCategories()
-      .then(setCategories)
-      .catch((err) =>
-        toast.error(
-          `Erro ao carregar categorias: ${
-            err.response?.data?.error || err.message
-          }`
-        )
-      )
-      .finally(() => setLoading(false));
-  }, [isModalOpen]);
+  const savingCategory =
+    createCategoryMutation.isPending || updateCategoryMutation.isPending;
+  const togglingCategoryId = updateCategoryStatusMutation.variables?.id;
 
   return (
     <>
@@ -105,13 +101,14 @@ export default function AdminCategoriesPage() {
           </ColoredTextBox>
         )}
 
-        {loading ? (
-          <div className="flex justify-center items-center z-10">
-            <LoaderComp
-              text={"Carregando categorias..."}
-              classname="min-h-[500px]"
-            />
+        {categoriesError ? (
+          <div className="flex justify-center items-center z-10 min-h-[500px]">
+            <p className="text-red-500">
+              Não foi possível carregar as categorias.
+            </p>
           </div>
+        ) : loading ? (
+          <CategoriesTableSkeleton />
         ) : (
           <>
             {/* TOGGLE INATIVAS */}
@@ -158,39 +155,44 @@ export default function AdminCategoriesPage() {
                     <CategoryRow
                       key={category.id}
                       category={category}
+                      isToggling={
+                        updateCategoryStatusMutation.isPending &&
+                        togglingCategoryId === category.id
+                      }
                       onEdit={() => {
                         setEditingCategory(category);
                         setIsModalOpen(true);
                       }}
-                      onToggle={async () => {
-                        try {
-                          const updated = await updateCategoryStatus(
-                            category.id,
-                            !category.isActive
-                          );
+                      onToggle={() => {
+                        updateCategoryStatusMutation.mutate(
+                          {
+                            id: category.id,
+                            isActive: !category.isActive,
+                          },
+                          {
+                            onSuccess: (updated) => {
+                              toast.success(
+                                `Categoria ${
+                                  updated.isActive ? "ativada" : "desativada"
+                                } com sucesso!`,
+                              );
+                            },
+                            onError: (err) => {
+                              if (err instanceof AxiosError) {
+                                toast.error(
+                                  err.response?.data?.error ||
+                                    err.response?.data?.message ||
+                                    err.message,
+                                );
+                                return;
+                              }
 
-                          setCategories((prev) =>
-                            prev.map((c) =>
-                              c.id === category.id ? updated : c
-                            )
-                          );
-
-                          toast.success(
-                            `Categoria ${
-                              updated.isActive ? "ativada" : "desativada"
-                            } com sucesso!`
-                          );
-                        } catch (err) {
-                          if (err instanceof AxiosError) {
-                            toast.error(
-                              err.response?.data?.error ||
-                                err.response?.data?.message ||
-                                err.message
-                            );
-                          } else {
-                            toast.error("Erro inesperado ao salvar categoria");
-                          }
-                        }
+                              toast.error(
+                                "Erro inesperado ao salvar categoria",
+                              );
+                            },
+                          },
+                        );
                       }}
                     />
                   ))}
@@ -212,41 +214,19 @@ export default function AdminCategoriesPage() {
                       <CategoryRow
                         key={category.id}
                         category={category}
+                        isToggling={
+                          updateCategoryStatusMutation.isPending &&
+                          togglingCategoryId === category.id
+                        }
                         onEdit={() => {
                           setEditingCategory(category);
                           setIsModalOpen(true);
                         }}
-                        onToggle={async () => {
-                          try {
-                            const updated = await updateCategoryStatus(
-                              category.id,
-                              !category.isActive
-                            );
-
-                            setCategories((prev) =>
-                              prev.map((c) =>
-                                c.id === category.id ? updated : c
-                              )
-                            );
-
-                            toast.success(
-                              `Categoria ${
-                                updated.isActive ? "ativada" : "desativada"
-                              } com sucesso!`
-                            );
-                          } catch (err) {
-                            if (err instanceof AxiosError) {
-                              toast.error(
-                                err.response?.data?.error ||
-                                  err.response?.data?.message ||
-                                  err.message
-                              );
-                            } else {
-                              toast.error(
-                                "Erro inesperado ao salvar categoria"
-                              );
-                            }
-                          }
+                        onToggle={() => {
+                          updateCategoryStatusMutation.mutate({
+                            id: category.id,
+                            isActive: !category.isActive,
+                          });
                         }}
                       />
                     ))}
@@ -275,7 +255,7 @@ export default function AdminCategoriesPage() {
         {/* MODAL */}
         <CategoryFormModal
           open={isModalOpen}
-          loading={creating}
+          loading={savingCategory}
           initialData={
             editingCategory
               ? {
@@ -293,32 +273,21 @@ export default function AdminCategoriesPage() {
             setEditingCategory(null);
           }}
           onSubmit={async (data) => {
-            try {
-              setCreating(true);
-
-              if (editingCategory) {
-                const updated = await updateCategory(editingCategory.id, data);
-
-                setCategories((prev) =>
-                  prev.map((c) => (c.id === updated.id ? updated : c))
-                );
-              } else {
-                const created = await createCategory(data);
-                setCategories((prev) => [created, ...prev]);
-              }
+            if (editingCategory) {
+              await updateCategoryMutation.mutateAsync({
+                id: editingCategory.id,
+                data,
+              });
 
               setIsModalOpen(false);
               setEditingCategory(null);
+              toast.success("Categoria atualizada com sucesso!");
+            } else {
+              await createCategoryMutation.mutateAsync(data);
 
-              toast.success(
-                `Categoria ${
-                  editingCategory ? "atualizada" : "criada"
-                } com sucesso!`
-              );
-            } catch (err) {
-              throw err;
-            } finally {
-              setCreating(false);
+              setIsModalOpen(false);
+              setEditingCategory(null);
+              toast.success("Categoria criada com sucesso!");
             }
           }}
         />

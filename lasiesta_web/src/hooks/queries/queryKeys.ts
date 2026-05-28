@@ -1,3 +1,4 @@
+// PUBLIC
 export const productKeys = {
   publicList: (params: {
     search?: string;
@@ -13,4 +14,10 @@ export const categoryKeys = {
 
 export const planKeys = {
   activeList: ["activePlans"] as const,
+};
+
+// PRIVATE
+export const adminCategoryKeys = {
+  all: ["adminCategories"] as const,
+  list: () => [...adminCategoryKeys.all, "list"] as const,
 };

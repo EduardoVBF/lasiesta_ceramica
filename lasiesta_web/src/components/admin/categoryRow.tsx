@@ -11,10 +11,12 @@ export default function CategoryRow({
   category,
   onEdit,
   onToggle,
+  isToggling = false,
 }: {
   category: Category;
   onEdit: () => void;
   onToggle: () => void;
+  isToggling?: boolean;
 }) {
   return (
     <tr className="hover:bg-gray-200/60 transition">
@@ -68,19 +70,30 @@ export default function CategoryRow({
 
           <button
             onClick={onToggle}
+            disabled={isToggling}
             title={
               category.isActive ? "Desativar categoria" : "Ativar categoria"
             }
-            className={`text-sm font-medium transition cursor-pointer ${
+            className={`text-sm font-medium transition ${
+              isToggling ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+            } ${
               category.isActive
                 ? "text-green-600 hover:text-red-700"
                 : "text-red-600 hover:text-green-700"
             }`}
           >
             {category.isActive ? (
-              <BsToggleOn size={25} className="hover:rotate-180" />
+              <BsToggleOn
+                size={25}
+                className={isToggling ? "" : "hover:rotate-180"}
+              />
             ) : (
-              <BsToggleOn size={25} className="rotate-180 hover:rotate-0" />
+              <BsToggleOn
+                size={25}
+                className={
+                  isToggling ? "rotate-180" : "rotate-180 hover:rotate-0"
+                }
+              />
             )}
           </button>
         </div>
