@@ -80,7 +80,7 @@ export function useUpdateProductStatusMutation() {
       });
 
       previousQueries.forEach(([queryKey, data]) => {
-        if (!data) return;
+        if (!data || !Array.isArray(data.items)) return;
 
         queryClient.setQueryData<ProductsResponse>(queryKey, {
           ...data,

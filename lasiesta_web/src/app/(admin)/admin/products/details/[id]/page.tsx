@@ -1,30 +1,28 @@
 "use client";
 import {
+  useUpdateProductMutation,
+  useUpdateProductStatusMutation,
+} from "../../../../../../hooks/mutations/useProductMutations";
+import {
   Product,
   ProductFormData,
-  createProduct,
-  getProductById,
-  updateProduct,
-  updateProductStatus,
 } from "../../../../../../services/products.service";
+import AdminProductDetailSkeleton from "@/components/skeletons/adminProductDetailSkeleton";
+import { useAdminCategories } from "../../../../../../hooks/queries/useAdminCategories";
+import { useAdminProduct } from "../../../../../../hooks/queries/useAdminProduct";
+import ProductFormModal from "@/components/admin/productFormModal";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import { useParams, useRouter } from "next/navigation";
 import StatusBadge from "@/components/ui/statusBadge";
-import LoaderComp from "@/components/ui/loaderComp";
 import { ArrowBigLeft, Pencil } from "lucide-react";
-import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { LuScreenShare } from "react-icons/lu";
+import { useEffect, useState } from "react";
+import { BsToggleOn } from "react-icons/bs";
+import { FaStar } from "react-icons/fa6";
 import { AxiosError } from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import ProductFormModal from "@/components/admin/productFormModal";
-import {
-  Category,
-  getAdminCategories,
-} from "../../../../../../services/categories.service";
-import { FaStar } from "react-icons/fa6";
-import { LuScreenShare } from "react-icons/lu";
-import { BsToggleOn } from "react-icons/bs";
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", {
@@ -40,59 +38,52 @@ export default function AdminProductDetailPage() {
   const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [saving, setSaving] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-  const [product, setProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [toggleLoading, setToggleLoading] = useState(false);
+
+  const { data: product, isLoading } = useAdminProduct(id);
+  const { data: categories = [] } = useAdminCategories();
+  const updateMutation = useUpdateProductMutation();
+  const toggleMutation = useUpdateProductStatusMutation();
 
   async function handleSubmitProduct(data: ProductFormData) {
     try {
-      setSaving(true);
+      if (!editingProduct) return;
 
-      if (editingProduct) {
-        const updated = await updateProduct(editingProduct.id, data);
+      await updateMutation.mutateAsync({
+        id: editingProduct.id,
+        data,
+      });
 
-        setProduct(updated);
-
-        toast.success("Produto atualizado com sucesso!");
-      } else {
-        const created = await createProduct(data);
-
-        setProduct(created);
-
-        toast.success("Produto criado com sucesso!");
-      }
+      toast.success("Produto atualizado com sucesso!");
 
       setIsModalOpen(false);
+
       setEditingProduct(null);
     } catch (err) {
       if (err instanceof AxiosError) {
         toast.error(
           err.response?.data?.error ||
             err.response?.data?.message ||
-            err.message
+            err.message,
         );
       } else {
         toast.error("Erro inesperado ao salvar produto");
       }
-    } finally {
-      setSaving(false);
     }
   }
 
-  async function handleToggle(product: Product) {
-    try {
-      setToggleLoading(true);
-      const updated = await updateProductStatus(product.id, !product.isActive);
+  async function handleToggle() {
+    if (!product) return;
 
-      setProduct(updated);
+    try {
+      await toggleMutation.mutateAsync({
+        id: product.id,
+        isActive: !product.isActive,
+      });
 
       toast.success(
-        `Produto ${updated.isActive ? "ativado" : "desativado"} com sucesso!`
+        `Produto ${!product.isActive ? "ativado" : "desativado"} com sucesso!`,
       );
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -100,47 +91,17 @@ export default function AdminProductDetailPage() {
       } else {
         toast.error("Erro inesperado");
       }
-    } finally {
-      setToggleLoading(false);
     }
   }
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categoriesRes = await getAdminCategories();
-        setCategories(categoriesRes);
-      } catch {
-        toast.error("Erro ao carregar categorias");
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getProductById(id);
-        setProduct(data);
-        setSelectedImage(data.mainImageUrl);
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          toast.error(err.response?.data?.message || "Produto não encontrado");
-          router.push("/admin/products");
-        } else {
-          toast.error("Erro ao carregar produto");
-        }
-      } finally {
-        setLoading(false);
-      }
+    if (product?.mainImageUrl && !selectedImage) {
+      setSelectedImage(product.mainImageUrl);
     }
+  }, [product, selectedImage]);
 
-    if (id) load();
-  }, [id, router, isModalOpen, toggleLoading]);
-
-  if (loading) {
-    return <LoaderComp text="Carregando produto..." />;
+  if (isLoading) {
+    return <AdminProductDetailSkeleton />;
   }
 
   if (!product) return null;
@@ -169,7 +130,7 @@ export default function AdminProductDetailPage() {
         <div className="flex items-center justify-end gap-2 pt-4">
           {/* TOGGLE */}
           <button
-            onClick={() => handleToggle(product)}
+            onClick={handleToggle}
             title={product.isActive ? "Desativar produto" : "Ativar produto"}
             className={`inline-flex items-center gap-2 p-0 rounded-xl text-sm font-medium transition cursor-pointer ${
               product.isActive
@@ -275,7 +236,9 @@ export default function AdminProductDetailPage() {
               <h1 className="text-2xl font-bold text-[#a35c42]">
                 {product.name}
               </h1>
-              <p className="text-sm text-gray-600 mt-1 line-clamp-2">{product.slug}</p>
+              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                {product.slug}
+              </p>
               <div className="flex items-center gap-2 my-3">
                 <span className="bg-[#a35c42] text-white px-2 py-1 rounded-full text-xs font-semibold shadow-md">
                   {product.category?.name || "Sem categoria"}
@@ -371,7 +334,7 @@ export default function AdminProductDetailPage() {
       {/* MODAL */}
       <ProductFormModal
         open={isModalOpen}
-        loading={saving}
+        loading={updateMutation.isPending}
         categories={categories}
         initialData={editingProduct}
         onClose={() => {
