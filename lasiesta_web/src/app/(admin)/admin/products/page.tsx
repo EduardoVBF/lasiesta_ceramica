@@ -8,6 +8,8 @@ import {
   Product,
   ProductFormData,
 } from "../../../../services/products.service";
+import AdminProductsPageSkeleton from "@/components/skeletons/adminProductsPageSkeleton";
+import AdminProductsGridSkeleton from "@/components/skeletons/adminProductsGridSkeleton";
 import { useAdminCategories } from "../../../../hooks/queries/useAdminCategories";
 import { useAdminProducts } from "../../../../hooks/queries/useAdminProducts";
 import { Category } from "../../../../services/categories.service";
@@ -18,7 +20,6 @@ import ColoredTextBox from "@/components/ui/coloredTextBox";
 import Pagination from "@/components/ui/paginationComp";
 import SearchInput from "@/components/ui/searchInput";
 import BrownButton from "@/components/ui/brownButtom";
-import LoaderComp from "@/components/ui/loaderComp";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
 import { AxiosError } from "axios";
@@ -161,9 +162,7 @@ export default function AdminProductsPage() {
       )}
 
       {loading ? (
-        <div className="flex justify-center items-center z-10">
-          <LoaderComp text="Carregando produtos..." />
-        </div>
+        <AdminProductsPageSkeleton />
       ) : (
         <section className="grid grid-cols-1 gap-4 z-10">
           {/* FILTRO DE CATEGORIAS */}
@@ -241,9 +240,7 @@ export default function AdminProductsPage() {
 
           <div className="grid grid-cols-2 gap-4">
             {isFetching ? (
-              <div className="col-span-2 flex justify-center items-center">
-                <LoaderComp text="Atualizando catálogo..." />
-              </div>
+              <AdminProductsGridSkeleton />
             ) : (
               <>
                 {products.map((product) => (
