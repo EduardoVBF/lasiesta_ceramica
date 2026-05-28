@@ -223,10 +223,35 @@ export default function AdminCategoriesPage() {
                           setIsModalOpen(true);
                         }}
                         onToggle={() => {
-                          updateCategoryStatusMutation.mutate({
-                            id: category.id,
-                            isActive: !category.isActive,
-                          });
+                          updateCategoryStatusMutation.mutate(
+                            {
+                              id: category.id,
+                              isActive: !category.isActive,
+                            },
+                            {
+                              onSuccess: (updated) => {
+                                toast.success(
+                                  `Categoria ${
+                                    updated.isActive ? "ativada" : "desativada"
+                                  } com sucesso!`,
+                                );
+                              },
+                              onError: (err) => {
+                                if (err instanceof AxiosError) {
+                                  toast.error(
+                                    err.response?.data?.error ||
+                                      err.response?.data?.message ||
+                                      err.message,
+                                  );
+                                  return;
+                                }
+
+                                toast.error(
+                                  "Erro inesperado ao salvar categoria",
+                                );
+                              },
+                            },
+                          );
                         }}
                       />
                     ))}
