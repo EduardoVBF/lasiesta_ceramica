@@ -8,7 +8,7 @@ import ImageZoom from "../layout/ImageZoom";
 import StatusBadge from "../ui/statusBadge";
 import { BsToggleOn } from "react-icons/bs";
 import PreviewModal from "./previewModal";
-import React, { useState } from "react";
+import { useState } from "react";
 import DOMPurify from "dompurify";
 import Image from "next/image";
 
@@ -16,10 +16,12 @@ export default function PlanCard({
   plan,
   onEdit,
   onToggle,
+  isToggling = false,
 }: {
   plan: Plan;
   onEdit: () => void;
   onToggle: () => void;
+  isToggling?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -143,10 +145,10 @@ export default function PlanCard({
       <div className="flex flex-col items-center justify-start">
         {/* PREVIEW */}
         <PreviewModal
-        className="min-w-5xl min-h-4xl max-h-[90vh] max-w-[90vw]"
+          className="min-w-5xl min-h-4xl max-h-[90vh] max-w-[90vw]"
           trigger={
             <p className="text-gray-600 hover:text-[#a35c42] ">
-              <LiaSearchPlusSolid size={30} title="Preview Extendida"/>
+              <LiaSearchPlusSolid size={30} title="Preview Extendida" />
             </p>
           }
         >
@@ -157,7 +159,7 @@ export default function PlanCard({
           className="min-w-[300px] min-h-[80vh] max-h-[90vh] max-w-[30vw]"
           trigger={
             <p className="text-gray-600 hover:text-[#a35c42] ">
-              <LiaSearchPlusSolid size={30} title="Preview Compacta"/>
+              <LiaSearchPlusSolid size={30} title="Preview Compacta" />
             </p>
           }
         >
@@ -176,8 +178,11 @@ export default function PlanCard({
         {/* TOGGLE */}
         <button
           onClick={onToggle}
+          disabled={isToggling}
           title={plan.isActive ? "Desativar plano" : "Ativar plano"}
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition ${
+            isToggling ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+          } ${
             plan.isActive
               ? "text-green-700 hover:text-red-700"
               : "text-red-700 hover:text-green-700"
@@ -185,9 +190,15 @@ export default function PlanCard({
         >
           <BsToggleOn
             size={30}
-            className={`${
-              plan.isActive ? "hover:rotate-180" : "rotate-180 hover:rotate-0"
-            }`}
+            className={
+              isToggling
+                ? plan.isActive
+                  ? ""
+                  : "rotate-180"
+                : plan.isActive
+                  ? "hover:rotate-180"
+                  : "rotate-180 hover:rotate-0"
+            }
           />
         </button>
       </div>

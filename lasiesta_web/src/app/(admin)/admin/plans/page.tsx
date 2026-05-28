@@ -1,40 +1,72 @@
 "use client";
 import {
-  getAdminPlans,
-  Plan,
-  createPlan,
-  updatePlan,
-  updatePlanStatus,
-} from "../../../../services/plans.service";
+  useCreatePlanMutation,
+  useUpdatePlanMutation,
+  useUpdatePlanStatusMutation,
+} from "../../../../hooks/mutations/usePlanMutations";
+import { useAdminPlans } from "../../../../hooks/queries/useAdminPlans";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import PlanFormModal from "@/components/admin/PlanFormModal";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
+import { Plan } from "../../../../services/plans.service";
 import PlanCard from "@/components/admin/adminPlanCard";
 import BrownButton from "@/components/ui/brownButtom";
 import LoaderComp from "@/components/ui/loaderComp";
-import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
 import { AxiosError } from "axios";
+import { useState } from "react";
 
 export default function AdminPlansPage() {
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [infoVisible, setInfoVisible] = useState(false);
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    getAdminPlans()
-      .then(setPlans)
-      .catch((err) =>
-        toast.error(
-          `Erro ao carregar planos: ${err.response?.data?.error || err.message}`,
-        ),
-      )
-      .finally(() => setLoading(false));
-  }, []);
+  const plansQuery = useAdminPlans();
+
+  const createPlanMutation = useCreatePlanMutation();
+  const updatePlanMutation = useUpdatePlanMutation();
+  const updatePlanStatusMutation = useUpdatePlanStatusMutation();
+
+  const plans = plansQuery.data ?? [];
+  const loading = plansQuery.isLoading;
+  const plansError = plansQuery.isError;
+
+  const savingPlan =
+    createPlanMutation.isPending || updatePlanMutation.isPending;
+
+  const togglingPlanId = updatePlanStatusMutation.variables?.id;
+
+  const activePlans = plans.filter((plan) => plan.isActive);
+  const inactivePlans = plans.filter((plan) => !plan.isActive);
+
+  function handleTogglePlan(plan: Plan) {
+    updatePlanStatusMutation.mutate(
+      {
+        id: plan.id,
+        isActive: !plan.isActive,
+      },
+      {
+        onSuccess: (updated) => {
+          toast.success(
+            `Plano ${updated.isActive ? "ativado" : "desativado"} com sucesso!`,
+          );
+        },
+        onError: (err) => {
+          if (err instanceof AxiosError) {
+            toast.error(
+              err.response?.data?.error ||
+                err.response?.data?.message ||
+                err.message,
+            );
+            return;
+          }
+
+          toast.error("Erro inesperado ao salvar plano");
+        },
+      },
+    );
+  }
 
   return (
     <>
@@ -99,7 +131,13 @@ export default function AdminPlansPage() {
           </ColoredTextBox>
         )}
 
-        {loading ? (
+        {plansError ? (
+          <div className="flex justify-center items-center z-10 min-h-[500px]">
+            <p className="text-red-500">
+              Não foi possível carregar os planos e aulas.
+            </p>
+          </div>
+        ) : loading ? (
           <div className="flex justify-center items-center z-10">
             <LoaderComp
               text={"Carregando planos e aulas..."}
@@ -108,92 +146,42 @@ export default function AdminPlansPage() {
           </div>
         ) : (
           <section className="grid grid-cols-1 gap-6 z-10">
-            {plans
-              .filter((plan) => plan.isActive)
-              .map((plan) => (
-                <PlanCard
-                  key={plan.id}
-                  plan={plan}
-                  onEdit={() => {
-                    setEditingPlan(plan);
-                    setIsModalOpen(true);
-                  }}
-                  onToggle={async () => {
-                    try {
-                      const updated = await updatePlanStatus(
-                        plan.id,
-                        !plan.isActive,
-                      );
+            {activePlans.map((plan) => (
+              <PlanCard
+                key={plan.id}
+                plan={plan}
+                onEdit={() => {
+                  setEditingPlan(plan);
+                  setIsModalOpen(true);
+                }}
+                isToggling={
+                  updatePlanStatusMutation.isPending &&
+                  togglingPlanId === plan.id
+                }
+                onToggle={() => handleTogglePlan(plan)}
+              />
+            ))}
 
-                      setPlans((prev) =>
-                        prev.map((p) => (p.id === updated.id ? updated : p)),
-                      );
-
-                      toast.success(
-                        `Plano ${
-                          updated.isActive ? "ativado" : "desativado"
-                        } com sucesso!`,
-                      );
-                    } catch (err) {
-                      if (err instanceof AxiosError) {
-                        toast.error(
-                          err.response?.data?.error ||
-                            err.response?.data?.message ||
-                            err.message,
-                        );
-                      } else {
-                        toast.error("Erro inesperado ao salvar plano");
-                      }
-                    }
-                  }}
-                />
-              ))}
-
-            {plans.filter((plan) => !plan.isActive).length > 0 && (
+            {inactivePlans.length > 0 && (
               <div className="mt-2 z-10">
                 <h3 className="text-2xl font-normal text-[#a35c42] mb-4">
                   Planos inativos
                 </h3>
-                {plans
-                  .filter((plan) => !plan.isActive)
-                  .map((plan) => (
-                    <PlanCard
-                      key={plan.id}
-                      plan={plan}
-                      onEdit={() => {
-                        setEditingPlan(plan);
-                        setIsModalOpen(true);
-                      }}
-                      onToggle={async () => {
-                        try {
-                          const updated = await updatePlanStatus(
-                            plan.id,
-                            !plan.isActive,
-                          );
-                          setPlans((prev) =>
-                            prev.map((p) =>
-                              p.id === updated.id ? updated : p,
-                            ),
-                          );
-                          toast.success(
-                            `Plano ${
-                              updated.isActive ? "ativado" : "desativado"
-                            } com sucesso!`,
-                          );
-                        } catch (err) {
-                          if (err instanceof AxiosError) {
-                            toast.error(
-                              err.response?.data?.error ||
-                                err.response?.data?.message ||
-                                err.message,
-                            );
-                          } else {
-                            toast.error("Erro inesperado ao salvar plano");
-                          }
-                        }
-                      }}
-                    />
-                  ))}
+                {inactivePlans.map((plan) => (
+                  <PlanCard
+                    key={plan.id}
+                    plan={plan}
+                    onEdit={() => {
+                      setEditingPlan(plan);
+                      setIsModalOpen(true);
+                    }}
+                    isToggling={
+                      updatePlanStatusMutation.isPending &&
+                      togglingPlanId === plan.id
+                    }
+                    onToggle={() => handleTogglePlan(plan)}
+                  />
+                ))}
               </div>
             )}
 
@@ -216,7 +204,7 @@ export default function AdminPlansPage() {
         {/* MODAL */}
         <PlanFormModal
           open={isModalOpen}
-          loading={saving}
+          loading={savingPlan}
           initialData={
             editingPlan
               ? {
@@ -237,31 +225,21 @@ export default function AdminPlansPage() {
             setEditingPlan(null);
           }}
           onSubmit={async (data) => {
-            try {
-              setSaving(true);
+            if (editingPlan) {
+              await updatePlanMutation.mutateAsync({
+                id: editingPlan.id,
+                data,
+              });
 
-              if (editingPlan) {
-                const updated = await updatePlan(editingPlan.id, data);
+              toast.success("Plano atualizado com sucesso!");
+            } else {
+              await createPlanMutation.mutateAsync(data);
 
-                setPlans((prev) =>
-                  prev.map((p) => (p.id === updated.id ? updated : p)),
-                );
-
-                toast.success("Plano atualizado com sucesso!");
-              } else {
-                const created = await createPlan(data);
-                setPlans((prev) => [created, ...prev]);
-
-                toast.success("Plano criado com sucesso!");
-              }
-
-              setIsModalOpen(false);
-              setEditingPlan(null);
-            } catch (err) {
-              throw err;
-            } finally {
-              setSaving(false);
+              toast.success("Plano criado com sucesso!");
             }
+
+            setIsModalOpen(false);
+            setEditingPlan(null);
           }}
         />
       </div>
