@@ -1,28 +1,20 @@
 "use client";
-
+import PublicProductDetailSkeleton from "@/components/skeletons/publicProductDetailSkeleton";
+import { usePublicProduct } from "../../../../../hooks/queries/usePublicProduct";
+import BackgroundImage from "@/components/layout/backgroundImage";
+import { RiDiscountPercentFill } from "react-icons/ri";
+import ImageZoom from "@/components/layout/ImageZoom";
+import BrownButton from "@/components/ui/brownButtom";
+import { GiPorcelainVase } from "react-icons/gi";
+import Header from "@/components/layout/header";
+import { RxDimensions } from "react-icons/rx";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { Toaster } from "react-hot-toast";
+import { FaStar } from "react-icons/fa6";
+import { FaTruck } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
-import toast, { Toaster } from "react-hot-toast";
-import { AxiosError } from "axios";
-
-import BackgroundImage from "@/components/layout/backgroundImage";
-import LoaderComp from "@/components/ui/loaderComp";
-import ImageZoom from "@/components/layout/ImageZoom";
-
-import {
-  getProductBySlug,
-  Product,
-} from "../../../../../services/products.service";
-
-import { FaStar } from "react-icons/fa6";
-import { GiPorcelainVase } from "react-icons/gi";
-import { FaTruck } from "react-icons/fa";
-import { RiDiscountPercentFill } from "react-icons/ri";
-import { RxDimensions } from "react-icons/rx";
-import Header from "@/components/layout/header";
-import BrownButton from "@/components/ui/brownButtom";
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", {
@@ -32,33 +24,17 @@ function formatBRL(value: number) {
 }
 
 export default function PublicProductDetailPage() {
-  const { slug } = useParams<{ slug: string }>();
-
-  const [product, setProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { slug } = useParams<{ slug: string }>();
+  const { data: product, isLoading } = usePublicProduct(slug);
 
   useEffect(() => {
-    async function load() {
-      try {
-        const data = await getProductBySlug(slug);
-        setProduct(data);
-        setSelectedImage(data.mainImageUrl);
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          toast.error(err.response?.data?.message || "Produto não encontrado");
-        } else {
-          toast.error("Erro ao carregar produto");
-        }
-      } finally {
-        setLoading(false);
-      }
+    if (product?.mainImageUrl && !selectedImage) {
+      setSelectedImage(product.mainImageUrl);
     }
+  }, [product, selectedImage]);
 
-    if (slug) load();
-  }, [slug]);
-
-  if (loading) return <LoaderComp text="Carregando produto..." />;
+  if (isLoading) return <PublicProductDetailSkeleton />;
   if (!product) return null;
 
   const images = [product.mainImageUrl, ...(product.secondaryImages ?? [])];
@@ -242,7 +218,7 @@ export default function PublicProductDetailPage() {
 
             <Link
               href={`https://wa.me/5516991401921?text=${encodeURIComponent(
-                `Olá! Tenho interesse no produto: ${product.name}`
+                `Olá! Tenho interesse no produto: ${product.name}`,
               )}`}
               target="_blank"
               className="self-baseline-last"
