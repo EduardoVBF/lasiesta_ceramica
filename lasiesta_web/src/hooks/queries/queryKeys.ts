@@ -21,3 +21,8 @@ export const adminCategoryKeys = {
   all: ["adminCategories"] as const,
   list: () => [...adminCategoryKeys.all, "list"] as const,
 };
+
+export const adminPlanKeys = {
+  all: ["adminPlans"] as const,
+  list: () => [...adminPlanKeys.all, "list"] as const,
+};

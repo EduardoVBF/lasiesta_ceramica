@@ -27,28 +27,28 @@ export type PlanFormData = {
   imageUrl?: string | null;
 };
 
-export async function getAdminPlans() {
+export async function getAdminPlans(): Promise<Plan[]> {
   const response = await api.get<Plan[]>('/plans');
   return response.data;
 }
 
-export async function getActivePlans() {
+export async function getActivePlans(): Promise<Plan[]> {
   const response = await api.get<Plan[]>('/plans/active');
   return response.data;
 }
 
-export async function createPlan(data: PlanFormData) {
-  const response = await api.post('/plans', data);
+export async function createPlan(data: PlanFormData): Promise<Plan> {
+  const response = await api.post<Plan>('/plans', data);
   return response.data;
 }
 
-export async function updatePlan(id: string, data: PlanFormData) {
-  const response = await api.put(`/plans/${id}`, data);
+export async function updatePlan(id: string, data: PlanFormData): Promise<Plan> {
+  const response = await api.put<Plan>(`/plans/${id}`, data);
   return response.data;
 }
 
-export async function updatePlanStatus(id: string, isActive: boolean) {
-  const response = await api.put(
+export async function updatePlanStatus(id: string, isActive: boolean): Promise<Plan> {
+  const response = await api.put<Plan>(
     `/plans/${id}`,
     { isActive }
   );
