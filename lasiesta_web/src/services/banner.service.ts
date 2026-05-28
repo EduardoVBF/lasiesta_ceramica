@@ -22,20 +22,20 @@ export type BannerFormData = {
   imageBase64?: string;
 };
 
-export async function getAdminBanners() {
+export async function getAdminBanners(): Promise<Banner[]> {
   const response = await api.get<Banner[]>("/admin/banners");
   return response.data;
 }
 
 export async function updateBanner(
   id: string,
-  data: BannerFormData
-) {
-  const response = await api.put(`/admin/banners/${id}`, data);
+  data: BannerFormData,
+): Promise<Banner> {
+  const response = await api.put<Banner>(`/admin/banners/${id}`, data);
   return response.data;
 }
 
-export async function getPublicBannerByPage(page: BannerPage) {
+export async function getPublicBannerByPage(page: BannerPage): Promise<Banner> {
   const response = await api.get<Banner>(`/banners/${page}`);
   return response.data;
 }

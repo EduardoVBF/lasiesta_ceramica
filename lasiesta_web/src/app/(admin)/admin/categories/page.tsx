@@ -102,11 +102,9 @@ export default function AdminCategoriesPage() {
         )}
 
         {categoriesError ? (
-          <div className="flex justify-center items-center z-10 min-h-[500px]">
-            <p className="text-red-500">
-              Não foi possível carregar as categorias.
-            </p>
-          </div>
+          <ColoredTextBox className="my-2 z-10 w-fit" type="error">
+            Erro ao carregar categorias. Tente novamente mais tarde.
+          </ColoredTextBox>
         ) : loading ? (
           <CategoriesTableSkeleton />
         ) : (

@@ -1,37 +1,27 @@
 "use client";
-import {
-  getAdminBanners,
-  Banner,
-  updateBanner,
-} from "../../../../services/banner.service";
+import { useUpdateBannerMutation } from "../../../../hooks/mutations/useBannerMutations";
+import BannersGridSkeleton from "@/components/skeletons/bannersGridSkeleton";
+import { useAdminBanners } from "../../../../hooks/queries/useAdminBanners";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import BannerFormModal from "@/components/admin/bannerFormModal";
+import { Banner } from "../../../../services/banner.service";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
 import BannerCard from "@/components/admin/bannerCard";
-import LoaderComp from "@/components/ui/loaderComp";
-import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
+import { useState } from "react";
 
 export default function AdminBannersPage() {
-  const [infoVisible, setInfoVisible] = useState(false);
-  const [banners, setBanners] = useState<Banner[]>([]);
-  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const bannersQuery = useAdminBanners();
+  const updateBannerMutation = useUpdateBannerMutation();
 
-  useEffect(() => {
-    getAdminBanners()
-      .then(setBanners)
-      .catch((err) =>
-        toast.error(
-          `Erro ao carregar banners: ${
-            err.response?.data?.error || err.message
-          }`,
-        ),
-      )
-      .finally(() => setLoading(false));
-  }, []);
+  const banners = bannersQuery.data ?? [];
+  const loading = bannersQuery.isLoading;
+  const bannersError = bannersQuery.isError;
+  const savingBanner = updateBannerMutation.isPending;
+
+  const [infoVisible, setInfoVisible] = useState(false);
+  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
 
   return (
     <>
@@ -81,13 +71,12 @@ export default function AdminBannersPage() {
           </ColoredTextBox>
         )}
 
-        {loading ? (
-          <div className="flex justify-center items-center z-10">
-            <LoaderComp
-              text={"Carregando banners..."}
-              classname="min-h-[500px]"
-            />
-          </div>
+        {bannersError ? (
+          <ColoredTextBox className="my-2 z-10 w-fit" type="error">
+            Erro ao carregar banners. Tente novamente mais tarde.
+          </ColoredTextBox>
+        ) : loading ? (
+          <BannersGridSkeleton />
         ) : (
           <section className="grid grid-cols-1 gap-6 z-10">
             {banners.map((banner) => (
@@ -103,28 +92,19 @@ export default function AdminBannersPage() {
         {/* MODAL */}
         <BannerFormModal
           open={!!editingBanner}
-          loading={saving}
+          loading={savingBanner}
           initialData={editingBanner || undefined}
           onClose={() => setEditingBanner(null)}
           onSubmit={async (data) => {
             if (!editingBanner) return;
 
-            try {
-              setSaving(true);
+            await updateBannerMutation.mutateAsync({
+              id: editingBanner.id,
+              data,
+            });
 
-              const updated = await updateBanner(editingBanner.id, data);
-
-              setBanners((prev) =>
-                prev.map((b) => (b.id === updated.id ? updated : b)),
-              );
-
-              toast.success("Banner atualizado com sucesso!");
-              setEditingBanner(null);
-            } catch (err) {
-              throw err;
-            } finally {
-              setSaving(false);
-            }
+            toast.success("Banner atualizado com sucesso!");
+            setEditingBanner(null);
           }}
         />
       </div>

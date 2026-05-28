@@ -26,3 +26,8 @@ export const adminPlanKeys = {
   all: ["adminPlans"] as const,
   list: () => [...adminPlanKeys.all, "list"] as const,
 };
+
+export const adminBannerKeys = {
+  all: ["adminBanners"] as const,
+  list: () => [...adminBannerKeys.all, "list"] as const,
+};

@@ -4,6 +4,7 @@ import {
   useUpdatePlanMutation,
   useUpdatePlanStatusMutation,
 } from "../../../../hooks/mutations/usePlanMutations";
+import PlanCardAdmSkeleton from "@/components/skeletons/planCardAdmSkeleton";
 import { useAdminPlans } from "../../../../hooks/queries/useAdminPlans";
 import BackgroundImage from "@/components/layout/backgroundImage";
 import PlanFormModal from "@/components/admin/PlanFormModal";
@@ -11,7 +12,6 @@ import ColoredTextBox from "@/components/ui/coloredTextBox";
 import { Plan } from "../../../../services/plans.service";
 import PlanCard from "@/components/admin/adminPlanCard";
 import BrownButton from "@/components/ui/brownButtom";
-import LoaderComp from "@/components/ui/loaderComp";
 import toast, { Toaster } from "react-hot-toast";
 import { Info } from "lucide-react";
 import { AxiosError } from "axios";
@@ -132,18 +132,11 @@ export default function AdminPlansPage() {
         )}
 
         {plansError ? (
-          <div className="flex justify-center items-center z-10 min-h-[500px]">
-            <p className="text-red-500">
-              Não foi possível carregar os planos e aulas.
-            </p>
-          </div>
+          <ColoredTextBox className="my-2 z-10 w-fit" type="error">
+            Erro ao carregar planos. Tente novamente mais tarde.
+          </ColoredTextBox>
         ) : loading ? (
-          <div className="flex justify-center items-center z-10">
-            <LoaderComp
-              text={"Carregando planos e aulas..."}
-              classname="min-h-[500px]"
-            />
-          </div>
+          <PlanCardAdmSkeleton />
         ) : (
           <section className="grid grid-cols-1 gap-6 z-10">
             {activePlans.map((plan) => (
