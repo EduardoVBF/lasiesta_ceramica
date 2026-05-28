@@ -1,24 +1,4 @@
 "use client";
-
-import {
-  getAdminHomeCarousel,
-  createHomeCarouselItem,
-  updateHomeCarouselItem,
-  reorderHomeCarousel,
-  HomeCarouselItem,
-} from "../../../../services/carousel.service";
-
-import BackgroundImage from "@/components/layout/backgroundImage";
-import HomeCarouselCard from "@/components/cards/homeCoruselCard";
-import HomeCarouselFormModal from "@/components/admin/carouselFormModal";
-import SortableCarouselItem from "@/components/admin/sortableCarouselItem";
-
-import React, { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
-import BrownButton from "@/components/ui/brownButtom";
-import { DragEndEvent } from "@dnd-kit/core";
-import { AxiosError } from "axios";
-
 import {
   DndContext,
   closestCenter,
@@ -26,44 +6,58 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-
 import {
   SortableContext,
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-
+import {
+  useCreateHomeCarouselItemMutation,
+  useUpdateHomeCarouselItemMutation,
+  useUpdateHomeCarouselStatusMutation,
+  useReorderHomeCarouselMutation,
+} from "../../../../hooks/mutations/useCarouselMutations";
+import { useAdminHomeCarousel } from "../../../../hooks/queries/useAdminHomeCarousel";
+import CarouselAdminSkeleton from "@/components/skeletons/carouselAdminSkeleton";
+import SortableCarouselItem from "@/components/admin/sortableCarouselItem";
+import HomeCarouselFormModal from "@/components/admin/carouselFormModal";
+import { HomeCarouselItem } from "../../../../services/carousel.service";
+import BackgroundImage from "@/components/layout/backgroundImage";
+import HomeCarouselCard from "@/components/cards/homeCoruselCard";
 import ColoredTextBox from "@/components/ui/coloredTextBox";
+import BrownButton from "@/components/ui/brownButtom";
+import toast, { Toaster } from "react-hot-toast";
+import { DragEndEvent } from "@dnd-kit/core";
 import { Info } from "lucide-react";
-import LoaderComp from "@/components/ui/loaderComp";
+import { AxiosError } from "axios";
+import { useState } from "react";
 
 export default function AdminHomeCarouselPage() {
-  const [items, setItems] = useState<HomeCarouselItem[]>([]);
+  const carouselQuery = useAdminHomeCarousel();
+
+  const createCarouselItemMutation = useCreateHomeCarouselItemMutation();
+  const updateCarouselItemMutation = useUpdateHomeCarouselItemMutation();
+  const updateCarouselStatusMutation = useUpdateHomeCarouselStatusMutation();
+  const reorderCarouselMutation = useReorderHomeCarouselMutation();
+
+  const items = carouselQuery.data ?? [];
+  const loading = carouselQuery.isLoading;
+  const carouselError = carouselQuery.isError;
+
+  const saving =
+    createCarouselItemMutation.isPending ||
+    updateCarouselItemMutation.isPending;
+
+  const togglingItemId = updateCarouselStatusMutation.variables?.id;
+
   const [editingItem, setEditingItem] = useState<HomeCarouselItem | null>(null);
   const [infoVisible, setInfoVisible] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    getAdminHomeCarousel()
-      .then((data) =>
-        setItems([...data].sort((a, b) => a.orderIndex - b.orderIndex))
-      )
-      .catch((err) =>
-        toast.error(
-          `Erro ao carregar carrossel: ${
-            err.response?.data?.error || err.message
-          }`
-        )
-      )
-      .finally(() => setLoading(false));
-  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
-    })
+    }),
   );
 
   const activeItems = items.filter((i) => i.isActive);
@@ -73,29 +67,57 @@ export default function AdminHomeCarouselPage() {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    setItems((prev) => {
-      const activeList = prev.filter((i) => i.isActive);
-      const inactiveList = prev.filter((i) => !i.isActive);
+    const oldIndex = activeItems.findIndex((item) => item.id === active.id);
+    const newIndex = activeItems.findIndex((item) => item.id === over.id);
 
-      const oldIndex = activeList.findIndex((i) => i.id === active.id);
-      const newIndex = activeList.findIndex((i) => i.id === over.id);
+    const reorderedActive = arrayMove(activeItems, oldIndex, newIndex);
 
-      const reorderedActive = arrayMove(activeList, oldIndex, newIndex);
+    const updatedActive = reorderedActive.map((item, index) => ({
+      ...item,
+      orderIndex: (index + 1) * 1000,
+    }));
 
-      const updatedActive = reorderedActive.map((item, index) => ({
-        ...item,
-        orderIndex: (index + 1) * 1000,
-      }));
+    reorderCarouselMutation.mutate(
+      {
+        reorderedItems: [...updatedActive, ...inactiveItems],
+      },
+      {
+        onSuccess: () => {
+          toast.success("Ordem dos slides atualizada!");
+        },
+        onError: () => {
+          toast.error("Erro ao salvar nova ordem");
+        },
+      },
+    );
+  }
 
-      reorderHomeCarousel(
-        updatedActive.map(({ id, orderIndex }) => ({
-          id,
-          orderIndex,
-        }))
-      ).catch(() => toast.error("Erro ao salvar nova ordem"));
+  function handleToggleItem(item: HomeCarouselItem) {
+    updateCarouselStatusMutation.mutate(
+      {
+        id: item.id,
+        isActive: !item.isActive,
+      },
+      {
+        onSuccess: (updated) => {
+          toast.success(
+            `Slide ${updated.isActive ? "ativado" : "desativado"} com sucesso!`,
+          );
+        },
+        onError: (err) => {
+          if (err instanceof AxiosError) {
+            toast.error(
+              err.response?.data?.error ||
+                err.response?.data?.message ||
+                err.message,
+            );
+            return;
+          }
 
-      return [...updatedActive, ...inactiveList];
-    });
+          toast.error("Erro inesperado ao salvar slide");
+        },
+      },
+    );
   }
 
   return (
@@ -149,13 +171,12 @@ export default function AdminHomeCarouselPage() {
         </ColoredTextBox>
       )}
 
-      {loading ? (
-        <div className="flex justify-center items-center z-10">
-          <LoaderComp
-            text={"Carregando slides do carrossel..."}
-            classname="min-h-[500px]"
-          />
-        </div>
+      {carouselError ? (
+        <ColoredTextBox className="my-2 z-10" type="error">
+          Erro ao carregar carrossel. Tente novamente mais tarde.
+        </ColoredTextBox>
+      ) : loading ? (
+        <CarouselAdminSkeleton />
       ) : (
         <>
           {/* ATIVOS (COM DRAG) */}
@@ -175,36 +196,11 @@ export default function AdminHomeCarouselPage() {
                       item={item}
                       index={index}
                       onEdit={() => setEditingItem(item)}
-                      onToggle={async () => {
-                        try {
-                          const updated = await updateHomeCarouselItem(
-                            item.id,
-                            {
-                              isActive: !item.isActive,
-                            }
-                          );
-
-                          setItems((prev) =>
-                            prev.map((i) => (i.id === updated.id ? updated : i))
-                          );
-
-                          toast.success(
-                            `Slide ${
-                              updated.isActive ? "ativado" : "desativado"
-                            } com sucesso!`
-                          );
-                        } catch (err) {
-                          if (err instanceof AxiosError) {
-                            toast.error(
-                              err.response?.data?.error ||
-                                err.response?.data?.message ||
-                                err.message
-                            );
-                          } else {
-                            toast.error("Erro inesperado ao salvar banner");
-                          }
-                        }
-                      }}
+                      onToggle={() => handleToggleItem(item)}
+                      isToggling={
+                        updateCarouselStatusMutation.isPending &&
+                        togglingItemId === item.id
+                      }
                     />
                   </SortableCarouselItem>
                 ))}
@@ -232,31 +228,11 @@ export default function AdminHomeCarouselPage() {
                     item={item}
                     index={index}
                     onEdit={() => setEditingItem(item)}
-                    onToggle={async () => {
-                      try {
-                        const updated = await updateHomeCarouselItem(item.id, {
-                          isActive: !item.isActive,
-                        });
-                        setItems((prev) =>
-                          prev.map((i) => (i.id === updated.id ? updated : i))
-                        );
-                        toast.success(
-                          `Slide ${
-                            updated.isActive ? "ativado" : "desativado"
-                          } com sucesso!`
-                        );
-                      } catch (err) {
-                        if (err instanceof AxiosError) {
-                          toast.error(
-                            err.response?.data?.error ||
-                              err.response?.data?.message ||
-                              err.message
-                          );
-                        } else {
-                          toast.error("Erro inesperado ao salvar banner");
-                        }
-                      }
-                    }}
+                    onToggle={() => handleToggleItem(item)}
+                    isToggling={
+                      updateCarouselStatusMutation.isPending &&
+                      togglingItemId === item.id
+                    }
                   />
                 ))}
               </section>
@@ -275,35 +251,21 @@ export default function AdminHomeCarouselPage() {
           setEditingItem(null);
         }}
         onSubmit={async (data) => {
-          try {
-            setSaving(true);
+          if (editingItem) {
+            await updateCarouselItemMutation.mutateAsync({
+              id: editingItem.id,
+              data,
+            });
 
-            if (editingItem) {
-              const updated = await updateHomeCarouselItem(
-                editingItem.id,
-                data
-              );
+            toast.success("Slide atualizado com sucesso!");
+          } else {
+            await createCarouselItemMutation.mutateAsync(data);
 
-              setItems((prev) =>
-                prev.map((i) => (i.id === updated.id ? updated : i))
-              );
-
-              toast.success("Slide atualizado com sucesso!");
-            } else {
-              const created = await createHomeCarouselItem(data);
-
-              setItems((prev) => [...prev, created]);
-
-              toast.success("Slide criado com sucesso!");
-            }
-
-            setCreating(false);
-            setEditingItem(null);
-          } catch (err) {
-            throw err;
-          } finally {
-            setSaving(false);
+            toast.success("Slide criado com sucesso!");
           }
+
+          setCreating(false);
+          setEditingItem(null);
         }}
       />
     </div>

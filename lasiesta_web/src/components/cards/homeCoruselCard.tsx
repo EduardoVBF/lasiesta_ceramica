@@ -1,21 +1,22 @@
 "use client";
 import { HomeCarouselItem } from "../../services/carousel.service";
 import StatusBadge from "../ui/statusBadge";
+import { BsToggleOn } from "react-icons/bs";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
-import React from "react";
-import { BsToggleOn } from "react-icons/bs";
 
 export default function HomeCarouselCard({
   item,
   index,
   onEdit,
   onToggle,
+  isToggling = false,
 }: {
   item: HomeCarouselItem;
   index: number;
   onEdit: () => void;
   onToggle: () => void;
+  isToggling?: boolean;
 }) {
   return (
     <div className="relative rounded-3xl overflow-hidden shadow-lg group">
@@ -38,8 +39,11 @@ export default function HomeCarouselCard({
 
         <button
           onClick={onToggle}
-          title={item.isActive ? "Desativar plano" : "Ativar plano"}
+          disabled={isToggling}
+          title={item.isActive ? "Desativar Slide" : "Ativar Slide"}
           className={`inline-flex items-center gap-2 p-1 bg-white/90 rounded-full text-sm font-medium transition ${
+            isToggling ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+          } ${
             item.isActive
               ? "text-green-700 hover:text-red-700"
               : "text-red-700 hover:text-green-700"
@@ -47,9 +51,15 @@ export default function HomeCarouselCard({
         >
           <BsToggleOn
             size={30}
-            className={`${
-              item.isActive ? "hover:rotate-180" : "rotate-180 hover:rotate-0"
-            }`}
+            className={
+              isToggling
+                ? item.isActive
+                  ? ""
+                  : "rotate-180"
+                : item.isActive
+                  ? "hover:rotate-180"
+                  : "rotate-180 hover:rotate-0"
+            }
           />
         </button>
       </div>

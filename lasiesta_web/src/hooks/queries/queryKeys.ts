@@ -31,3 +31,8 @@ export const adminBannerKeys = {
   all: ["adminBanners"] as const,
   list: () => [...adminBannerKeys.all, "list"] as const,
 };
+
+export const adminCarouselKeys = {
+  all: ["adminHomeCarousel"] as const,
+  list: () => [...adminCarouselKeys.all, "list"] as const,
+};

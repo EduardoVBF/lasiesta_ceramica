@@ -1,11 +1,5 @@
 import { api } from "./api";
 
-/**
- * ======================
- * TYPES
- * ======================
- */
-
 export type HomeCarouselItem = {
   id: string;
   imageUrl: string;
@@ -32,58 +26,45 @@ export type HomeCarouselReorderItem = {
   orderIndex: number;
 };
 
-/**
- * ======================
- * API CALLS
- * ======================
- */
-
-// 🌍 Público — carrossel ativo (site)
-export async function getHomeCarousel() {
-  const response = await api.get<HomeCarouselItem[]>(
-    "/home-carousel"
-  );
+// Público
+export async function getHomeCarousel(): Promise<HomeCarouselItem[]> {
+  const response = await api.get<HomeCarouselItem[]>("/home-carousel");
   return response.data;
 }
 
-// 🔐 Admin — listar todos
-export async function getAdminHomeCarousel() {
-  const response = await api.get<HomeCarouselItem[]>(
-    "/admin/home-carousel"
-  );
+// Admin
+export async function getAdminHomeCarousel(): Promise<HomeCarouselItem[]> {
+  const response = await api.get<HomeCarouselItem[]>("/admin/home-carousel");
   return response.data;
 }
 
-// 🔐 Admin — criar slide
 export async function createHomeCarouselItem(
-  data: HomeCarouselFormData
-) {
+  data: HomeCarouselFormData,
+): Promise<HomeCarouselItem> {
   const response = await api.post<HomeCarouselItem>(
     "/admin/home-carousel",
-    data
+    data,
   );
   return response.data;
 }
 
-// 🔐 Admin — editar slide
 export async function updateHomeCarouselItem(
   id: string,
-  data: HomeCarouselFormData
-) {
+  data: HomeCarouselFormData,
+): Promise<HomeCarouselItem> {
   const response = await api.put<HomeCarouselItem>(
     `/admin/home-carousel/${id}`,
-    data
+    data,
   );
   return response.data;
 }
 
-// 🔐 Admin — reorder (drag & drop)
 export async function reorderHomeCarousel(
-  items: HomeCarouselReorderItem[]
-) {
-  const response = await api.patch(
+  items: HomeCarouselReorderItem[],
+): Promise<HomeCarouselItem[]> {
+  const response = await api.patch<HomeCarouselItem[]>(
     "/admin/home-carousel/reorder",
-    items
+    items,
   );
   return response.data;
 }
