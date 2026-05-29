@@ -1,4 +1,5 @@
 "use client";
+
 import { usePublicBannerByPage } from "../../hooks/queries/usePublicBannerByPage";
 import { BannerPage } from "../../services/banner.service";
 import LoaderComp from "../ui/loaderComp";
@@ -23,52 +24,78 @@ export default function HeaderWithBanner({
   return (
     <>
       {loading ? (
-        <div className="relative w-full h-[400px] flex items-center justify-center">
-          <div className="absolute top-0 z-20 w-full">
-            <Header bgColor="bg-transparent" />
-          </div>
-          <LoaderComp text={"Carregando Banner..."} />
-        </div>
-      ) : (
-        <div className="relative w-full flex flex-col items-center z-20">
-          {/* Header fixo no topo - TRANSPARENTE */}
+        <div className="relative w-full h-[380px] md:h-[450px] flex items-center justify-center overflow-hidden">
+          {/* Header */}
           <div className="absolute top-0 z-20 w-full">
             <Header bgColor="bg-transparent" />
           </div>
 
-          {/* Imagem e overlay */}
-          <div className="relative w-full h-[400px] overflow-hidden">
+          <LoaderComp text={"Carregando Banner..."} />
+        </div>
+      ) : (
+        <section className="relative w-full flex flex-col items-center z-20 overflow-hidden">
+          {/* Header */}
+          <div className="absolute top-0 z-20 w-full">
+            <Header bgColor="bg-transparent" />
+          </div>
+
+          {/* Banner */}
+          <div className="relative w-full h-[380px] md:h-[450px] overflow-hidden">
             <Image
               src={bannerData?.imageUrl ?? "/image/aula2pb.jpg"}
               alt={bannerData?.title ?? "Lasiesta Cerâmica"}
               fill
-              className="object-cover opacity-80"
               priority
+              className="object-cover opacity-80"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60 md:from-black/30 md:to-black/50" />
+
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50" />
           </div>
 
-          {/* Conteúdo do banner */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-8">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+          {/* Conteúdo */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className={`text-2xl sm:text-3xl md:text-5xl font-extrabold ${textColor} drop-shadow-lg`}
+              className="max-w-4xl"
             >
-              {bannerData?.title}
-            </motion.h1>
+              <motion.h1
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className={`
+                  text-3xl
+                  md:text-5xl
+                  leading-[1]
+                  font-semibold
+                  tracking-tight
+                  ${textColor}
+                `}
+              >
+                {bannerData?.title}
+              </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className={`mt-3 sm:mt-5 text-sm sm:text-base md:text-lg max-w-[90%] sm:max-w-3xl ${textColor} leading-relaxed drop-shadow-md`}
-            >
-              {bannerData?.subtitle}
-            </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+                className={`
+                  mt-4
+                  text-sm
+                  md:text-lg
+                  max-w-2xl
+                  mx-auto
+                  leading-relaxed
+                  text-white/85
+                `}
+              >
+                {bannerData?.subtitle}
+              </motion.p>
+            </motion.div>
           </div>
-        </div>
+        </section>
       )}
     </>
   );

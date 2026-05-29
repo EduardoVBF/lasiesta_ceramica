@@ -15,21 +15,44 @@ export default function HeaderButton({
   Icon,
 }: HeaderButtonProps) {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+
+  const isActive = pathname === pathHref;
 
   return (
     <Link
       href={pathHref}
-      className={`h-fit pt-3 flex items-end px-4 rounded-b-lg ${
-        isActive(pathHref)
-          ? "border-b-4 border-cinza-claro bg-bege-escuro bg-white/80 text-marrom avermelhado"
-          : "text-cinza-claro bg-[#a35c4286] hover:bg-[#a35c42]"
-      }`}
+      className={`
+        group
+        relative
+        flex
+        items-center
+        gap-2
+        px-4
+        py-2
+        rounded-full
+        transition-all
+        duration-300
+        backdrop-blur-md
+        border
+
+        ${
+          isActive
+            ? "bg-white/20 border-white/30 text-white shadow-lg"
+            : "bg-white/5 border-transparent text-white/80 hover:bg-white/10 hover:border-white/20 hover:text-white"
+        }
+      `}
     >
-      <div className="flex pb-1 items-center space-x-1 cursor-pointer hover:scale-105 transition-all hover:text-white">
-        <Icon size={24} className="" />
-        <p className="text-sm font-bold">{label}</p>
-      </div>
+      <Icon
+        size={18}
+        className="transition-transform duration-300 group-hover:scale-110"
+      />
+
+      <span className="text-sm font-medium tracking-wide">{label}</span>
+
+      {/* Glow ativo */}
+      {isActive && (
+        <div className="absolute inset-0 rounded-full bg-white/10 blur-xl -z-10" />
+      )}
     </Link>
   );
 }

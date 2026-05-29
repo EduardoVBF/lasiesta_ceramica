@@ -41,7 +41,7 @@ export default function PublicProductDetailPage() {
 
   return (
     <main className="relative">
-      <Header bgColor="bg-transparent" />
+      <Header bgColor="bg-gray-800/40" />
       <Toaster />
 
       <BackgroundImage
