@@ -1,8 +1,10 @@
 "use client";
+
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
 import Image from "next/image";
 import Link from "next/link";
+
 import BrownButton from "../ui/brownButtom";
 
 export interface PlanData {
@@ -24,58 +26,64 @@ export default function FeaturedPlanCard({
   index: number;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <motion.article
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
       viewport={{ once: true }}
-      className="group relative flex flex-col bg-white/60 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 h-full"
+      className="group relative flex flex-col overflow-hidden rounded-[32px] bg-white/70 backdrop-blur-md shadow-[0_15px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:shadow-[0_25px_70px_rgba(0,0,0,0.12)] transition-all duration-500 h-full"
     >
-      {/* Container da Imagem */}
+      {/* Imagem */}
       <div className="relative aspect-square overflow-hidden">
         <Image
           src={plan.imageUrl || ""}
           alt={plan.name}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-[1200ms] group-hover:scale-105"
         />
-        {/* Overlay sutil para dar profundidade no hover */}
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
       </div>
 
       {/* Conteúdo */}
-      <div className="px-3 py-5 flex flex-col flex-grow">
-        <div className="mb-3">
-          <h1 className="text-xl font-serif font-bold leading-tight">
+      <div className="flex flex-col flex-1 p-4">
+        {/* Cabeçalho */}
+        <div className="mb-4">
+          <h2 className="text-2xl font-semibold leading-tight text-[#5c3d2e]">
             {plan.name}
-          </h1>
+          </h2>
         </div>
 
+        {/* Descrição */}
         <div
-          className="text-stone-600 text-sm line-clamp-5 mb-4 flex-grow leading-relaxed"
+          className="flex-grow text-stone-600 text-sm leading-relaxed line-clamp-4 mb-6"
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(plan.shortDescription || ""),
           }}
         />
 
-        {/* Footer do Card: Preço e Botão */}
-        <div className="mt-auto pt-2">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-stone-800">
-                R$ {plan.price}
-              </span>
-              <span className="text-xs text-marrom-avermelhado font-bold uppercase tracking-widest">
-                /{plan.durationLabel}
-              </span>
-            </div>
+        {/* Divider */}
+        <div className="w-full h-px bg-[#d9cfc7] mb-5" />
 
-            <Link href={`/aulas`} className="w-full">
-              <BrownButton text="Ver Detalhes" className="w-full" />
-            </Link>
+        {/* Footer */}
+        <div className="space-y-5">
+          <div className="flex items-end gap-2 flex-wrap">
+            <span className="text-3xl font-semibold text-[#5c3d2e]">
+              R$ {plan.price}
+            </span>
+
+            {plan.durationLabel && (
+              <span className="text-sm uppercase text-[#a35c42] mb-1">
+                / {plan.durationLabel}
+              </span>
+            )}
           </div>
+
+          <Link href="/aulas" className="block">
+            <BrownButton text="Ver Detalhes" className="w-full" />
+          </Link>
         </div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }

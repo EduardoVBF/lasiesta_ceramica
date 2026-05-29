@@ -21,7 +21,7 @@ export default function AtelierGallery() {
         />
       </div>
 
-      <div className="overflow-hidden rounded-[32px] shadow-xl mt-14">
+      <div className="overflow-hidden rounded-[32px] shadow-xl">
         <Image
           src="/image/IMG_0129.JPG"
           alt="Torno"

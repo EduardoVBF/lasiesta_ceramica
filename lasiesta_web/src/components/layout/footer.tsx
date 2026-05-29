@@ -1,6 +1,7 @@
 "use client";
 import { Phone, MapPin, Instagram } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -9,9 +10,18 @@ export default function Footer() {
         <div className="grid md:grid-cols-5 gap-12">
           {/* Marca */}
           <div className="md:col-span-3">
-            <h2 className="text-3xl font-semibold tracking-tight">
-              LaSiesta Cerâmica
-            </h2>
+            <div className="flex items-center gap-3">
+              <Image
+                src="/image/lasiesta_icon.png"
+                alt="Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+              <h1 className="text-3xl font-semibold tracking-tight">
+                LaSiesta Cerâmica
+              </h1>
+            </div>
 
             <p className="mt-4 text-[#f5eee6]/80 leading-relaxed">
               Arte em cerâmica manual, experiências criativas e um espaço onde o
