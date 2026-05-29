@@ -1,4 +1,5 @@
 "use client";
+
 import BrownButton from "@/components/ui/brownButtom";
 import { Plan } from "../../services/plans.service";
 import { motion } from "framer-motion";
@@ -15,63 +16,81 @@ export default function PlanSection({
   plan,
   reverse = false,
 }: PlanSectionProps) {
-
   return (
-    <section id={plan.slug} className="py-0 px-4 z-20">
+    <section id={plan.slug} className="px-6 z-20">
       <div
         className={`max-w-6xl mx-auto flex flex-col ${
-          reverse ? "md:flex-row-reverse" : "md:flex-row"
-        } gap-8 lg:gap-12 p-4 bg-gray-200/70 rounded-xl shadow-2xl`}
+          reverse ? "lg:flex-row-reverse" : "lg:flex-row"
+        } gap-10 lg:gap-16 items-center bg-white/60 backdrop-blur-md rounded-[36px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:shadow-[0_25px_70px_rgba(0,0,0,0.12)] transition-all duration-500`}
       >
-        {/* Lado da Imagem: Mantendo a proporção 1:1 ou 4:5 */}
+        {/* Imagem */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          className="relative w-full max-w-[400px] aspect-[4/5] md:aspect-square"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="relative w-full lg:w-[45%] h-[320px] md:h-[450px] lg:h-[600px] overflow-hidden"
         >
-          <div className="relative w-full h-full rounded-2xl overflow-hidden">
-            <Image
-              src={plan.imageUrl || ""}
-              alt={plan.name}
-              fill
-              className="object-cover"
-            />
-          </div>
+          <Image
+            src={plan.imageUrl || ""}
+            alt={plan.name}
+            fill
+            className="object-cover transition-transform duration-[1500ms] hover:scale-105"
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
         </motion.div>
 
-        {/* Lado do Conteúdo */}
-        <div className="flex-1 min-h-full flex flex-col justify-between space-y-4 mx-1">
-          <div className="flex-1 space-y-4">
-            <header>
-              <h1 className="text-4xl font-serif font-bold mt-2 leading-tight">
-                {plan.name}
-              </h1>
-            </header>
+        {/* Conteúdo */}
+        <div
+          className={`flex-1 px-6 lg:px-0 py-8 lg:py-12 ${!reverse ? "pr-6 lg:pr-8" : "pl-6 lg:pl-8"}`}
+        >
+          <div className="max-w-2xl">
+            {/* <span className="uppercase tracking-[0.25em] text-sm text-[#a35c42]">
+              Experiência
+            </span> */}
+
+            <h2 className="mt-4 text-4xl md:text-5xl leading-[1] font-semibold tracking-tight text-[#5c3d2e]">
+              {plan.name}
+            </h2>
+
             <div
-              className="text-sm text-stone-600"
+              className="mt-8 prose prose-stone max-w-none text-[#5c3d2e]/80 leading-relaxed"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(plan.longDescription || ""),
               }}
             />
-          </div>
 
-          <div className="flex flex-col gap-2">
-            <div className="pt-6 flex items-start sm:items-center gap-2">
-              <span className="text-3xl font-bold text-stone-800">
-                R$ {plan.price}
-              </span>
-              <span className="text-marrom-avermelhado font-semibold tracking-[0.2em] uppercase text-sm">
-                /{plan.durationLabel}
-              </span>
+            <div className="mt-10 w-full h-[2px] rounded-full bg-[#d9cfc7]" />
+
+            <div className="mt-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+              <div>
+                {/* <p className="text-sm uppercase tracking-[0.15em] text-[#a35c42]">
+                  Investimento
+                </p> */}
+
+                <div className="flex items-end gap-2 mt-2">
+                  <span className="text-4xl font-semibold text-[#5c3d2e]">
+                    R$ {plan.price}
+                  </span>
+
+                  {plan.durationLabel && (
+                    <span className="text-sm uppercase tracking-[0.15em] text-[#a35c42] mb-2">
+                      / {plan.durationLabel}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <Link
+                href={`https://wa.me/5516991401921?text=${encodeURIComponent(
+                  `Olá! Tenho interesse na experiência: ${plan.name}`,
+                )}`}
+                target="_blank"
+              >
+                <BrownButton text="Tenho Interesse" maxWidth="max-w-fit" />
+              </Link>
             </div>
-            <Link
-              href={`https://wa.me/5516991401921?text=${encodeURIComponent(
-                `Olá! Tenho interesse no plano: ${plan.name}`
-              )}`}
-              target="_blank"
-            >
-              <BrownButton text="Tenho interesse" maxWidth="max-w-full" />
-            </Link>
           </div>
         </div>
       </div>
