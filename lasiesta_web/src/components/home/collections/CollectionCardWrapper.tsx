@@ -1,6 +1,6 @@
 "use client";
 import FeaturedCategoryCard from "@/components/cards/featuredCategoryCard";
-import Category from "@/types/category";
+import Category from "../../../services/categories.service";
 import { motion } from "framer-motion";
 
 interface CollectionCardWrapperProps {
