@@ -1,5 +1,6 @@
 "use client";
 import BrownButton from "@/components/ui/brownButtom";
+import GhostButton from "@/components/ui/ghostButton";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -13,7 +14,7 @@ export default function HeroContent() {
     >
       <div className="flex mb-4 mt-10">
         <span className="uppercase tracking-[0.3em] text-2xl md:text-4xl text-[#8c6d5a]">
-          Cerâmica Artesanal • Ateliê LaSiesta
+          Ateliê LaSiesta • Cerâmica Artesanal
         </span>
       </div>
 
@@ -50,9 +51,7 @@ export default function HeroContent() {
         </Link>
 
         <Link href="/atelie">
-          <button className="border border-[#7a5c48]/30 hover:border-[#7a5c48] transition-all duration-500 rounded-full px-8 py-4 backdrop-blur-md bg-white/20 hover:bg-white/30">
-            Conheça o Ateliê
-          </button>
+          <GhostButton text="Conheça o Ateliê" maxWidth="max-w-fit" />
         </Link>
       </div>
     </motion.div>
