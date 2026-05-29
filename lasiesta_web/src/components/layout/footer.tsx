@@ -1,83 +1,117 @@
 "use client";
 import { Phone, MapPin, Instagram } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
-import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-marrom-avermelhado text-bege-claro mt-auto z-20">
-      <div className="mx-auto px-4 lg:px-8 py-4 flex flex-col md:flex-row gap-5 justify-between w-full">
-        {/* Identidade */}
-        <div className="w-full md:w-fit px-4 text-center md:text-left">
-          <h2 className="text-2xl font-bold font-playwrite">
-            Lasiesta Cerâmica
-          </h2>
-          <p className="mt-2 text-sm text-marrom-avermelhado/80">
-            Arte em cerâmica manual
-          </p>
-          <p className="text-xs text-marrom-avermelhado/70">
-            &copy; {new Date().getFullYear()} Todos os direitos reservados.
-          </p>
-        </div>
+    <footer className="relative z-20 bg-[#6f422b] text-[#f5eee6]">
+      <div className="max-w-8xl mx-auto px-6 py-6">
+        <div className="grid md:grid-cols-5 gap-12">
+          {/* Marca */}
+          <div className="md:col-span-3">
+            <h2 className="text-3xl font-semibold tracking-tight">
+              LaSiesta Cerâmica
+            </h2>
 
-        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+            <p className="mt-4 text-[#f5eee6]/80 leading-relaxed">
+              Arte em cerâmica manual, experiências criativas e um espaço onde o
+              tempo desacelera entre barro, silêncio e presença.
+            </p>
+
+            <p className="mt-6 text-sm text-[#f5eee6]/60">
+              © {new Date().getFullYear()} LaSiesta Cerâmica.
+              <br />
+              Todos os direitos reservados.
+            </p>
+          </div>
+
           {/* Localização */}
-          <div className="flex flex-col items-end w-full md:w-fit px-4 text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-1 lg:mb-3">Localização</h3>
-            <div className="flex flex-col items-end space-y-1 md:space-y-0 md:space-x-2">
-              <div className="flex items-center gap-1">
-                <MapPin className="w-5 h-5" />
-                <p className="text-sm leading-relaxed">
-                  Rua Santos Pereira, 557
-                </p>
+          <div>
+            <h3 className="text-lg font-semibold mb-6">Localização</h3>
+
+            <div className="space-y-3 text-[#f5eee6]/80">
+              <div className="flex items-start gap-3">
+                <MapPin size={18} className="mt-1 flex-shrink-0" />
+
+                <div>
+                  <p>Rua Santos Pereira, 557</p>
+                  <p>Cidade Nova - Franca/SP</p>
+                  <p>CEP: 14401-130</p>
+                </div>
               </div>
-              <div className="flex flex-col items-end">
-                <p className="text-sm leading-relaxed">Cidade nova - Franca/SP</p>
-                <p className="text-sm leading-relaxed">CEP: 14401-130</p>
-              </div>
+
               <a
                 href="https://www.google.com/maps/place/R.+Santos+Pereira,+557,+Cidade+Nova,+Franca+-+SP,+14401-130"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm underline hover:text-marrom-avermelhado/70 transition"
+                className="
+                  inline-flex
+                  items-center
+                  text-sm
+                  text-[#f5eee6]
+                  hover:text-white
+                  transition-colors
+                  underline-offset-4
+                  hover:underline
+                "
               >
                 Ver no mapa
               </a>
             </div>
           </div>
+
           {/* Contato */}
-          <div className="flex flex-col w-full md:w-fit px-4 text-center items-end md:text-left">
-            <h3 className="text-lg font-semibold mb-1 lg:mb-3">Contato</h3>
-            {/* Telefone */}
-            <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
-              <Phone className="w-5 h-5" />
-              <p className="text-sm">(16) 99140-1921</p>
-            </div>
-            {/* Instagram */}
-            <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
-              <Instagram className="w-5 h-5" />
+          <div>
+            <h3 className="text-lg font-semibold mb-6">Contato</h3>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-[#f5eee6]/80">
+                <Phone size={18} />
+                <span>(16) 99140-1921</span>
+              </div>
+
               <a
                 href="https://instagram.com/lasiestaceramica"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm hover:underline"
+                className="
+                  flex
+                  items-center
+                  gap-3
+                  text-[#f5eee6]/80
+                  hover:text-white
+                  transition-colors
+                "
               >
-                @lasiestaceramica
+                <Instagram size={18} />
+                <span>@lasiestaceramica</span>
               </a>
-            </div>
-            {/* Whatsapp */}
-            <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
-              <SiWhatsapp className="w-5 h-5" />
+
               <a
                 href="https://wa.me/5516991401921?text=Olá!%20Gostaria%20de%20mais%20informações"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm hover:underline"
+                className="
+                  flex
+                  items-center
+                  gap-3
+                  text-[#f5eee6]/80
+                  hover:text-white
+                  transition-colors
+                "
               >
-                Enviar mensagem
+                <SiWhatsapp size={18} />
+                <span>Enviar mensagem</span>
               </a>
             </div>
           </div>
+        </div>
+
+        {/* Linha inferior */}
+        <div className="mt-8 pt-6 border-t border-white/10">
+          <p className="text-center text-sm text-[#f5eee6]/50">
+            Feito com cuidado, tempo e barro.
+          </p>
         </div>
       </div>
     </footer>
