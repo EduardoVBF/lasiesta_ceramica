@@ -1,7 +1,7 @@
 "use client";
 import FeaturedPlanCard from "@/components/cards/featuredPlanCard";
+import { Plan } from "../../../services/plans.service";
 import { motion } from "framer-motion";
-import { Plan } from "@/types/plan";
 
 interface ExperienceCardWrapperProps {
   plan: Plan;
