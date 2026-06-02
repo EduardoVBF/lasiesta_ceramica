@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 
 interface ProductsCategoriesNavProps {
@@ -16,23 +17,21 @@ export default function ProductsCategoriesNav({
   setActiveCategory,
 }: ProductsCategoriesNavProps) {
   return (
-    <div className="w-full max-w-[90%] mb-4 overflow-hidden">
-      <div className="flex overflow-x-auto justify-start gap-x-1 px-1">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => setActiveCategory(category.id)}
-            className={`pt-4 rounded-b-lg px-6 py-1 text-sm font-bold transition-all duration-300 whitespace-nowrap cursor-pointer hover:bg-gray-500/20 hover:text-marrom-avermelhado/90 focus:outline-none ${
-              {
-                active: activeCategory === category.id,
-              }["active"]
-                ? "border-b-4 border-[#a35c42] text-marrom-avermelhado bg-white/60"
-                : "text-white bg-[#a35c42]/20"
-            }`}
-          >
-            {category.label}
-          </button>
-        ))}
+    <div className="w-full max-w-[90%] mb-2 z-30 relative">
+      <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
+        {categories.map((category) => {
+          const isActive = activeCategory === category.id;
+
+          return (
+            <button
+              key={category.id}
+              onClick={() => setActiveCategory(category.id)}
+                className={`cursor-pointer flex-shrink-0 px-6 py-3 rounded-b-2xl text-sm font-medium transition-all duration-300 border-b-2 ${isActive ? "bg-[#f5eee6] text-[#5c3d2e] border-[#d9cfc7]" : "bg-[#a35c42]/85 text-white border-[#8f4f38] hover:bg-[#8f4f38]"}`}
+            >
+              {category.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

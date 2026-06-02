@@ -1,13 +1,13 @@
 "use client";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import React from "react";
 import { Product } from "../../services/products.service";
 import { RiDiscountPercentFill } from "react-icons/ri";
-import ImageZoom from "../layout/ImageZoom";
 import { FaStar } from "react-icons/fa6";
-// import { RxDimensions } from "react-icons/rx";
-// import { GiPorcelainVase } from "react-icons/gi";
+import ImageZoom from "../layout/ImageZoom";
+import BrownButton from "../ui/brownButtom";
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", {
@@ -25,126 +25,100 @@ export default function ProductCard({
 }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 24, scale: 0.98 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.5, delay: index * 0.06 }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group relative w-full max-w-sm h-[35rem] rounded-3xl shadow-2xl overflow-hidden bg-gradient-to-b from-[#f5fbf3] to-[#efe6da] flex flex-col"
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      className="group flex flex-col overflow-hidden rounded-[32px] bg-white border border-[#e7ddd2] shadow-[0_15px_50px_rgba(0,0,0,0.08)] hover:-translate-y-2 hover:shadow-[0_25px_70px_rgba(0,0,0,0.12)] transition-all duration-500 h-full"
       aria-labelledby={`product-${product.id}-title`}
     >
       {/* IMAGE */}
-      <div className="relative w-full aspect-square bg-[#f3ece4] flex-none">
-        <motion.div
-          whileHover={{ scale: 1.03 }}
-          className="h-[19.5rem] inset-0 overflow-hidden"
-        >
-          <ImageZoom
-            src={product.mainImageUrl ?? "/image/IMG_0023.JPG"}
-            alt={product.name}
-            // width={800}
-            // height={800}
-            className="object-cover w-full h-full transition-transform duration-700"
-            zoom
-            fill
-          />
-        </motion.div>
+      <div className="relative aspect-square overflow-hidden bg-[#f5eee6]">
+        <ImageZoom
+          src={product.mainImageUrl ?? "/image/IMG_0023.JPG"}
+          alt={product.name}
+          className="object-cover w-full h-full transition-transform duration-[1200ms] group-hover:scale-105"
+          zoom
+          fill
+        />
 
-        {/* Destaque */}
-        {product.isFeatured && (
-          <FaStar
-            className="absolute left-2 top-2 bg-amber-600 text-white p-1 rounded-full text-xs font-semibold shadow"
-            size={30}
-            title="Destaque"
-          />
-        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
 
-        {/* Selo de promoção */}
-        {product.isSale && (
-          <RiDiscountPercentFill
-            className="absolute right-1 top-1 bg-marrom-avermelhado rounded-full p-0.5 text-white drop-shadow-lg"
-            title="Promoção"
-            size={40}
-          />
-        )}
+        {/* Badges */}
+        <div className="absolute top-4 left-4 flex gap-2">
+          {product.isFeatured && (
+            <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/95 text-[#5c3d2e] text-xs font-medium shadow-md">
+              <FaStar size={10} />
+              Destaque
+            </span>
+          )}
 
-        {/* Categoria */}
-        {product.category && (
-          <span className="absolute left-2 bottom-2 text-white text-xs bg-marrom-avermelhado px-2 py-1 rounded-full">
-            {product.category.name}
-          </span>
-        )}
+          {product.isSale && (
+            <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-[#a35c42] text-white text-xs font-medium shadow-md">
+              <RiDiscountPercentFill size={12} />
+              Oferta
+            </span>
+          )}
+        </div>
       </div>
 
       {/* CONTENT */}
-      <div className="px-3 pt-3 bg-[#bf7a6b8b] text-[#f8f5f1] flex flex-col justify-between gap-1 flex-1">
-        <div className="flex flex-col justify-between flex-1">
-          <div>
-            <h1
-              id={`product-${product.id}-title`}
-              className="text-lg text-marrom-avermelhado font-bold leading-tight line-clamp-2"
-            >
-              {product.name}
-            </h1>
-            <div
-              className="prose prose-sm max-w-none text-gray-600 text-xs line-clamp-3 my-1"
-              dangerouslySetInnerHTML={{
-                __html: product.shortDescription || "",
-              }}
-            />
-            {/* <div className="mt-2 flex flex-col gap-1">
-              <div className="flex items-center gap-1 mb-1 text-xs text-gray-600">
-                <RxDimensions
-                  className="inline-block mr-1"
-                  title="Dimensões"
-                  size={16}
-                />
-                <p className="inline-block">{product.dimensions}</p>
-              </div>
-              {product.material && (
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <GiPorcelainVase size={16} />
-                  <span>{product.material}</span>
-                </div>
-              )}
-            </div> */}
-          </div>
-        </div>
+      <div className="flex flex-col flex-1 p-6">
+        {/* Categoria */}
+        {product.category && (
+          <span className="uppercase tracking-[0.15em] text-xs text-[#a35c42] mb-3">
+            {product.category.name}
+          </span>
+        )}
 
-        <div className="mb-3">
-          {/* PRICE */}
-          <div className="my-1">
-            {product.price == 0 ? (
-              <span className="text-sm font-bold text-white">
-                * Preço sob consulta
+        {/* Nome */}
+        <h2
+          id={`product-${product.id}-title`}
+          className="text-2xl font-semibold leading-tight text-[#5c3d2e]"
+        >
+          {product.name}
+        </h2>
+
+        {/* Descrição */}
+        <div
+          className="mt-4 text-sm leading-relaxed text-[#5c3d2e]/75 line-clamp-4 flex-grow"
+          dangerouslySetInnerHTML={{
+            __html: product.shortDescription || "",
+          }}
+        />
+
+        {/* Divider */}
+        <div className="w-full h-px bg-[#e7ddd2] my-6" />
+
+        {/* Footer */}
+        <div className="mt-auto">
+          {product.price == 0 ? (
+            <div className="mb-5">
+              <span className="text-[#5c3d2e] font-medium">
+                Preço sob consulta
               </span>
-            ) : product.isSale && product.salePrice ? (
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold line-through text-white">
-                  {formatBRL(Number(product.price))}
-                </span>
-                <span className="text-xl font-bold text-red-600">
-                  {formatBRL(Number(product.salePrice))}
-                </span>
-              </div>
-            ) : (
-              <span className="text-xl font-bold text-white">
+            </div>
+          ) : product.isSale && product.salePrice ? (
+            <div className="mb-5 flex flex-col">
+              <span className="text-sm line-through text-[#5c3d2e]/50">
                 {formatBRL(Number(product.price))}
               </span>
-            )}
-          </div>
-          {/* Botão de ação */}
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            className="w-full"
-            aria-label="Detalhes do produto"
-          >
-            <Link
-              href={`/produtos/detalhe/${product.slug}`}
-              className="flex-1 flex items-center justify-center gap-3 py-3 rounded-xl bg-[#777d65] text-white font-semibold shadow hover:bg-[#575f43] transition cursor-pointer"
-            >
-              Detalhes
-            </Link>
-          </motion.button>
+
+              <span className="text-3xl font-semibold text-[#a35c42]">
+                {formatBRL(Number(product.salePrice))}
+              </span>
+            </div>
+          ) : (
+            <div className="mb-5">
+              <span className="text-3xl font-semibold text-[#5c3d2e]">
+                {formatBRL(Number(product.price))}
+              </span>
+            </div>
+          )}
+
+          <Link href={`/produtos/detalhe/${product.slug}`}>
+            <BrownButton text="Ver Detalhes" className="w-full" />
+          </Link>
         </div>
       </div>
     </motion.article>
